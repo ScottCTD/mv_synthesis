@@ -5,3 +5,7 @@
 **/*.pyd
 outputs/
 .venv/
+
+datasets/
+.env
+.envrc

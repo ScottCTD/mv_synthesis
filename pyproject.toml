@@ -1,0 +1,17 @@
+[project]
+name = "mv-synthesis"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "boto3>=1.42.14",
+    "gradient>=3.10.1",
+    "langchain>=1.2.0",
+    "langchain-aws>=1.1.0",
+    "langgraph>=1.0.5",
+    "notebook>=7.5.1",
+    "numpy>=2.4.0",
+    "qdrant-client>=1.16.2",
+    "tqdm>=4.67.1",
+]
