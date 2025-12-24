@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Script to count total duration of all videos in a dataset.
-Scans a directory recursively for all .mp4 files and calculates total duration.
+Scans a directory recursively for all .mp4 and .mkv files and calculates total duration.
 Uses multiprocessing to check video durations in parallel.
 """
 
@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 from multiprocessing import Pool, cpu_count
 from collections import defaultdict
+import statistics
 
 
 def get_video_duration(video_path):
@@ -71,7 +72,7 @@ def count_video_duration(directory, show_breakdown=False, num_workers=None):
         print(f"Error: Directory {directory} does not exist", file=sys.stderr)
         return
     
-    video_files = list(directory.rglob('*.mp4'))
+    video_files = list(directory.rglob('*.mp4')) + list(directory.rglob('*.mkv'))
     print(f"Found {len(video_files)} video files...")
     
     if not video_files:
@@ -87,6 +88,7 @@ def count_video_duration(directory, show_breakdown=False, num_workers=None):
     total_duration = 0.0
     error_count = 0
     duration_by_dir = defaultdict(float)
+    durations = []  # Store all durations for statistics
     
     # Process video files in parallel
     with Pool(processes=num_workers) as pool:
@@ -100,6 +102,7 @@ def count_video_duration(directory, show_breakdown=False, num_workers=None):
             continue
         
         total_duration += duration
+        durations.append(duration)
         
         if show_breakdown:
             # Group by parent directory
@@ -114,6 +117,65 @@ def count_video_duration(directory, show_breakdown=False, num_workers=None):
     if error_count > 0:
         print(f"Errors: {error_count}")
     print(f"{'='*60}")
+    
+    # Calculate and print statistics
+    if durations:
+        durations_sorted = sorted(durations)
+        mean_duration = statistics.mean(durations)
+        median_duration = statistics.median(durations)
+        min_duration = min(durations)
+        max_duration = max(durations)
+        stdev_duration = statistics.stdev(durations) if len(durations) > 1 else 0.0
+        
+        # Calculate percentiles
+        n = len(durations_sorted)
+        p25 = durations_sorted[n // 4] if n > 0 else 0
+        p75 = durations_sorted[3 * n // 4] if n > 0 else 0
+        p90 = durations_sorted[int(0.9 * n)] if n > 0 else 0
+        p95 = durations_sorted[int(0.95 * n)] if n > 0 else 0
+        
+        print(f"\n{'='*60}")
+        print("Duration Statistics:")
+        print("-" * 60)
+        print(f"  Mean:   {format_duration(mean_duration)} ({mean_duration:.3f}s)")
+        print(f"  Median: {format_duration(median_duration)} ({median_duration:.3f}s)")
+        print(f"  Min:    {format_duration(min_duration)} ({min_duration:.3f}s)")
+        print(f"  Max:    {format_duration(max_duration)} ({max_duration:.3f}s)")
+        print(f"  StdDev: {format_duration(stdev_duration)} ({stdev_duration:.3f}s)")
+        print(f"\n  Percentiles:")
+        print(f"    25th: {format_duration(p25)} ({p25:.3f}s)")
+        print(f"    75th: {format_duration(p75)} ({p75:.3f}s)")
+        print(f"    90th: {format_duration(p90)} ({p90:.3f}s)")
+        print(f"    95th: {format_duration(p95)} ({p95:.3f}s)")
+        print(f"{'='*60}")
+        
+        # Print distribution histogram
+        print(f"\n{'='*60}")
+        print("Duration Distribution:")
+        print("-" * 60)
+        
+        # Create bins for histogram
+        if max_duration > 0:
+            num_bins = 20
+            bin_width = max_duration / num_bins
+            bins = [0] * num_bins
+            
+            for duration in durations:
+                bin_idx = min(int(duration / bin_width), num_bins - 1)
+                bins[bin_idx] += 1
+            
+            # Find max count for scaling
+            max_count = max(bins) if bins else 1
+            bar_length = 50  # Maximum bar length in characters
+            
+            for i in range(num_bins):
+                bin_start = i * bin_width
+                bin_end = (i + 1) * bin_width
+                count = bins[i]
+                bar = '█' * int((count / max_count) * bar_length) if max_count > 0 else ''
+                print(f"  {bin_start:8.2f}s - {bin_end:8.2f}s: {count:5d} {bar}")
+        
+        print(f"{'='*60}")
     
     if show_breakdown and duration_by_dir:
         print("\nBreakdown by directory:")
