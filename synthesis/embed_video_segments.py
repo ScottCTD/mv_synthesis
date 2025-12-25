@@ -12,6 +12,7 @@ from qdrant_client.models import Distance, PointStruct, VectorParams
 from tqdm.asyncio import tqdm
 
 from nova2_lite_model import Nova2LiteModel
+from ffmpeg_utils import get_video_duration
 
 
 def collect_video_segments(all_video_path: Path) -> dict[str, Path]:
@@ -39,6 +40,8 @@ async def embed_and_store_segment(
 ):
     try:
         segment_path = video_id_to_path[segment_id]
+        segment_duration = get_video_duration(segment_path)
+        assert segment_duration is not None, f"Segment duration not found for segment {segment_path}"
         result = await embed_model.embed_video(
             segment_path,
             embedding_purpose="GENERIC_INDEX",
@@ -53,24 +56,24 @@ async def embed_and_store_segment(
             video_embedding is not None
         ), f"Video embedding not found for segment {segment_path}"
 
-        vibe_card = vision_model.generate_video_vibe_card(str(segment_path))
+        vibe_card = await vision_model.generate_vibe_card(str(segment_path))
         vibe_card_embedding = await embed_model.embed_text(
             vibe_card, embedding_purpose="GENERIC_INDEX", truncation_mode="END"
         )
         vibe_card_embedding = vibe_card_embedding["embeddings"][0]["embedding"]
 
         db_client.upsert(
-            collection_name="segment_video_embeddings",
+            collection_name="video-segments",
             points=[
                 PointStruct(
                     id=segment_id,
                     vector=video_embedding,
-                    payload={"segment_path": str(segment_path)},
+                    payload={"segment_path": str(segment_path), "duration": segment_duration},
                 ),
             ],
         )
         db_client.upsert(
-            collection_name="segment_vibe_card_embeddings",
+            collection_name="video-vibe_cards",
             points=[
                 PointStruct(
                     id=segment_id,
@@ -87,7 +90,7 @@ async def embed_and_store_segment(
 async def main(db_path: Path, all_video_path: Path, limit: Optional[int] = None):
     db_client = QdrantClient(path=str(db_path))
     # Create collections if they don't already exist
-    for collection_name in ["segment_video_embeddings", "segment_vibe_card_embeddings"]:
+    for collection_name in ["video-segments", "video-vibe_cards"]:
         try:
             db_client.get_collection(collection_name)
             print(f"Collection '{collection_name}' already exists, skipping creation.")

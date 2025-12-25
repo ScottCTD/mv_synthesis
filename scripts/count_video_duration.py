@@ -58,7 +58,7 @@ def format_duration(total_seconds):
     return " ".join(parts)
 
 
-def count_video_duration(directory, show_breakdown=False, num_workers=None):
+def count_video_duration(directory, show_breakdown=False, num_workers=None, remove_errors=False):
     """
     Count total duration of all video files in a directory.
     
@@ -66,6 +66,7 @@ def count_video_duration(directory, show_breakdown=False, num_workers=None):
         directory: Root directory to scan for video files
         show_breakdown: If True, show duration breakdown by subdirectory
         num_workers: Number of worker processes (default: cpu_count())
+        remove_errors: If True, delete errored video files and print their paths
     """
     directory = Path(directory)
     if not directory.exists():
@@ -87,6 +88,7 @@ def count_video_duration(directory, show_breakdown=False, num_workers=None):
     
     total_duration = 0.0
     error_count = 0
+    errored_videos = []  # Store paths of errored videos
     duration_by_dir = defaultdict(float)
     durations = []  # Store all durations for statistics
     
@@ -99,6 +101,7 @@ def count_video_duration(directory, show_breakdown=False, num_workers=None):
         if duration is None:
             print(f"Error reading: {video_path}", file=sys.stderr)
             error_count += 1
+            errored_videos.append(video_path)
             continue
         
         total_duration += duration
@@ -177,6 +180,29 @@ def count_video_duration(directory, show_breakdown=False, num_workers=None):
         
         print(f"{'='*60}")
     
+    # Remove errored videos if requested
+    if remove_errors and errored_videos:
+        print(f"\n{'='*60}")
+        print(f"Removing {len(errored_videos)} errored video(s):")
+        print("-" * 60)
+        removed_count = 0
+        failed_removals = []
+        
+        for video_path in errored_videos:
+            try:
+                video_path.unlink()  # Delete the file
+                print(f"  Removed: {video_path}")
+                removed_count += 1
+            except Exception as e:
+                print(f"  Failed to remove {video_path}: {e}", file=sys.stderr)
+                failed_removals.append(video_path)
+        
+        print("-" * 60)
+        print(f"Successfully removed: {removed_count}")
+        if failed_removals:
+            print(f"Failed to remove: {len(failed_removals)}")
+        print(f"{'='*60}")
+    
     if show_breakdown and duration_by_dir:
         print("\nBreakdown by directory:")
         print("-" * 60)
@@ -211,8 +237,13 @@ if __name__ == '__main__':
         default=None,
         help='Number of worker processes (default: number of CPU cores)'
     )
+    parser.add_argument(
+        '--remove-errors',
+        action='store_true',
+        help='Remove all errored video files and print their paths'
+    )
     
     args = parser.parse_args()
     
-    count_video_duration(args.directory, args.breakdown, args.workers)
+    count_video_duration(args.directory, args.breakdown, args.workers, args.remove_errors)
 

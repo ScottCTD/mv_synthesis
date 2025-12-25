@@ -1,41 +1,16 @@
 import asyncio
 import base64
 import json
-import subprocess
 from pathlib import Path
 from typing import Literal
 
 import boto3
+from ffmpeg_utils import get_video_duration
 
 
 def encode_b64(file_path) -> str:
     with open(file_path, "rb") as file:
         return base64.b64encode(file.read()).decode("utf-8")
-
-
-def get_video_duration(video_path: Path) -> float | None:
-    """Get video duration in seconds using ffprobe. Returns None on error."""
-    try:
-        cmd = [
-            "ffprobe",
-            "-v",
-            "error",
-            "-show_entries",
-            "format=duration",
-            "-of",
-            "default=noprint_wrappers=1:nokey=1",
-            str(video_path),
-        ]
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            check=True,
-            timeout=30,
-        )
-        return float(result.stdout.strip())
-    except (subprocess.CalledProcessError, ValueError, FileNotFoundError, subprocess.TimeoutExpired):
-        return None
 
 
 class Nova2OmniEmbeddings:
@@ -99,13 +74,13 @@ class Nova2OmniEmbeddings:
             "request_id": request_id,
             "embeddings": results,
         }
-    
+
     def _update_total_cost(self):
         """Update the total cost."""
         self.costs["total_cost"] = (
-            self.costs["text_cost"] + 
-            self.costs["video_cost"] + 
-            self.costs["audio_cost"]
+            self.costs["text_cost"]
+            + self.costs["video_cost"]
+            + self.costs["audio_cost"]
         )
 
     async def embed_text(
@@ -178,7 +153,7 @@ class Nova2OmniEmbeddings:
             },
         }
         result = await self._invoke_model(request_body)
-        
+
         # Calculate video duration for cost tracking
         video_duration = get_video_duration(video_path_obj)
         if video_duration is not None:
@@ -193,7 +168,7 @@ class Nova2OmniEmbeddings:
                 self.costs["video_seconds"] += video_duration
                 self.costs["video_cost"] += video_duration * 0.0007
             self._update_total_cost()
-        
+
         return result
 
     async def embed_audio(
@@ -225,12 +200,14 @@ class Nova2OmniEmbeddings:
             },
         }
         result = await self._invoke_model(request_body)
-        
+
         # Calculate audio duration for cost tracking
-        audio_duration = get_video_duration(audio_path_obj)  # ffprobe works for audio too
+        audio_duration = get_video_duration(
+            audio_path_obj
+        )  # ffprobe works for audio too
         if audio_duration is not None:
             self.costs["audio_seconds"] += audio_duration
             self.costs["audio_cost"] += audio_duration * 0.00014
             self._update_total_cost()
-        
+
         return result
