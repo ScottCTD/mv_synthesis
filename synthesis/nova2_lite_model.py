@@ -208,13 +208,28 @@ class Nova2LiteModel:
         Generate exactly one augmented query per lyric line by making one model call per line.
         Calls are run concurrently via asyncio, using a shared prompt prefix to enable prompt caching.
         """
-        system_prompt = [{"text": SONG_AUGMENTED_QUERY_SYSTEM_PROMPT}]
-
         lyric_lines = normalize_lyric_lines(full_lyrics)
-        if not lyric_lines:
+        return await self.generate_augmented_queries_for_lines(
+            lyric_lines, use_prompt_cache_point=use_prompt_cache_point
+        )
+
+    async def generate_augmented_queries_for_lines(
+        self,
+        lyric_lines: list[str],
+        use_prompt_cache_point: bool = True,
+    ) -> list[str]:
+        """
+        Generate exactly one augmented query per lyric line using the provided list
+        (preserves ordering without normalizing LRC timestamps).
+        """
+        system_prompt = [{"text": SONG_AUGMENTED_QUERY_SYSTEM_PROMPT}]
+        cleaned_lines = [line.strip() for line in lyric_lines]
+        if not cleaned_lines:
             return []
 
-        numbered_lines = "\n".join(f"{i+1}. {line}" for i, line in enumerate(lyric_lines))
+        numbered_lines = "\n".join(
+            f"{i+1}. {line}" for i, line in enumerate(cleaned_lines)
+        )
         shared_prefix_text = (
             "Full song lyrics (numbered lines):\n"
             f"{numbered_lines}\n\n"
@@ -225,11 +240,10 @@ class Nova2LiteModel:
         def _build_messages(target_index: int, with_cache_point: bool) -> list[dict[str, Any]]:
             prefix_block: dict[str, Any] = {"text": shared_prefix_text}
             if with_cache_point:
-                # Best-effort: if the model/runtime doesn't support cache points, we'll retry without it.
                 prefix_block["cachePoint"] = {"type": "default"}
             suffix_text = (
                 f"Target line index: {target_index + 1}\n"
-                f"Target lyric line: {lyric_lines[target_index]}\n\n"
+                f"Target lyric line: {cleaned_lines[target_index]}\n\n"
                 "Return ONLY the augmented query for this target line as plain text.\n"
                 "Do not include any labels, numbering, quotes, JSON, or additional commentary."
             )
@@ -239,7 +253,6 @@ class Nova2LiteModel:
             ]
 
         async def _generate_one(idx: int) -> str:
-            # Build prompts so the shared prefix is identical across calls (enables provider-side caching).
             messages = _build_messages(idx, with_cache_point=use_prompt_cache_point)
             try:
                 response = await asyncio.to_thread(
@@ -255,7 +268,6 @@ class Nova2LiteModel:
                     },
                 )
             except (ParamValidationError, ClientError):
-                # Retry without cachePoint if the runtime rejects it.
                 if not use_prompt_cache_point:
                     raise
                 messages = _build_messages(idx, with_cache_point=False)
@@ -273,14 +285,15 @@ class Nova2LiteModel:
                 )
 
             self._track_costs_from_usage(response.get("usage", {}) or {})
-
             return _extract_converse_text(response).strip()
 
-        tasks = [_generate_one(i) for i in range(len(lyric_lines))]
+        tasks = [_generate_one(i) for i in range(len(cleaned_lines))]
         queries = await asyncio.gather(*tasks)
 
-        if len(queries) != len(lyric_lines):
-            print(f"Warning: Generated {len(queries)} queries, expected {len(lyric_lines)}")
+        if len(queries) != len(cleaned_lines):
+            print(
+                f"Warning: Generated {len(queries)} queries, expected {len(cleaned_lines)}"
+            )
 
         return list(queries)
 

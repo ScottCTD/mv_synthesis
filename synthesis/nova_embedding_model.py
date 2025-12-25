@@ -5,7 +5,11 @@ from pathlib import Path
 from typing import Literal
 
 import boto3
-from ffmpeg_utils import get_video_duration
+
+try:
+    from synthesis.ffmpeg_utils import get_video_duration
+except ImportError:
+    from ffmpeg_utils import get_video_duration
 
 
 def encode_b64(file_path) -> str:
