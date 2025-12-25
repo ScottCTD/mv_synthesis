@@ -15,3 +15,6 @@ dependencies = [
     "qdrant-client>=1.16.2",
     "tqdm>=4.67.1",
 ]
+
+[tool.setuptools.packages.find]
+where = ["src"]

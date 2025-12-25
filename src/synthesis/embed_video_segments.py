@@ -10,28 +10,16 @@ from typing import Optional
 
 from tqdm.asyncio import tqdm
 
-try:
-    from synthesis.config import (
-        DEFAULT_DATASET_ROOT,
-        VIDEO_SEGMENTS_COLLECTION,
-        VIDEO_VIBE_CARDS_COLLECTION,
-    )
-    from synthesis.db import QdrantStore
-    from synthesis.ffmpeg_utils import get_video_duration
-    from synthesis.lyrics_io import path_to_relative
-    from synthesis.nova2_lite_model import Nova2LiteModel
-    from synthesis.nova_embedding_model import Nova2OmniEmbeddings
-except ImportError:
-    from config import (
-        DEFAULT_DATASET_ROOT,
-        VIDEO_SEGMENTS_COLLECTION,
-        VIDEO_VIBE_CARDS_COLLECTION,
-    )
-    from db import QdrantStore
-    from ffmpeg_utils import get_video_duration
-    from lyrics_io import path_to_relative
-    from nova2_lite_model import Nova2LiteModel
-    from nova_embedding_model import Nova2OmniEmbeddings
+from synthesis.config import (
+    DEFAULT_DATASET_ROOT,
+    VIDEO_SEGMENTS_COLLECTION,
+    VIDEO_VIBE_CARDS_COLLECTION,
+)
+from synthesis.db import QdrantStore
+from synthesis.ffmpeg_utils import get_video_duration
+from synthesis.lyrics_io import path_to_relative
+from synthesis.nova2_lite_model import Nova2LiteModel
+from synthesis.nova_embedding_model import Nova2OmniEmbeddings
 
 
 def collect_video_segments(all_video_path: Path) -> dict[str, Path]:
@@ -64,9 +52,9 @@ async def embed_and_store_segment(
         return
     try:
         segment_duration = get_video_duration(segment_path)
-        assert segment_duration is not None, (
-            f"Segment duration not found for segment {segment_path}"
-        )
+        assert (
+            segment_duration is not None
+        ), f"Segment duration not found for segment {segment_path}"
         result = await embed_model.embed_video(
             str(segment_path),
             embedding_purpose="GENERIC_INDEX",
@@ -77,9 +65,9 @@ async def embed_and_store_segment(
             if embedding["embedding_type"] == "VIDEO":
                 video_embedding = embedding["embedding"]
                 break
-        assert video_embedding is not None, (
-            f"Video embedding not found for segment {segment_path}"
-        )
+        assert (
+            video_embedding is not None
+        ), f"Video embedding not found for segment {segment_path}"
 
         vibe_card = await vision_model.generate_vibe_card(str(segment_path))
         vibe_card_embedding = await embed_model.embed_text(
@@ -124,9 +112,7 @@ async def main(
         raise FileNotFoundError(f"videos dir not found: {all_video_path}")
     db_path.mkdir(parents=True, exist_ok=True)
     store = QdrantStore(db_path)
-    store.ensure_collections(
-        [VIDEO_SEGMENTS_COLLECTION, VIDEO_VIBE_CARDS_COLLECTION]
-    )
+    store.ensure_collections([VIDEO_SEGMENTS_COLLECTION, VIDEO_VIBE_CARDS_COLLECTION])
 
     embed_model = Nova2OmniEmbeddings()
     vision_model = Nova2LiteModel()
@@ -166,20 +152,21 @@ if __name__ == "__main__":
         description="Embed video segments and store them in a Qdrant database"
     )
     parser.add_argument(
-        "db_path",
+        "dataset_root",
         type=Path,
-        help="Path to the Qdrant database directory",
+        help="Dataset root directory (db_path defaults to dataset_root/db, all_video_path defaults to dataset_root/videos)",
     )
     parser.add_argument(
-        "all_video_path",
-        type=Path,
-        help="Path to the directory containing video segments",
-    )
-    parser.add_argument(
-        "--dataset-root",
+        "--db-path",
         type=Path,
         default=None,
-        help="Dataset root for storing relative paths (defaults to parent of videos dir).",
+        help="Path to the Qdrant database directory (defaults to dataset_root/db)",
+    )
+    parser.add_argument(
+        "--all-video-path",
+        type=Path,
+        default=None,
+        help="Path to the directory containing video segments (defaults to dataset_root/videos)",
     )
     parser.add_argument(
         "--limit",
@@ -188,7 +175,7 @@ if __name__ == "__main__":
         help="Limit the number of segments to process (e.g., --limit 5)",
     )
     args = parser.parse_args()
-    dataset_root = args.dataset_root or args.all_video_path.parent or DEFAULT_DATASET_ROOT
-    asyncio.run(
-        main(args.db_path, args.all_video_path, dataset_root, args.limit)
-    )
+    dataset_root = args.dataset_root
+    db_path = args.db_path or (dataset_root / "db")
+    all_video_path = args.all_video_path or (dataset_root / "videos")
+    asyncio.run(main(db_path, all_video_path, dataset_root, args.limit))

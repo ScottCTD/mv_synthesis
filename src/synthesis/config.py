@@ -3,7 +3,16 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+def _resolve_project_root() -> Path:
+    current = Path(__file__).resolve()
+    for candidate in current.parents:
+        if (candidate / "pyproject.toml").exists():
+            return candidate
+    return current.parents[1]
+
+
+PROJECT_ROOT = _resolve_project_root()
 DEFAULT_DATASET_ROOT = PROJECT_ROOT / "datasets" / "ds1"
 
 EMBEDDING_DIM = 3072
