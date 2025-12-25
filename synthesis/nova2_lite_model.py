@@ -4,6 +4,10 @@ import re
 from typing import Any
 
 from botocore.exceptions import ClientError, ParamValidationError
+try:
+    from tqdm.asyncio import tqdm
+except ImportError:  # pragma: no cover - optional progress bar
+    tqdm = None
 
 
 _LRC_TIMESTAMP_RE = re.compile(r"^\[\d{2}:\d{2}\.\d{3}\]\s*")
@@ -288,7 +292,14 @@ class Nova2LiteModel:
             return _extract_converse_text(response).strip()
 
         tasks = [_generate_one(i) for i in range(len(cleaned_lines))]
-        queries = await asyncio.gather(*tasks)
+        if tqdm is None:
+            queries = await asyncio.gather(*tasks)
+        else:
+            queries = await tqdm.gather(
+                *tasks,
+                desc="Generating augmented queries",
+                total=len(cleaned_lines),
+            )
 
         if len(queries) != len(cleaned_lines):
             print(
@@ -301,106 +312,8 @@ async def debug():
     model = Nova2LiteModel()
 
     full_lyrics = """
-[00:00.000]Counting Stars - OneRepublic
-[00:00.190]Lyrics by：Ryan Tedder
-[00:00.390]Composed by：Ryan Tedder
-[00:00.590]Produced by：Ryan Tedder/Noel Zancanella
-[00:00.790]Lately I've been I've been losing sleep
-[00:05.499]Dreaming about the things that we could be
-[00:09.390]But baby I've been I've been praying hard
-[00:14.361]Said no more counting dollars
-[00:16.362]We'll be counting stars
-[00:19.286]Yeah we'll be counting stars
-[00:38.059]I see this life like a swinging vine
-[00:40.673]Swing my heart across the line
-[00:42.585]In my face is flashing signs
-[00:44.570]Seek it out and ye' shall find
-[00:46.475]Old but I'm not that old
-[00:48.511]Young but I'm not that bold
-[00:50.434]And I don't think the world is sold
-[00:52.540]On just doing what we're told
-[00:55.039]I I I I feel something so right
-[00:59.233]Doing the wrong thing
-[01:02.680]I I I I feel something so wrong
-[01:07.032]Doing the right thing
-[01:10.459]I couldn't lie couldn't lie couldn't lie
-[01:14.200]Everything that kills me makes me feel alive
-[01:18.166]Lately I've been I've been losing sleep
-[01:21.938]Dreaming about the things that we could be
-[01:25.758]But baby I've been I've been praying hard
-[01:29.766]Said no more counting dollars
-[01:31.718]We'll be counting stars
-[01:33.846]Lately I've been I've been losing sleep
-[01:37.725]Dreaming about the things that we could be
-[01:41.647]But baby I've been I've been praying hard
-[01:45.567]Said no more counting dollars
-[01:47.527]We'll be we'll be counting stars
-[01:56.755]I feel your love and I feel it burn
-[01:59.453]Down this river every turn
-[02:01.338]Hope is our four-letter word
-[02:03.222]Make that money watch it burn
-[02:05.141]Old but I'm not that old
-[02:07.349]Young but I'm not that bold
-[02:09.134]And I don't think the world is sold
-[02:11.282]On just doing what we're told
-[02:13.441]I I I I feel something so wrong
-[02:17.845]Doing the right thing
-[02:21.283]I couldn't lie couldn't lie couldn't lie
-[02:25.075]Everything that drowns me makes me wanna fly
-[02:28.909]Lately I've been I've been losing sleep
-[02:32.814]Dreaming about the things that we could be
-[02:36.601]But baby I've been I've been praying hard
-[02:40.599]Said no more counting dollars
-[02:42.611]We'll be counting stars
-[02:44.723]Lately I've been I've been losing sleep
-[02:48.715]Dreaming about the things that we could be
-[02:52.404]But baby I've been I've been praying hard
-[02:56.339]Said no more counting dollars
-[02:58.155]We'll be we'll be counting stars
-[03:04.424]Take that money
-[03:05.025]Watch it burn
-[03:05.857]Sink in the river
-[03:06.889]The lessons I've learned
-[03:08.059]Take that money
-[03:08.738]Watch it burn
-[03:09.924]Sink in the river
-[03:10.899]The lessons I've learned
-[03:12.013]Take that money
-[03:12.830]Watch it burn
-[03:13.863]Sink in the river
-[03:14.852]The lessons I've learned
-[03:16.028]Take that money
-[03:16.915]Watch it burn
-[03:17.843]Sink in the river
-[03:18.836]The lessons I've learned
-[03:19.985]Everything that kills me
-[03:25.865]Makes me feel alive
-[03:27.066]Lately I've been I've been losing sleep
-[03:30.767]Dreaming about the things that we could be
-[03:34.629]But baby I've been I've been praying hard
-[03:38.636]Said no more counting dollars
-[03:40.541]We'll be counting stars
-[03:42.485]Lately I've been I've been losing sleep
-[03:46.661]Dreaming about the things that we could be
-[03:50.510]But baby I've been I've been praying hard
-[03:54.525]Said no more counting dollars
-[03:56.466]We'll be we'll be counting stars
-[03:59.072]Take that money
-[03:59.624]Watch it burn
-[04:00.112]Sink in the river
-[04:00.816]The lessons I've learned
-[04:02.233]Take that money
-[04:03.034]Watch it burn
-[04:03.971]Sink in the river
-[04:05.002]The lessons I've learned
-[04:06.185]Take that money
-[04:06.889]Watch it burn
-[04:07.681]Sink in the river
-[04:08.993]The lessons I've learned
-[04:09.831]Take that money
-[04:10.886]Watch it burn
-[04:11.663]Sink in the river
-[04:12.601]The lessons I've learned
+Lately I've been I've been losing sleep
+Dreaming about the things that we could be
     """
     
     augmented_queries = await model.generate_song_augmented_queries_async(full_lyrics)

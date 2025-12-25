@@ -47,6 +47,7 @@ async def embed_and_store_line(
     store: QdrantStore,
     dataset_root: Path,
     semaphore: asyncio.Semaphore,
+    embed_audio: bool,
 ) -> None:
     async with semaphore:
         line.augmented_query = augmented_query
@@ -60,9 +61,12 @@ async def embed_and_store_line(
         aug_embedding = await embed_model.embed_text(
             line.augmented_query, embedding_purpose="VIDEO_RETRIEVAL"
         )
-        audio_embedding = await embed_model.embed_audio(
-            str(audio_path), embedding_purpose="AUDIO_RETRIEVAL"
-        )
+        audio_vector = None
+        if embed_audio:
+            audio_result = await embed_model.embed_audio(
+                str(audio_path), embedding_purpose="AUDIO_RETRIEVAL"
+            )
+            audio_vector = audio_result["embeddings"][0]["embedding"]
 
         payload = {
             "song_name": song_name,
@@ -89,12 +93,15 @@ async def embed_and_store_line(
             vector=aug_embedding["embeddings"][0]["embedding"],
             payload=payload,
         )
-        store.upsert_vector(
-            collection_name=LYRICS_AUDIO_COLLECTION,
-            point_id=line_id,
-            vector=audio_embedding["embeddings"][0]["embedding"],
-            payload=payload,
-        )
+        if embed_audio:
+            if audio_vector is None:
+                raise RuntimeError(f"Missing audio embedding for {audio_path}")
+            store.upsert_vector(
+                collection_name=LYRICS_AUDIO_COLLECTION,
+                point_id=line_id,
+                vector=audio_vector,
+                payload=payload,
+            )
 
 
 async def main(
@@ -104,6 +111,7 @@ async def main(
     concurrency: int,
     limit: Optional[int],
     skip_rewrite: bool,
+    embed_audio: bool,
 ) -> None:
     song_dir = dataset_root / "songs" / song_name
     lyrics_dir = song_dir / "clips_and_lyrics"
@@ -142,31 +150,29 @@ async def main(
     db_path.mkdir(parents=True, exist_ok=True)
     embed_model = Nova2OmniEmbeddings()
     store = QdrantStore(db_path)
-    store.ensure_collections(
-        [
-            LYRICS_TEXT_COLLECTION,
-            LYRICS_AUGMENTED_QUERY_COLLECTION,
-            LYRICS_AUDIO_COLLECTION,
-        ]
-    )
+    collections = [LYRICS_TEXT_COLLECTION, LYRICS_AUGMENTED_QUERY_COLLECTION]
+    if embed_audio:
+        collections.append(LYRICS_AUDIO_COLLECTION)
+    store.ensure_collections(collections)
 
     try:
         semaphore = asyncio.Semaphore(max(1, concurrency))
         tasks = [
-        embed_and_store_line(
-            song_name,
-            line,
-            occurrence,
-            augmented_query,
-            embed_model,
-            store,
-            dataset_root,
-            semaphore,
-        )
-        for line, occurrence, augmented_query in zip(
-            song.lyrics_lines, occurrences, augmented_queries
-        )
-    ]
+            embed_and_store_line(
+                song_name,
+                line,
+                occurrence,
+                augmented_query,
+                embed_model,
+                store,
+                dataset_root,
+                semaphore,
+                embed_audio,
+            )
+            for line, occurrence, augmented_query in zip(
+                song.lyrics_lines, occurrences, augmented_queries
+            )
+        ]
         await tqdm.gather(*tasks, desc="Processing lyrics lines", total=len(tasks))
 
         lyrics_json_path = song_dir / "lyrics_lines.json"
@@ -216,6 +222,11 @@ if __name__ == "__main__":
         action="store_true",
         help="Skip query rewrite and use raw lyrics as augmented queries.",
     )
+    parser.add_argument(
+        "--embed-audio",
+        action="store_true",
+        help="Embed lyric audio clips into the lyrics-audio collection.",
+    )
     args = parser.parse_args()
 
     db_path = args.db_path or (args.dataset_root / "db")
@@ -227,5 +238,6 @@ if __name__ == "__main__":
             concurrency=args.concurrency,
             limit=args.limit,
             skip_rewrite=args.skip_rewrite,
+            embed_audio=args.embed_audio,
         )
     )

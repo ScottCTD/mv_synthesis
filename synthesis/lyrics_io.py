@@ -29,9 +29,9 @@ def resolve_path(path: Path, base_dir: Path) -> Path:
     return base_dir / path
 
 
-def find_audio_clip(base_path: Path) -> Optional[Path]:
+def find_audio_clip(text_path: Path) -> Optional[Path]:
     for ext in AUDIO_EXTS:
-        candidate = base_path.with_suffix(ext)
+        candidate = text_path.with_suffix(ext)
         if candidate.exists():
             return candidate
     return None
@@ -63,7 +63,7 @@ def load_lyrics_lines(
         text = txt_path.read_text(encoding="utf-8").strip()
         if not text and not include_empty:
             continue
-        audio_path = find_audio_clip(txt_path.with_suffix(""))
+        audio_path = find_audio_clip(txt_path)
         if audio_path is None:
             if strict_audio:
                 raise FileNotFoundError(f"Audio clip not found for {txt_path}")

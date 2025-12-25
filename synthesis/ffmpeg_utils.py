@@ -74,6 +74,56 @@ def render_clip(
     run_ffmpeg(cmd)
 
 
+def convert_audio_for_embedding(
+    input_path: Path,
+    output_path: Path,
+    sample_rate: int = 16000,
+    channels: int = 1,
+) -> None:
+    cmd = [
+        "ffmpeg",
+        "-y",
+        "-i",
+        str(input_path),
+        "-ac",
+        str(channels),
+        "-ar",
+        str(sample_rate),
+        "-c:a",
+        "pcm_s16le",
+        str(output_path),
+    ]
+    run_ffmpeg(cmd)
+
+
+def wrap_audio_in_video(
+    input_path: Path,
+    output_path: Path,
+    width: int = 640,
+    height: int = 360,
+    fps: int = 30,
+) -> None:
+    cmd = [
+        "ffmpeg",
+        "-y",
+        "-f",
+        "lavfi",
+        "-i",
+        f"color=c=black:s={width}x{height}:r={fps}",
+        "-i",
+        str(input_path),
+        "-shortest",
+        "-c:v",
+        "libx264",
+        "-pix_fmt",
+        "yuv420p",
+        "-c:a",
+        "aac",
+        str(output_path),
+    ]
+    run_ffmpeg(cmd)
+
+
 def write_concat_list(paths: Iterable[Path], list_path: Path) -> None:
     lines = [f"file '{path.as_posix()}'" for path in paths]
     list_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
