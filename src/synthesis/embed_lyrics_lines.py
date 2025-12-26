@@ -8,28 +8,17 @@ from typing import Optional
 
 from tqdm.asyncio import tqdm
 
-try:
-    from synthesis.config import (
-        DEFAULT_DATASET_ROOT,
-        LYRICS_AUDIO_COLLECTION,
-        LYRICS_AUGMENTED_QUERY_COLLECTION,
-        LYRICS_TEXT_COLLECTION,
-    )
-    from synthesis.db import QdrantStore
-    from synthesis.lyrics_io import build_song_from_clips, resolve_path, write_song
-    from synthesis.nova2_lite_model import Nova2LiteModel
-    from synthesis.nova_embedding_model import Nova2OmniEmbeddings
-except ImportError:
-    from config import (
-        DEFAULT_DATASET_ROOT,
-        LYRICS_AUDIO_COLLECTION,
-        LYRICS_AUGMENTED_QUERY_COLLECTION,
-        LYRICS_TEXT_COLLECTION,
-    )
-    from db import QdrantStore
-    from lyrics_io import build_song_from_clips, resolve_path, write_song
-    from nova2_lite_model import Nova2LiteModel
-    from nova_embedding_model import Nova2OmniEmbeddings
+from synthesis.config import (
+    DEFAULT_DATASET_ROOT,
+    LYRICS_AUDIO_COLLECTION,
+    LYRICS_AUGMENTED_QUERY_COLLECTION,
+    LYRICS_TEXT_AUGMENTED_QUERY_COLLECTION,
+    LYRICS_TEXT_COLLECTION,
+)
+from synthesis.db import QdrantStore
+from synthesis.lyrics_io import build_song_from_clips, resolve_path, write_song
+from synthesis.nova2_lite_model import Nova2LiteModel
+from synthesis.nova_embedding_model import Nova2OmniEmbeddings
 
 
 def build_line_id(song_name: str, lyric_text: str, occurrence: int) -> str:
@@ -60,6 +49,10 @@ async def embed_and_store_line(
         )
         aug_embedding = await embed_model.embed_text(
             line.augmented_query, embedding_purpose="VIDEO_RETRIEVAL"
+        )
+        combined_query = f"{line.text}\n{line.augmented_query}"
+        combined_embedding = await embed_model.embed_text(
+            combined_query, embedding_purpose="VIDEO_RETRIEVAL"
         )
         audio_vector = None
         if embed_audio:
@@ -93,6 +86,12 @@ async def embed_and_store_line(
             vector=aug_embedding["embeddings"][0]["embedding"],
             payload=payload,
         )
+        store.upsert_vector(
+            collection_name=LYRICS_TEXT_AUGMENTED_QUERY_COLLECTION,
+            point_id=line_id,
+            vector=combined_embedding["embeddings"][0]["embedding"],
+            payload=payload,
+        )
         if embed_audio:
             if audio_vector is None:
                 raise RuntimeError(f"Missing audio embedding for {audio_path}")
@@ -118,7 +117,9 @@ async def main(
     if not lyrics_dir.exists():
         raise FileNotFoundError(f"lyrics dir not found: {lyrics_dir}")
 
-    song = build_song_from_clips(song_name, lyrics_dir, dataset_root, include_empty=True)
+    song = build_song_from_clips(
+        song_name, lyrics_dir, dataset_root, include_empty=True
+    )
     if not song.lyrics_lines:
         raise ValueError(f"No lyric lines found in {lyrics_dir}")
     if limit is not None:
@@ -150,7 +151,11 @@ async def main(
     db_path.mkdir(parents=True, exist_ok=True)
     embed_model = Nova2OmniEmbeddings()
     store = QdrantStore(db_path)
-    collections = [LYRICS_TEXT_COLLECTION, LYRICS_AUGMENTED_QUERY_COLLECTION]
+    collections = [
+        LYRICS_TEXT_COLLECTION,
+        LYRICS_AUGMENTED_QUERY_COLLECTION,
+        LYRICS_TEXT_AUGMENTED_QUERY_COLLECTION,
+    ]
     if embed_audio:
         collections.append(LYRICS_AUDIO_COLLECTION)
     store.ensure_collections(collections)

@@ -21,6 +21,7 @@ VIDEO_SEGMENTS_COLLECTION = "video-segments"
 VIDEO_VIBE_CARDS_COLLECTION = "video-vibe_cards"
 LYRICS_TEXT_COLLECTION = "lyrics-text"
 LYRICS_AUGMENTED_QUERY_COLLECTION = "lyrics-augmented_query"
+LYRICS_TEXT_AUGMENTED_QUERY_COLLECTION = "lyrics-text_augmented_query"
 LYRICS_AUDIO_COLLECTION = "lyrics-audio"
 
 

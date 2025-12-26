@@ -44,6 +44,7 @@ def render_clip(
     start_offset: float,
     duration: float,
     pad_black: bool,
+    video_encoder: str = "libx264",
 ) -> None:
     cmd = ["ffmpeg", "-y"]
     if start_offset > 0:
@@ -63,7 +64,7 @@ def render_clip(
         cmd += ["-t", f"{duration:.3f}"]
     cmd += [
         "-c:v",
-        "libx264",
+        video_encoder,
         "-pix_fmt",
         "yuv420p",
         "-movflags",
@@ -102,6 +103,7 @@ def wrap_audio_in_video(
     width: int = 640,
     height: int = 360,
     fps: int = 30,
+    video_encoder: str = "libx264",
 ) -> None:
     cmd = [
         "ffmpeg",
@@ -114,7 +116,7 @@ def wrap_audio_in_video(
         str(input_path),
         "-shortest",
         "-c:v",
-        "libx264",
+        video_encoder,
         "-pix_fmt",
         "yuv420p",
         "-c:a",
@@ -129,7 +131,9 @@ def write_concat_list(paths: Iterable[Path], list_path: Path) -> None:
     list_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def concat_clips(list_path: Path, output_path: Path) -> None:
+def concat_clips(
+    list_path: Path, output_path: Path, video_encoder: str = "libx264"
+) -> None:
     cmd = [
         "ffmpeg",
         "-y",
@@ -140,7 +144,7 @@ def concat_clips(list_path: Path, output_path: Path) -> None:
         "-i",
         str(list_path),
         "-c:v",
-        "libx264",
+        video_encoder,
         "-pix_fmt",
         "yuv420p",
         "-movflags",
@@ -197,7 +201,12 @@ def escape_subtitles_path(path: Path) -> str:
     return str(path).replace("\\", "\\\\").replace(":", "\\:")
 
 
-def burn_subtitles(video_path: Path, srt_path: Path, output_path: Path) -> None:
+def burn_subtitles(
+    video_path: Path,
+    srt_path: Path,
+    output_path: Path,
+    video_encoder: str = "libx264",
+) -> None:
     subtitle_filter = f"subtitles={escape_subtitles_path(srt_path)}"
     cmd = [
         "ffmpeg",
@@ -207,7 +216,7 @@ def burn_subtitles(video_path: Path, srt_path: Path, output_path: Path) -> None:
         "-vf",
         subtitle_filter,
         "-c:v",
-        "libx264",
+        video_encoder,
         "-pix_fmt",
         "yuv420p",
         "-c:a",

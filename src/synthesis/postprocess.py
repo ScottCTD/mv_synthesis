@@ -55,11 +55,12 @@ def build_postprocess_plan(
     )
 
 
-def render_postprocess_plan(plan: PostprocessPlan) -> None:
+def render_postprocess_plan(plan: PostprocessPlan, video_encoder: str) -> None:
     render_clip(
         input_path=plan.input_path,
         output_path=plan.output_path,
         start_offset=plan.start_offset,
         duration=plan.duration,
         pad_black=plan.pad_black,
+        video_encoder=video_encoder,
     )

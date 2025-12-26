@@ -15,6 +15,7 @@ from synthesis.config import (
     DEFAULT_DATASET_ROOT,
     LYRICS_AUGMENTED_QUERY_COLLECTION,
     LYRICS_TEXT_COLLECTION,
+    LYRICS_TEXT_AUGMENTED_QUERY_COLLECTION,
     PROJECT_ROOT,
 )
 from synthesis.db import QdrantStore
@@ -37,6 +38,7 @@ class PipelineConfig:
     top_k: int
     selection_strategy: str
     render_workers: int
+    video_encoder: str
     dry_run: bool
 
 
@@ -73,6 +75,8 @@ def choose_query_collection(query_source: str) -> str:
         return LYRICS_AUGMENTED_QUERY_COLLECTION
     if query_source == "text":
         return LYRICS_TEXT_COLLECTION
+    if query_source == "text_augmented":
+        return LYRICS_TEXT_AUGMENTED_QUERY_COLLECTION
     raise ValueError(f"Unknown query source: {query_source}")
 
 
@@ -147,7 +151,11 @@ def run_pipeline(config: PipelineConfig) -> Path:
             embedding_id = get_query_embedding_id(line, config.query_source)
             query_vector = store.retrieve_vector(query_collection, embedding_id)
             retrieval = retrieve_candidates(store, query_vector, config.top_k)
-            selection = select_candidate(retrieval, config.selection_strategy)
+            selection = select_candidate(
+                retrieval,
+                config.selection_strategy,
+                line.duration,
+            )
 
             output_clip = clips_dir / f"{line.index:04d}.mp4"
             plan = None
@@ -196,8 +204,14 @@ def run_pipeline(config: PipelineConfig) -> Path:
     if not selected_paths:
         raise ValueError("No clips were selected; cannot synthesize video.")
 
-    render_clips_parallel(render_plans, config.render_workers)
-    return stitch_video(selected_paths, song_audio, song.lyrics_lines, config.output_dir)
+    render_clips_parallel(render_plans, config.render_workers, config.video_encoder)
+    return stitch_video(
+        selected_paths,
+        song_audio,
+        song.lyrics_lines,
+        config.output_dir,
+        config.video_encoder,
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -231,24 +245,36 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Directory to write outputs; defaults to outputs/synthesis/<song>.",
     )
-    parser.add_argument("--top-k", type=int, default=5, help="Top-k retrieval size.")
+    parser.add_argument("--top-k", type=int, default=10, help="Top-k retrieval size.")
     parser.add_argument(
         "--query-source",
-        choices=["augmented", "text"],
-        default="augmented",
+        choices=["augmented", "text", "text_augmented"],
+        default="text_augmented",
         help="Which lyric embedding to use for retrieval.",
     )
     parser.add_argument(
         "--selection-strategy",
-        choices=["top_vibe", "top_video", "intersection"],
+        choices=[
+            "top_vibe",
+            "top_vibe_duration",
+            "top_video",
+            "top_video_duration",
+            "intersection",
+        ],
         default="top_vibe",
         help="Candidate selection strategy.",
     )
     parser.add_argument(
         "--render-workers",
         type=int,
-        default=4,
+        default=10,
         help="Concurrent ffmpeg workers for rendering clips.",
+    )
+    parser.add_argument(
+        "--video-encoder",
+        choices=["libx264", "h264_videotoolbox"],
+        default="h264_videotoolbox",
+        help="FFmpeg video encoder; use h264_videotoolbox for macOS GPU.",
     )
     parser.add_argument(
         "--dry-run",
@@ -283,6 +309,7 @@ def main() -> None:
         top_k=args.top_k,
         selection_strategy=args.selection_strategy,
         render_workers=args.render_workers,
+        video_encoder=args.video_encoder,
         dry_run=args.dry_run,
     )
 
