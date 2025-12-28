@@ -22,41 +22,6 @@ from nova2_lite_model import Nova2LiteModel
 from tqdm.asyncio import tqdm
 
 
-def _parse_recall_card_from_text(raw: str) -> Dict[str, str]:
-    """
-    Fallback parser for recall card outputs formatted like:
-    <tools>
-      <__function=recall_card_extractor>
-        <__parameter=Noun_Key_Words>cat, dog</__parameter>
-        <__parameter=Verb_Key_Words>run, jump</__parameter>
-      </__function>
-    Handles minor formatting issues and returns a dict.
-    """
-    params: Dict[str, str] = {}
-    # First try well-formed parameter blocks.
-    for key, val in re.findall(
-        r"<__parameter=([A-Za-z0-9_]+)>(.*?)</__parameter>", raw, flags=re.DOTALL
-    ):
-        params[key.strip()] = val.strip()
-    if params:
-        return params
-
-    # Fallback: line-based parsing to handle missing closing tags.
-    for line in raw.splitlines():
-        if "<__parameter=" not in line:
-            continue
-        try:
-            _, rest = line.split("<__parameter=", 1)
-            key, remainder = rest.split(">", 1)
-            key = key.strip()
-            value = remainder.split("</__parameter", 1)[0].strip()
-            if key and value:
-                params[key] = value
-        except ValueError:
-            continue
-    return params
-
-
 async def _process_point(
     point,
     videos_root: Path,
@@ -77,15 +42,13 @@ async def _process_point(
             return None
 
         recall_card = await model.generate_recall_card(str(media_path))
-
-        parsed_recall_card = _parse_recall_card_from_text(recall_card)
         # Persist the recall card onto the existing payload for this point.
         store.client.set_payload(
             collection_name=VIDEO_VIBE_CARDS_COLLECTION,
-            payload={"recall_card": parsed_recall_card},
+            payload={"recall_card": recall_card},
             points=[point.id],
         )
-        return point.id, media_path, parsed_recall_card
+        return point.id, media_path, recall_card
 
 
 async def generate_recall_cards(

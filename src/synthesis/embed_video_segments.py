@@ -10,11 +10,8 @@ from typing import Optional
 
 from tqdm.asyncio import tqdm
 
-from synthesis.config import (
-    DEFAULT_DATASET_ROOT,
-    VIDEO_SEGMENTS_COLLECTION,
-    VIDEO_VIBE_CARDS_COLLECTION,
-)
+from synthesis.config import (DEFAULT_DATASET_ROOT, VIDEO_SEGMENTS_COLLECTION,
+                              VIDEO_VIBE_CARDS_COLLECTION)
 from synthesis.db import QdrantStore
 from synthesis.ffmpeg_utils import get_video_duration
 from synthesis.lyrics_io import path_to_relative
@@ -38,7 +35,8 @@ def collect_video_segments(all_video_path: Path) -> dict[str, Path]:
                 continue
             segment_path = all_video_path / video / segment
             segment_name = segment_path.stem
-            segment_id = str(uuid.uuid5(uuid.NAMESPACE_URL, f"{video}-{segment_name}"))
+            segment_id = str(uuid.uuid5(
+                uuid.NAMESPACE_URL, f"{video}-{segment_name}"))
             video_id_to_path[segment_id] = segment_path
     return video_id_to_path
 
@@ -82,6 +80,8 @@ async def embed_and_store_segment(
             )
             vibe_card_embedding = vibe_card_embedding["embeddings"][0]["embedding"]
 
+            recall_card = await vision_model.generate_recall_card(str(segment_path))
+
             relative_path = path_to_relative(segment_path, dataset_root)
             base_payload = {
                 "segment_id": segment_id,
@@ -102,6 +102,7 @@ async def embed_and_store_segment(
                 payload={
                     **base_payload,
                     "vibe_card": vibe_card,
+                    "recall_card": recall_card,
                 },
             )
         except Exception as e:
@@ -122,7 +123,8 @@ async def main(
         raise FileNotFoundError(f"videos dir not found: {all_video_path}")
     db_path.mkdir(parents=True, exist_ok=True)
     store = QdrantStore(db_path)
-    store.ensure_collections([VIDEO_SEGMENTS_COLLECTION, VIDEO_VIBE_CARDS_COLLECTION])
+    store.ensure_collections(
+        [VIDEO_SEGMENTS_COLLECTION, VIDEO_VIBE_CARDS_COLLECTION])
 
     embed_model = Nova2OmniEmbeddings()
     vision_model = Nova2LiteModel()
@@ -132,34 +134,37 @@ async def main(
     segment_ids = list(video_id_to_path.keys())
     filtered_segment_ids = []
     skipped_count = 0
-    
+
     for segment_id in segment_ids:
         segment_path = video_id_to_path[segment_id]
         duration = get_video_duration(segment_path)
         file_size_mb = get_file_size_mb(segment_path)
-        
+
         if duration is not None and duration > max_duration_seconds:
-            print(f"Skipping {segment_path} because of size limit (duration: {duration:.2f}s > {max_duration_seconds}s)")
+            print(
+                f"Skipping {segment_path} because of size limit (duration: {duration:.2f}s > {max_duration_seconds}s)")
             skipped_count += 1
             continue
-        
+
         if file_size_mb > max_size_mb:
-            print(f"Skipping {segment_path} because of size limit (size: {file_size_mb:.2f}MB > {max_size_mb}MB)")
+            print(
+                f"Skipping {segment_path} because of size limit (size: {file_size_mb:.2f}MB > {max_size_mb}MB)")
             skipped_count += 1
             continue
-        
+
         filtered_segment_ids.append(segment_id)
-    
+
     if skipped_count > 0:
         print(f"Skipped {skipped_count} segments due to size limits")
-    
+
     if limit is not None:
         filtered_segment_ids = filtered_segment_ids[:limit]
         print(
             f"Limiting processing to first {limit} segments (out of {len(filtered_segment_ids)} after filtering)"
         )
     else:
-        print(f"Processing {len(filtered_segment_ids)} segments (after filtering {skipped_count} segments)")
+        print(
+            f"Processing {len(filtered_segment_ids)} segments (after filtering {skipped_count} segments)")
 
     try:
         semaphore = asyncio.Semaphore(max(1, max_concurrent))
@@ -179,7 +184,8 @@ async def main(
             *tasks, desc="Processing video segments", total=len(filtered_segment_ids)
         )
 
-        total_cost = vision_model.costs["total_cost"] + embed_model.costs["total_cost"]
+        total_cost = vision_model.costs["total_cost"] + \
+            embed_model.costs["total_cost"]
         print(f"\nTotal cost: ${total_cost:.6f}")
     finally:
         store.close()

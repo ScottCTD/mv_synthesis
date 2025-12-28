@@ -1,6 +1,6 @@
 import asyncio
 import re
-from typing import Any
+from typing import Any, Dict
 
 import boto3
 from botocore.exceptions import ClientError, ParamValidationError
@@ -145,6 +145,40 @@ class Nova2LiteModel:
         return _extract_converse_text(response)
 
     async def generate_recall_card(self, media_path: str) -> str:
+        def _parse_recall_card_from_text(raw: str) -> Dict[str, str]:
+            """
+            Fallback parser for recall card outputs formatted like:
+            <tools>
+            <__function=recall_card_extractor>
+                <__parameter=Noun_Key_Words>cat, dog</__parameter>
+                <__parameter=Verb_Key_Words>run, jump</__parameter>
+            </__function>
+            Handles minor formatting issues and returns a dict.
+            """
+            params: Dict[str, str] = {}
+            # First try well-formed parameter blocks.
+            for key, val in re.findall(
+                r"<__parameter=([A-Za-z0-9_]+)>(.*?)</__parameter>", raw, flags=re.DOTALL
+            ):
+                params[key.strip()] = val.strip()
+            if params:
+                return params
+
+            # Fallback: line-based parsing to handle missing closing tags.
+            for line in raw.splitlines():
+                if "<__parameter=" not in line:
+                    continue
+                try:
+                    _, rest = line.split("<__parameter=", 1)
+                    key, remainder = rest.split(">", 1)
+                    key = key.strip()
+                    value = remainder.split("</__parameter", 1)[0].strip()
+                    if key and value:
+                        params[key] = value
+                except ValueError:
+                    continue
+            return params
+
         media_bytes = read_bytes(media_path)
         media_format = media_path.split(".")[-1]
         messages = [
@@ -191,7 +225,7 @@ class Nova2LiteModel:
 
         # Track costs
         self._track_costs_from_usage(response.get("usage", {}) or {})
-        return _extract_converse_text(response)
+        return _parse_recall_card_from_text(_extract_converse_text(response))
 
     async def generate_song_augmented_queries_async(
         self,
