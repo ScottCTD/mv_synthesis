@@ -1,92 +1,30 @@
-import boto3
 import asyncio
 import re
 from typing import Any
 
+import boto3
 from botocore.exceptions import ClientError, ParamValidationError
-try:
-    from tqdm.asyncio import tqdm
-except ImportError:  # pragma: no cover - optional progress bar
-    tqdm = None
-
+from prompts.prompt import (RECALL_CARD_SYSTEM_PROMPT,
+                            SONG_AUGMENTED_QUERY_SYSTEM_PROMPT,
+                            VIBE_CARD_SYSTEM_PROMPT)
+from tqdm.asyncio import tqdm
 
 _LRC_TIMESTAMP_RE = re.compile(r"^\[\d{2}:\d{2}\.\d{3}\]\s*")
+_RECALL_CARD_TOOL_NAME = "recall_card_extractor"
+_RECALL_CARD_JSON_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "Noun_Key_Words": {"type": "string"},
+        "Verb_Key_Words": {"type": "string"},
+    },
+    "required": ["Noun_Key_Words", "Verb_Key_Words"],
+    "additionalProperties": False,
+}
 
 
 def read_bytes(path: str) -> bytes:
     with open(path, "rb") as f:
         return f.read()
-
-
-VIBE_CARD_SYSTEM_PROMPT = """
-# Role
-You are an expert cinematic annotator for an animation archive. Your task is to analyze a short video clip and generate a structured metadata card.
-
-# Objective
-Provide a strictly structured output based ONLY on visible visual evidence. Do not hallucinate characters, objects, or narratives that are not present in the specific frames provided.
-
-# Instructions & Field Definitions
-You must provide the following four fields:
-
-1. Scene Description:
-   - Write 1-2 sentences describing the EXACT action and objects visible.
-   - Be specific (e.g., use "double-barreled shotgun" instead of "crowbar" if visible).
-
-2. Vibe:
-   - Describe the abstract mood, energy, and emotional tone.
-   - Use adjectives that capture the feeling (e.g., "suspenseful," "predatory," "manic," "playful").
-
-3. Key Words:
-   - A comma-separated list of high-value retrieval terms.
-   - Include: Characters present (e.g., Tom), Objects (e.g., Barn, Shotgun), Actions (e.g., Hiding, Peeking), and Concepts (e.g., Ambush).
-
-4. Musical Aspects (If Any):
-   - Describe the *visual rhythm* or implied audio of the action.
-   - Look for "Mickey Mousing" (action synchronized to beat), silence, sudden impacts, or rhythmic repetition (e.g., "staccato movement," "slow build-up," "quiet before the storm").
-
-# Constraints
-- **Visual Grounding:** DO NOT invent a story. If the clip is just a cat looking around, describe a cat looking around.
-- **Tone:** Clinical and descriptive.
-- **Format:** Use the exact headers below.
-
-# Output Format
-Scene Description: [Text]
-Vibe: [Text]
-Key Words: [Text]
-Musical Aspects (If Any): [Text]
-"""
-
-
-SONG_AUGMENTED_QUERY_SYSTEM_PROMPT = """
-You are an expert Music Video Director and Visual Prompt Engineer. Your goal is to translate song lyrics into rich, visual search queries to retrieve video clips from a vector database.
-
-### THE CONTEXT
-We have a database of video clips. Each clip is indexed by a "Vibe Card"—a structured description containing:
-1. Scene Description (Concrete visuals, action, lighting)
-2. Vibe (Abstract mood, energy, pacing)
-3. Key Words (Specific objects, colors, tags)
-
-### YOUR TASK
-You will be provided with the full song lyrics (as numbered lines) and a specific target line index.
-Your job is to generate exactly ONE augmented visual query for that target line.
-
-### HOW TO CONSTRUCT THE AUGMENTED QUERY
-The Augmented Query must be a dense, descriptive string that attempts to match the content of a Vibe Card. Do not merely repeat the lyrics. You must translate the *meaning* of the lyrics into *visuals*.
-
-Apply the following logic:
-1.  **Translate Metaphors to Visuals:**
-    * *Lyric:* "My heart is on fire"
-    * *Visual:* "Intense flames, red lighting, burning object, passion, fast-paced movement, warm color palette."
-    * *Do NOT* just say "heart on fire" if a literal heart isn't the goal. Think about what the scene *looks* like.
-2.  **Capture the Vibe/Energy:**
-    * Infer the emotion (melancholy, hype, aggressive, serene) and include those adjectives.
-    * Describe the pacing (slow motion, chaotic cuts, static shot).
-3.  **Identify Physical Objects & Settings:**
-    * Extract concrete nouns. If the lyrics are abstract, hallucinate fitting scenarios (e.g., for a sad song: "rainy window," "empty street," "lonely figure").
-4.  **Cinematographic Terms:**
-    * Use terms like "close-up," "wide shot," "bokeh," "neon lighting," "black and white" if they fit the mood.
-5. Consider the full song. Make sure each augmented query is consistent with each other and maintain the flow and vibe of the whole song.
-"""
 
 
 def normalize_lyric_lines(full_lyrics: str) -> list[str]:
@@ -109,7 +47,8 @@ def normalize_lyric_lines(full_lyrics: str) -> list[str]:
 
 def _extract_converse_text(response: dict) -> str:
     text_response = ""
-    content_list = response.get("output", {}).get("message", {}).get("content", []) or []
+    content_list = response.get("output", {}).get(
+        "message", {}).get("content", []) or []
     for content in content_list:
         if "text" in content:
             text_response += content["text"]
@@ -141,10 +80,12 @@ class Nova2LiteModel:
         self.costs["output_tokens"] += output_tokens
         self.costs["input_cost"] += (input_tokens / 1000) * 0.0003
         self.costs["output_cost"] += (output_tokens / 1000) * 0.0025
-        self.costs["total_cost"] = self.costs["input_cost"] + self.costs["output_cost"]
+        self.costs["total_cost"] = self.costs["input_cost"] + \
+            self.costs["output_cost"]
 
     async def invoke_model(self, messages, system=None, max_tokens: int = 4096) -> str:
-        system_prompts = [{"text": system}] if isinstance(system, str) else system
+        system_prompts = [{"text": system}] if isinstance(
+            system, str) else system
 
         response = await asyncio.to_thread(
             self.client.converse,
@@ -196,6 +137,55 @@ class Nova2LiteModel:
                     "type": "enabled",  # enabled, disabled (default)
                     "maxReasoningEffort": "low",
                 }
+            },
+        )
+
+        # Track costs
+        self._track_costs_from_usage(response.get("usage", {}) or {})
+        return _extract_converse_text(response)
+
+    async def generate_recall_card(self, media_path: str) -> str:
+        media_bytes = read_bytes(media_path)
+        media_format = media_path.split(".")[-1]
+        messages = [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "video": {
+                            "format": media_format,
+                            "source": {"bytes": media_bytes},
+                        }
+                    }
+                ],
+            },
+        ]
+        system_prompt = [{"text": RECALL_CARD_SYSTEM_PROMPT}]
+
+        response = await asyncio.to_thread(
+            self.client.converse,
+            modelId="us.amazon.nova-2-lite-v1:0",
+            messages=messages,
+            system=system_prompt,
+            additionalModelRequestFields={
+                "reasoningConfig": {
+                    "type": "enabled",
+                    "maxReasoningEffort": "low",
+                }
+            },
+            toolConfig={
+                "tools": [
+                    {
+                        "toolSpec": {
+                            "name": _RECALL_CARD_TOOL_NAME,
+                            "description": "Extract noun and verb keywords from a video clip.",
+                            "inputSchema": {
+                                "json": _RECALL_CARD_JSON_SCHEMA,
+                            },
+                        }
+                    }
+                ],
+                "toolChoice": {"tool": {"name": _RECALL_CARD_TOOL_NAME}},
             },
         )
 
@@ -257,7 +247,8 @@ class Nova2LiteModel:
             ]
 
         async def _generate_one(idx: int) -> str:
-            messages = _build_messages(idx, with_cache_point=use_prompt_cache_point)
+            messages = _build_messages(
+                idx, with_cache_point=use_prompt_cache_point)
             try:
                 response = await asyncio.to_thread(
                     self.client.converse,
@@ -292,14 +283,12 @@ class Nova2LiteModel:
             return _extract_converse_text(response).strip()
 
         tasks = [_generate_one(i) for i in range(len(cleaned_lines))]
-        if tqdm is None:
-            queries = await asyncio.gather(*tasks)
-        else:
-            queries = await tqdm.gather(
-                *tasks,
-                desc="Generating augmented queries",
-                total=len(cleaned_lines),
-            )
+
+        queries = await tqdm.gather(
+            *tasks,
+            desc="Generating augmented queries",
+            total=len(cleaned_lines),
+        )
 
         if len(queries) != len(cleaned_lines):
             print(
@@ -308,6 +297,7 @@ class Nova2LiteModel:
 
         return list(queries)
 
+
 async def debug():
     model = Nova2LiteModel()
 
@@ -315,11 +305,11 @@ async def debug():
 Lately I've been I've been losing sleep
 Dreaming about the things that we could be
     """
-    
+
     augmented_queries = await model.generate_song_augmented_queries_async(full_lyrics)
     import json
     print(json.dumps(augmented_queries, indent=2))
-    
+
     print(f"\nCosts: {model.costs}")
 
 
