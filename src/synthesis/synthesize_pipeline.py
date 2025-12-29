@@ -37,6 +37,7 @@ class PipelineConfig:
     query_source: str
     top_k: int
     selection_strategy: str
+    duration_threshold: float
     render_workers: int
     video_encoder: str
     dry_run: bool
@@ -111,6 +112,7 @@ def plan_to_dict(plan: Optional[PostprocessPlan]) -> Optional[dict]:
         "duration": plan.duration,
         "pad_black": plan.pad_black,
         "clip_duration": plan.clip_duration,
+        "speed_factor": plan.speed_factor,
         "note": plan.note,
         "input_exists": plan.input_path.exists(),
     }
@@ -155,6 +157,7 @@ def run_pipeline(config: PipelineConfig) -> Path:
                 retrieval,
                 config.selection_strategy,
                 line.duration,
+                config.duration_threshold,
             )
 
             output_clip = clips_dir / f"{line.index:04d}.mp4"
@@ -261,13 +264,19 @@ def build_parser() -> argparse.ArgumentParser:
             "top_video_duration",
             "intersection",
         ],
-        default="top_vibe",
+        default="top_vibe_duration",
         help="Candidate selection strategy.",
+    )
+    parser.add_argument(
+        "--duration-threshold",
+        type=float,
+        default=0.5,
+        help="Tolerance window in seconds for duration-based selection.",
     )
     parser.add_argument(
         "--render-workers",
         type=int,
-        default=10,
+        default=16,
         help="Concurrent ffmpeg workers for rendering clips.",
     )
     parser.add_argument(
@@ -288,7 +297,8 @@ def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
 
-    song_dir = resolve_song_dir(args.song_dir, DEFAULT_DATASET_ROOT, args.song_name)
+    dataset_root_for_song = args.dataset_root or DEFAULT_DATASET_ROOT
+    song_dir = resolve_song_dir(args.song_dir, dataset_root_for_song, args.song_name)
     dataset_root = infer_dataset_root(song_dir, args.dataset_root)
     song_name = args.song_name or song_dir.name
     output_dir = resolve_output_dir(args.output_dir, song_name)
@@ -308,6 +318,7 @@ def main() -> None:
         query_source=args.query_source,
         top_k=args.top_k,
         selection_strategy=args.selection_strategy,
+        duration_threshold=args.duration_threshold,
         render_workers=args.render_workers,
         video_encoder=args.video_encoder,
         dry_run=args.dry_run,

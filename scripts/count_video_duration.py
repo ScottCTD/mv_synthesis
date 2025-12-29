@@ -58,7 +58,44 @@ def format_duration(total_seconds):
     return " ".join(parts)
 
 
-def count_video_duration(directory, show_breakdown=False, num_workers=None, remove_errors=False):
+def find_video_files(directory, max_depth=None):
+    """
+    Find all video files (.mp4 and .mkv) in a directory with optional depth limit.
+    
+    Args:
+        directory: Root directory to search
+        max_depth: Maximum recursion depth (None for unlimited)
+    
+    Returns:
+        List of Path objects for video files
+    """
+    directory = Path(directory)
+    video_files = []
+    
+    def _search_recursive(path, current_depth):
+        """Recursive helper function to search with depth tracking."""
+        if max_depth is not None and current_depth > max_depth:
+            return
+        
+        # Check for video files in current directory
+        for ext in ['*.mp4', '*.mkv']:
+            video_files.extend(path.glob(ext))
+        
+        # Recurse into subdirectories
+        if max_depth is None or current_depth < max_depth:
+            try:
+                for item in path.iterdir():
+                    if item.is_dir():
+                        _search_recursive(item, current_depth + 1)
+            except PermissionError:
+                # Skip directories we don't have permission to access
+                pass
+    
+    _search_recursive(directory, 0)
+    return video_files
+
+
+def count_video_duration(directory, show_breakdown=False, num_workers=None, remove_errors=False, max_depth=None):
     """
     Count total duration of all video files in a directory.
     
@@ -67,14 +104,16 @@ def count_video_duration(directory, show_breakdown=False, num_workers=None, remo
         show_breakdown: If True, show duration breakdown by subdirectory
         num_workers: Number of worker processes (default: cpu_count())
         remove_errors: If True, delete errored video files and print their paths
+        max_depth: Maximum recursion depth (None for unlimited)
     """
     directory = Path(directory)
     if not directory.exists():
         print(f"Error: Directory {directory} does not exist", file=sys.stderr)
         return
     
-    video_files = list(directory.rglob('*.mp4')) + list(directory.rglob('*.mkv'))
-    print(f"Found {len(video_files)} video files...")
+    video_files = find_video_files(directory, max_depth)
+    depth_info = f" (max depth: {max_depth})" if max_depth is not None else " (unlimited depth)"
+    print(f"Found {len(video_files)} video files{depth_info}...")
     
     if not video_files:
         print("No video files found.")
@@ -157,23 +196,47 @@ def count_video_duration(directory, show_breakdown=False, num_workers=None, remo
         print("Duration Distribution:")
         print("-" * 60)
         
-        # Create bins for histogram
+        # Create bins for histogram with finer granularity for < 10 seconds
         if max_duration > 0:
-            num_bins = 20
-            bin_width = max_duration / num_bins
+            # Use 1-second bins for 0-10 seconds (10 bins)
+            # Then use larger bins for > 10 seconds
+            bin_edges = []
+            
+            # Fine-grained bins for 0-10 seconds (1 second each)
+            for i in range(11):  # 0, 1, 2, ..., 10
+                bin_edges.append(i)
+            
+            # Coarser bins for > 10 seconds (5 seconds each)
+            if max_duration > 10:
+                current_edge = 10
+                while current_edge < max_duration:
+                    current_edge += 5
+                    bin_edges.append(current_edge)
+            
+            # Ensure the last bin edge covers max_duration
+            if bin_edges[-1] < max_duration:
+                bin_edges.append(max_duration)
+            
+            num_bins = len(bin_edges) - 1
             bins = [0] * num_bins
             
+            # Assign durations to bins
             for duration in durations:
-                bin_idx = min(int(duration / bin_width), num_bins - 1)
+                bin_idx = num_bins - 1  # Default to last bin
+                for i in range(num_bins):
+                    if duration < bin_edges[i + 1]:
+                        bin_idx = i
+                        break
                 bins[bin_idx] += 1
             
             # Find max count for scaling
             max_count = max(bins) if bins else 1
             bar_length = 50  # Maximum bar length in characters
             
+            # Print bins
             for i in range(num_bins):
-                bin_start = i * bin_width
-                bin_end = (i + 1) * bin_width
+                bin_start = bin_edges[i]
+                bin_end = bin_edges[i + 1]
                 count = bins[i]
                 bar = '█' * int((count / max_count) * bar_length) if max_count > 0 else ''
                 print(f"  {bin_start:8.2f}s - {bin_end:8.2f}s: {count:5d} {bar}")
@@ -234,7 +297,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--workers',
         type=int,
-        default=None,
+        default=32,
         help='Number of worker processes (default: number of CPU cores)'
     )
     parser.add_argument(
@@ -242,8 +305,18 @@ if __name__ == '__main__':
         action='store_true',
         help='Remove all errored video files and print their paths'
     )
+    parser.add_argument(
+        '--max-depth',
+        type=int,
+        default=None,
+        metavar='N',
+        help='Maximum recursion depth (default: unlimited). 0 = current directory only, 1 = one level deep, etc. Use -1 for unlimited depth.'
+    )
     
     args = parser.parse_args()
     
-    count_video_duration(args.directory, args.breakdown, args.workers, args.remove_errors)
+    # Convert -1 to None (unlimited depth)
+    max_depth = None if args.max_depth == -1 else args.max_depth
+    
+    count_video_duration(args.directory, args.breakdown, args.workers, args.remove_errors, max_depth)
 

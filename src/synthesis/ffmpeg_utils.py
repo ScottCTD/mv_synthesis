@@ -44,6 +44,7 @@ def render_clip(
     start_offset: float,
     duration: float,
     pad_black: bool,
+    speed_factor: float = 1.0,
     video_encoder: str = "libx264",
 ) -> None:
     cmd = ["ffmpeg", "-y"]
@@ -51,6 +52,8 @@ def render_clip(
         cmd += ["-ss", f"{start_offset:.3f}"]
     cmd += ["-i", str(input_path)]
     filters = []
+    if speed_factor > 0 and abs(speed_factor - 1.0) > 1e-3:
+        filters.append(f"setpts=PTS/{speed_factor:.6f}")
     if pad_black:
         input_duration = get_video_duration(input_path)
         if input_duration is not None and duration > input_duration:

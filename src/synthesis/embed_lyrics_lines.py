@@ -16,7 +16,12 @@ from synthesis.config import (
     LYRICS_TEXT_COLLECTION,
 )
 from synthesis.db import QdrantStore
-from synthesis.lyrics_io import build_song_from_clips, resolve_path, write_song
+from synthesis.lyrics_io import (
+    build_song_from_clips,
+    load_song,
+    resolve_path,
+    write_song,
+)
 from synthesis.nova2_lite_model import Nova2LiteModel
 from synthesis.nova_embedding_model import Nova2OmniEmbeddings
 
@@ -132,21 +137,57 @@ async def main(
         seen[key] = seen.get(key, 0) + 1
         occurrences.append(seen[key])
 
+    lyrics_json_path = song_dir / "lyrics_lines.json"
+    
+    # Try to load existing augmented queries from JSON
+    existing_augmented_queries = None
+    if lyrics_json_path.exists():
+        try:
+            existing_song = load_song(lyrics_json_path, name_fallback=song_name)
+            if len(existing_song.lyrics_lines) == len(song.lyrics_lines):
+                # Check if all lines have augmented queries
+                if all(
+                    line.augmented_query
+                    for line in existing_song.lyrics_lines
+                    if line.text.strip()
+                ):
+                    existing_augmented_queries = [
+                        line.augmented_query for line in existing_song.lyrics_lines
+                    ]
+                    print(f"Loaded existing augmented queries from {lyrics_json_path}")
+        except Exception as e:
+            print(f"Warning: Could not load existing augmented queries: {e}")
+
     if skip_rewrite:
-        augmented_queries = [line.text for line in song.lyrics_lines]
+        if existing_augmented_queries:
+            augmented_queries = existing_augmented_queries
+        else:
+            augmented_queries = [line.text for line in song.lyrics_lines]
         rewrite_cost = 0.0
     else:
-        rewrite_model = Nova2LiteModel()
-        augmented_queries = await rewrite_model.generate_augmented_queries_for_lines(
-            [line.text for line in song.lyrics_lines]
-        )
-        rewrite_cost = rewrite_model.costs["total_cost"]
+        if existing_augmented_queries:
+            print("Using existing augmented queries from JSON (use --skip-rewrite to skip regeneration)")
+            augmented_queries = existing_augmented_queries
+            rewrite_cost = 0.0
+        else:
+            rewrite_model = Nova2LiteModel()
+            augmented_queries = await rewrite_model.generate_augmented_queries_for_lines(
+                [line.text for line in song.lyrics_lines]
+            )
+            rewrite_cost = rewrite_model.costs["total_cost"]
 
     if len(augmented_queries) != len(song.lyrics_lines):
         raise ValueError(
             "Augmented query count mismatch: "
             f"{len(augmented_queries)} vs {len(song.lyrics_lines)}"
         )
+
+    # Assign augmented queries to lines and write JSON immediately
+    for line, augmented_query in zip(song.lyrics_lines, augmented_queries):
+        line.augmented_query = augmented_query
+    
+    write_song(song, lyrics_json_path)
+    print(f"Augmented queries written to {lyrics_json_path}")
 
     db_path.mkdir(parents=True, exist_ok=True)
     embed_model = Nova2OmniEmbeddings()
@@ -180,7 +221,7 @@ async def main(
         ]
         await tqdm.gather(*tasks, desc="Processing lyrics lines", total=len(tasks))
 
-        lyrics_json_path = song_dir / "lyrics_lines.json"
+        # Update JSON file with embedding IDs after embedding completes
         write_song(song, lyrics_json_path)
 
         total_cost = rewrite_cost + embed_model.costs["total_cost"]
@@ -213,7 +254,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--concurrency",
         type=int,
-        default=96,
+        default=32,
         help="Concurrent embedding requests.",
     )
     parser.add_argument(

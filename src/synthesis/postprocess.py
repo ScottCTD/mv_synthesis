@@ -17,6 +17,7 @@ class PostprocessPlan:
     duration: float
     pad_black: bool
     clip_duration: Optional[float]
+    speed_factor: float
     note: str
 
 
@@ -34,15 +35,18 @@ def build_postprocess_plan(
         clip_duration = get_video_duration(input_path)
     start_offset = 0.0
     pad_black = False
+    speed_factor = 1.0
     note = "as_is"
 
     if clip_duration is not None and target_duration > 0:
-        if clip_duration < target_duration:
-            pad_black = True
-            note = "pad_black"
-        elif clip_duration > target_duration:
-            start_offset = max(0.0, (clip_duration - target_duration) / 2.0)
-            note = "trim_middle"
+        if clip_duration > 0:
+            raw_speed = clip_duration / target_duration
+            if abs(raw_speed - 1.0) > 1e-3:
+                speed_factor = raw_speed
+                if speed_factor > 1.0:
+                    note = "speed_up"
+                else:
+                    note = "slow_down"
 
     return PostprocessPlan(
         input_path=input_path,
@@ -51,6 +55,7 @@ def build_postprocess_plan(
         duration=target_duration,
         pad_black=pad_black,
         clip_duration=clip_duration,
+        speed_factor=speed_factor,
         note=note,
     )
 
@@ -62,5 +67,6 @@ def render_postprocess_plan(plan: PostprocessPlan, video_encoder: str) -> None:
         start_offset=plan.start_offset,
         duration=plan.duration,
         pad_black=plan.pad_black,
+        speed_factor=plan.speed_factor,
         video_encoder=video_encoder,
     )

@@ -8,7 +8,7 @@ import uuid
 from pathlib import Path
 from typing import Optional
 
-from tqdm.asyncio import tqdm
+from tqdm import tqdm
 
 from synthesis.config import (
     DEFAULT_DATASET_ROOT,
@@ -133,7 +133,7 @@ async def main(
     filtered_segment_ids = []
     skipped_count = 0
     
-    for segment_id in segment_ids:
+    for segment_id in tqdm(segment_ids, desc="Filtering segments"):
         segment_path = video_id_to_path[segment_id]
         duration = get_video_duration(segment_path)
         file_size_mb = get_file_size_mb(segment_path)
@@ -163,21 +163,38 @@ async def main(
 
     try:
         semaphore = asyncio.Semaphore(max(1, max_concurrent))
+        
+        # Create a progress bar that we can update dynamically
+        pbar = tqdm(
+            total=len(filtered_segment_ids),
+            desc="Processing video segments",
+            unit="segment"
+        )
+        
         tasks = [
-            embed_and_store_segment(
-                video_id_to_path,
-                segment_id,
-                embed_model,
-                vision_model,
-                store,
-                dataset_root,
-                semaphore,
+            asyncio.create_task(
+                embed_and_store_segment(
+                    video_id_to_path,
+                    segment_id,
+                    embed_model,
+                    vision_model,
+                    store,
+                    dataset_root,
+                    semaphore,
+                )
             )
             for segment_id in filtered_segment_ids
         ]
-        await tqdm.gather(
-            *tasks, desc="Processing video segments", total=len(filtered_segment_ids)
-        )
+        
+        # Update progress bar as tasks complete
+        for future in asyncio.as_completed(tasks):
+            await future
+            # Update progress bar with current total cost
+            total_cost = vision_model.costs["total_cost"] + embed_model.costs["total_cost"]
+            pbar.set_postfix_str(f"Cost: ${total_cost:.6f}")
+            pbar.update(1)
+        
+        pbar.close()
 
         total_cost = vision_model.costs["total_cost"] + embed_model.costs["total_cost"]
         print(f"\nTotal cost: ${total_cost:.6f}")
