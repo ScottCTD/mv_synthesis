@@ -25,7 +25,7 @@ SRC_ROOT = Path(__file__).resolve().parents[1]
 if str(SRC_ROOT) not in sys.path:
     sys.path.append(str(SRC_ROOT))
 
-from synthesis.ffmpeg_utils import get_video_duration, run_ffmpeg
+from synthesis.ffmpeg_utils import get_video_duration, resolve_video_encoder, run_ffmpeg
 from synthesis.nova_embedding_model import Nova2OmniEmbeddings
 
 SPLIT_TIME_BASE_FPS = 1000.0
@@ -53,6 +53,17 @@ def l2_normalize(vector: Iterable[float]) -> np.ndarray:
     return arr / norm
 
 
+def _get_encoder_params(video_encoder: str) -> list[str]:
+    """Get encoder-specific parameters for FFmpeg."""
+    params = []
+    if video_encoder in ("h264_nvenc", "hevc_nvenc"):
+        # NVENC requires preset and rate control parameters
+        params.extend(["-preset", "p4", "-rc", "vbr", "-cq", "23"])
+    elif video_encoder == "libx264":
+        params.extend(["-preset", "veryfast", "-crf", "22"])
+    return params
+
+
 def extract_clip(
     video_path: Path,
     output_path: Path,
@@ -76,6 +87,9 @@ def extract_clip(
         "0:a:0?",
         "-c:v",
         video_encoder,
+    ]
+    cmd.extend(_get_encoder_params(video_encoder))
+    cmd += [
         "-c:a",
         "aac",
         "-pix_fmt",
@@ -114,6 +128,24 @@ async def compute_embeddings(
     semaphore = asyncio.Semaphore(max(1, max_concurrent))
     embedding_cache_dir = clip_dir / "embeddings"
     embedding_cache_dir.mkdir(parents=True, exist_ok=True)
+    max_retries = 5
+
+    async def embed_with_retry(clip_path: Path) -> dict:
+        last_exc: Exception | None = None
+        for attempt in range(max_retries):
+            try:
+                return await embed_model.embed_video(
+                    str(clip_path),
+                    embedding_purpose=embedding_purpose,
+                    embedding_mode="AUDIO_VIDEO_SEPARATE",
+                )
+            except Exception as exc:
+                last_exc = exc
+                if attempt >= max_retries - 1:
+                    break
+                delay = 2**attempt
+                await asyncio.sleep(delay)
+        raise last_exc if last_exc is not None else RuntimeError("Embedding failed.")
 
     async def embed_one(
         index: int, center: float
@@ -134,11 +166,7 @@ async def compute_embeddings(
                 await asyncio.to_thread(
                     extract_clip, video_path, clip_path, center, win, video_encoder
                 )
-                result = await embed_model.embed_video(
-                    str(clip_path),
-                    embedding_purpose=embedding_purpose,
-                    embedding_mode="AUDIO_VIDEO_SEPARATE",
-                )
+                result = await embed_with_retry(clip_path)
             embedding = _select_video_embedding(result)
             embedding = l2_normalize(embedding)
             try:
@@ -222,12 +250,21 @@ def build_scene_list(
 
 
 def _build_split_args(video_encoder: str) -> str:
+    """Build FFmpeg arguments for video splitting with encoder-specific parameters."""
+    base_args = "-map 0:v:0 -map 0:a? -map 0:s? -c:v"
+    
     if video_encoder == DEFAULT_VIDEO_ENCODER:
         return (
-            "-map 0:v:0 -map 0:a? -map 0:s? -c:v libx264 "
+            f"{base_args} libx264 "
             "-preset veryfast -crf 22 -c:a aac"
         )
-    return f"-map 0:v:0 -map 0:a? -map 0:s? -c:v {video_encoder} -c:a aac"
+    elif video_encoder in ("h264_nvenc", "hevc_nvenc"):
+        # NVENC requires preset and rate control parameters
+        return (
+            f"{base_args} {video_encoder} "
+            "-preset p4 -rc vbr -cq 23 -c:a aac"
+        )
+    return f"{base_args} {video_encoder} -c:a aac"
 
 
 def split_segments_ffmpeg(
@@ -236,6 +273,9 @@ def split_segments_ffmpeg(
     output_dir: Optional[Path],
     video_encoder: str,
 ) -> list[Path]:
+    video_encoder, warning = resolve_video_encoder(video_encoder)
+    if warning:
+        print(warning, file=sys.stderr)
     scene_list = build_scene_list(segments)
     if not scene_list:
         return []
@@ -338,6 +378,9 @@ async def segment_video(
     duration = get_video_duration(video_path)
     if duration is None:
         raise ValueError(f"Unable to determine duration for {video_path}")
+    video_encoder, warning = resolve_video_encoder(video_encoder)
+    if warning:
+        print(warning, file=sys.stderr)
     if start_time < 0:
         raise ValueError("start_time must be >= 0")
     if end_time is None:
@@ -433,7 +476,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--video-encoder",
         type=str,
-        default="h264_videotoolbox",
+        default=DEFAULT_VIDEO_ENCODER,
         help="Video encoder used for scan clips and output segments.",
     )
     parser.add_argument(

@@ -8,6 +8,77 @@ def run_ffmpeg(cmd: list[str]) -> None:
     subprocess.run(cmd, check=True)
 
 
+def _get_encoder_params(video_encoder: str) -> list[str]:
+    """Get encoder-specific parameters for FFmpeg."""
+    params = []
+    if video_encoder in ("h264_nvenc", "hevc_nvenc"):
+        # NVENC requires preset and rate control parameters
+        params.extend(["-preset", "p4", "-rc", "vbr", "-cq", "23"])
+    elif video_encoder == "libx264":
+        params.extend(["-preset", "veryfast", "-crf", "22"])
+    return params
+
+
+def is_ffmpeg_video_encoder_usable(video_encoder: str, timeout_s: float = 10.0) -> bool:
+    """Best-effort check if FFmpeg can actually use a given video encoder.
+
+    This is intentionally cheap and conservative: it probes by encoding a tiny
+    synthetic clip to a null muxer. Returns False if ffmpeg is missing, the
+    encoder isn't available, or the encoder fails at runtime (common for NVENC
+    when drivers/GPUs aren't accessible).
+    """
+    if video_encoder == "libx264":
+        return True
+    cmd = [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-nostats",
+        "-f",
+        "lavfi",
+        "-i",
+        "color=c=black:s=16x16:r=1",
+        "-t",
+        "0.1",
+        "-an",
+        "-c:v",
+        video_encoder,
+    ]
+    cmd.extend(_get_encoder_params(video_encoder))
+    cmd += ["-pix_fmt", "yuv420p", "-f", "null", "-"]
+    try:
+        subprocess.run(
+            cmd,
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=timeout_s,
+        )
+        return True
+    except (FileNotFoundError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        return False
+
+
+def resolve_video_encoder(video_encoder: str, fallback: str = "libx264") -> tuple[str, Optional[str]]:
+    """Resolve a requested video encoder to something usable on this machine.
+
+    Returns (resolved_encoder, warning_message). warning_message is None if no
+    fallback was necessary.
+    """
+    if is_ffmpeg_video_encoder_usable(video_encoder):
+        return video_encoder, None
+    if video_encoder == fallback:
+        return video_encoder, None
+    return (
+        fallback,
+        (
+            f"WARNING: FFmpeg encoder '{video_encoder}' is not usable on this machine; "
+            f"falling back to '{fallback}'."
+        ),
+    )
+
+
 def get_video_duration(video_path: Path) -> Optional[float]:
     """Get video duration in seconds using ffprobe. Returns None on error."""
     try:
@@ -68,6 +139,9 @@ def render_clip(
     cmd += [
         "-c:v",
         video_encoder,
+    ]
+    cmd.extend(_get_encoder_params(video_encoder))
+    cmd += [
         "-pix_fmt",
         "yuv420p",
         "-movflags",
@@ -120,6 +194,9 @@ def wrap_audio_in_video(
         "-shortest",
         "-c:v",
         video_encoder,
+    ]
+    cmd.extend(_get_encoder_params(video_encoder))
+    cmd += [
         "-pix_fmt",
         "yuv420p",
         "-c:a",
@@ -148,6 +225,9 @@ def concat_clips(
         str(list_path),
         "-c:v",
         video_encoder,
+    ]
+    cmd.extend(_get_encoder_params(video_encoder))
+    cmd += [
         "-pix_fmt",
         "yuv420p",
         "-movflags",
@@ -220,6 +300,9 @@ def burn_subtitles(
         subtitle_filter,
         "-c:v",
         video_encoder,
+    ]
+    cmd.extend(_get_encoder_params(video_encoder))
+    cmd += [
         "-pix_fmt",
         "yuv420p",
         "-c:a",

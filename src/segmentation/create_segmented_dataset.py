@@ -11,12 +11,13 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-from segmentation.embedding_dp import (DEFAULT_VIDEO_ENCODER, segment_video,
-                                       split_segments_ffmpeg)
-
 SRC_ROOT = Path(__file__).resolve().parents[1]
 if str(SRC_ROOT) not in sys.path:
     sys.path.append(str(SRC_ROOT))
+
+from segmentation.embedding_dp import (DEFAULT_VIDEO_ENCODER, segment_video,
+                                       split_segments_ffmpeg)
+from synthesis.ffmpeg_utils import resolve_video_encoder
 
 
 PROJECT_ROOT = SRC_ROOT.parent
@@ -25,7 +26,7 @@ RAW_VIDEOS_DIR = PROJECT_ROOT / "datasets" / "raw"
 # Dictionary mapping movie name to (start_time, end_time) for skipping intro/outro
 # None means use full video duration.
 MOVIE_TIME_RANGES: dict[str, Optional[tuple[float, Optional[float]]]] = {
-    "E11-Jerrys_Cousin": (29.0, 393),
+    # "E11-Jerrys_Cousin": (29.0, 393),
     "E12-Sleepy-Time_Tom": (29, 420),
     "E13-His_Mouse_Friday": (29, 396),
     "E14-Slicked-Up_Pup": (29, 369),
@@ -34,18 +35,18 @@ MOVIE_TIME_RANGES: dict[str, Optional[tuple[float, Optional[float]]]] = {
     "E17-The_Flying_Cat": (29, 398),
     "E18-The_Duck_Doctor": (29, 415),
     "E19-The_Two_Mouseketeers": (32, 430),
-    "E20-Smitten_Kitten": (29, 448),
-    "E21-Triplet_Trouble": (25.0, 401),
-    "E22-Little_Runaway": (29, 410),
-    "E23-Fit_To_Be_Tied": (29, 406),
-    "E24-Push-Button_Kitty": (28, 388),
-    "E25-Cruise_Cat": (28, 413),
-    "E26-The_Dog_House": (28, 350),
-    "E27-The_Missing_Mouse": (28, 380),
-    "E28-Jerry_And_Jumbo": (28, 408),
-    "E29-Johann_Mouse": (30, 460),
-    "E30-Thats_My_Pup": (28, 430),
-    "E31-Just_Ducky": (28, 401),
+    # "E20-Smitten_Kitten": (29, 448),
+    # "E21-Triplet_Trouble": (25.0, 401),
+    # "E22-Little_Runaway": (29, 410),
+    # "E23-Fit_To_Be_Tied": (29, 406),
+    # "E24-Push-Button_Kitty": (28, 388),
+    # "E25-Cruise_Cat": (28, 413),
+    # "E26-The_Dog_House": (28, 350),
+    # "E27-The_Missing_Mouse": (28, 380),
+    # "E28-Jerry_And_Jumbo": (28, 408),
+    # "E29-Johann_Mouse": (30, 460),
+    # "E30-Thats_My_Pup": (28, 430),
+    # "E31-Just_Ducky": (28, 401),
 }
 
 
@@ -85,6 +86,9 @@ async def process_movie(
 ) -> None:
     """Process a single movie: segment it and save segments to dataset directory."""
     print(f"\nProcessing {movie_name}...")
+    video_encoder, warning = resolve_video_encoder(video_encoder)
+    if warning:
+        print(warning, file=sys.stderr)
 
     # Get start/end times from dictionary (must exist since we filtered)
     time_range = MOVIE_TIME_RANGES[movie_name]
@@ -265,14 +269,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--max-concurrent",
         type=int,
-        default=129,
+        default=32,
         help="Maximum concurrent clip embeddings.",
     )
     parser.add_argument(
         "--video-encoder",
         type=str,
+        choices=["libx264", "h264_videotoolbox", "h264_nvenc", "hevc_nvenc"],
         default=DEFAULT_VIDEO_ENCODER,
-        help="Video encoder used for scan clips and output segments.",
+        help="Video encoder used for scan clips and output segments. Use h264_nvenc or hevc_nvenc for NVIDIA GPU.",
     )
     return parser.parse_args()
 
