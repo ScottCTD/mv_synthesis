@@ -111,11 +111,11 @@ async def embed_and_store_line(
 async def main(
     dataset_root: Path,
     song_name: str,
-    db_path: Path,
-    concurrency: int,
-    limit: Optional[int],
-    skip_rewrite: bool,
-    embed_audio: bool,
+    db_url: str,
+    concurrency: int = 32,
+    limit: Optional[int] = None,
+    skip_rewrite: bool = False,
+    embed_audio: bool = False,
 ) -> None:
     song_dir = dataset_root / "songs" / song_name
     lyrics_dir = song_dir / "clips_and_lyrics"
@@ -189,9 +189,11 @@ async def main(
     write_song(song, lyrics_json_path)
     print(f"Augmented queries written to {lyrics_json_path}")
 
-    db_path.mkdir(parents=True, exist_ok=True)
+    # Create directory if it's a local path (not a URL)
+    if not db_url.startswith("http://") and not db_url.startswith("https://"):
+        Path(db_url).mkdir(parents=True, exist_ok=True)
     embed_model = Nova2OmniEmbeddings()
-    store = QdrantStore(db_path)
+    store = QdrantStore(db_url=db_url)
     collections = [
         LYRICS_TEXT_COLLECTION,
         LYRICS_AUGMENTED_QUERY_COLLECTION,
@@ -246,10 +248,10 @@ if __name__ == "__main__":
         help="Song name under the dataset songs directory.",
     )
     parser.add_argument(
-        "--db-path",
-        type=Path,
-        default=None,
-        help="Path to the Qdrant database directory (defaults to dataset_root/db).",
+        "--db-url",
+        type=str,
+        default="http://localhost:6333",
+        help="URL to remote Qdrant server (e.g., http://localhost:6333) or path to local Qdrant database directory (e.g., /path/to/db). Defaults to http://localhost:6333.",
     )
     parser.add_argument(
         "--concurrency",
@@ -274,13 +276,12 @@ if __name__ == "__main__":
         help="Embed lyric audio clips into the lyrics-audio collection.",
     )
     args = parser.parse_args()
-
-    db_path = args.db_path or (args.dataset_root / "db")
+    db_url = args.db_url
     asyncio.run(
         main(
             dataset_root=args.dataset_root,
             song_name=args.song_name,
-            db_path=db_path,
+            db_url=db_url,
             concurrency=args.concurrency,
             limit=args.limit,
             skip_rewrite=args.skip_rewrite,

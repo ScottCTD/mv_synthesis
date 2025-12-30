@@ -6,15 +6,25 @@ from typing import Iterable, Optional
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams
 
-try:
-    from synthesis.config import EMBEDDING_DIM
-except ImportError:
-    from config import EMBEDDING_DIM
+from synthesis.config import EMBEDDING_DIM
 
 
 class QdrantStore:
-    def __init__(self, db_path: Path):
-        self.client = QdrantClient(path=str(db_path))
+    def __init__(self, db_url: str):
+        """
+        Initialize QdrantStore with either a local path or a remote URL.
+        
+        Args:
+            db_url: URL to remote Qdrant server (e.g., "http://localhost:6333") 
+                    or path to local Qdrant database directory (e.g., "/path/to/db").
+                    Automatically detects whether it's a URL or a path.
+        """
+        # Check if it's a URL (starts with http:// or https://)
+        if db_url.startswith("http://") or db_url.startswith("https://"):
+            self.client = QdrantClient(url=db_url)
+        else:
+            # Treat as local path
+            self.client = QdrantClient(path=db_url)
 
     def close(self) -> None:
         self.client.close()

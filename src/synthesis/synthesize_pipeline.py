@@ -32,7 +32,7 @@ class PipelineConfig:
     dataset_root: Path
     song_dir: Path
     song_name: str
-    db_path: Path
+    db_url: str
     output_dir: Path
     query_source: str
     top_k: int
@@ -141,7 +141,7 @@ def run_pipeline(config: PipelineConfig) -> Path:
     clips_dir = config.output_dir / "clips"
     clips_dir.mkdir(parents=True, exist_ok=True)
 
-    store = QdrantStore(config.db_path)
+    store = QdrantStore(db_url=config.db_url)
     query_collection = choose_query_collection(config.query_source)
 
     manifest: list[dict] = []
@@ -238,10 +238,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="Absolute or project-relative path to a song directory.",
     )
     parser.add_argument(
-        "--db-path",
-        type=Path,
-        default=None,
-        help="Path to the Qdrant database directory (defaults to dataset_root/db).",
+        "--db-url",
+        type=str,
+        default="http://localhost:6333",
+        help="URL to remote Qdrant server (e.g., http://localhost:6333) or path to local Qdrant database directory (e.g., /path/to/db). Defaults to http://localhost:6333.",
     )
     parser.add_argument(
         "--output-dir",
@@ -302,18 +302,22 @@ def main() -> None:
     dataset_root = infer_dataset_root(song_dir, args.dataset_root)
     song_name = args.song_name or song_dir.name
     output_dir = resolve_output_dir(args.output_dir, song_name)
-    db_path = args.db_path or (dataset_root / "db")
+    
+    db_url = args.db_url
+    # If it's a local path (not a URL), check if it exists
+    if not db_url.startswith("http://") and not db_url.startswith("https://"):
+        db_path = Path(db_url)
+        if not db_path.exists():
+            raise FileNotFoundError(f"qdrant db not found: {db_path}")
 
     if not song_dir.exists():
         raise FileNotFoundError(f"song dir not found: {song_dir}")
-    if not db_path.exists():
-        raise FileNotFoundError(f"qdrant db not found: {db_path}")
 
     config = PipelineConfig(
         dataset_root=dataset_root,
         song_dir=song_dir,
         song_name=song_name,
-        db_path=db_path,
+        db_url=db_url,
         output_dir=output_dir,
         query_source=args.query_source,
         top_k=args.top_k,

@@ -18,5 +18,10 @@ dependencies = [
     "tqdm>=4.67.1",
 ]
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[build-system]
+requires = ["uv_build>=0.9.18,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = ["segmentation", "synthesis"]
+module-root = "src"

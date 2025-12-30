@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MV Synthesis Human Eval</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <section class="start-screen" id="startScreen">
+        <div class="start-card">
+          <div class="start-title">MV Synthesis Human Eval</div>
+          <div class="start-subtitle">Pick a song and method pair to begin.</div>
+          <div class="start-grid">
+            <div class="field">
+              <label for="usernameInput">Username</label>
+              <input
+                id="usernameInput"
+                type="text"
+                placeholder="username"
+                autocomplete="off"
+                required
+              />
+            </div>
+            <div class="field">
+              <label for="songSelect">Song</label>
+              <select id="songSelect"></select>
+            </div>
+            <div class="field" id="leftMethodField">
+              <label for="leftMethodSelect" id="leftMethodLabel">Left method</label>
+              <select id="leftMethodSelect"></select>
+            </div>
+            <div class="field" id="rightMethodField">
+              <label for="rightMethodSelect" id="rightMethodLabel">Right method</label>
+              <select id="rightMethodSelect"></select>
+            </div>
+          </div>
+          <button class="primary-button" id="loadSession" type="button">Start</button>
+          <div class="start-status" id="startStatus"></div>
+        </div>
+      </section>
+
+      <div class="main-content is-hidden" id="mainContent">
+        <header class="top-block">
+          <div class="top-row">
+            <div class="song-info">
+              <div class="song-title" id="songTitle">Loading...</div>
+              <div class="audio-row" id="songAudioRow">
+                <audio id="songAudio" controls preload="metadata"></audio>
+              </div>
+            </div>
+            <button class="ghost-button" id="toggleSession" type="button">
+              Change Pair
+            </button>
+          </div>
+          <div class="line-row">
+            <div class="line-text" id="lineText">Loading lyric line...</div>
+            <div class="audio-row" id="lineAudioRow">
+              <audio id="lineAudio" controls preload="metadata"></audio>
+            </div>
+          </div>
+        </header>
+
+        <main class="columns">
+          <section class="column" id="leftColumn">
+            <div class="column-header">
+              <span class="column-label">Left</span>
+              <h2 id="leftMethodName">Method</h2>
+            </div>
+            <div class="selected-block">
+              <div class="block-title">Selected</div>
+              <div class="selected-media" id="leftSelected"></div>
+            </div>
+            <div class="candidate-group">
+              <h3>Video candidates</h3>
+              <div class="candidate-list" id="leftVideoCandidates"></div>
+            </div>
+            <div class="candidate-group">
+              <h3>Vibe candidates</h3>
+              <div class="candidate-list" id="leftVibeCandidates"></div>
+            </div>
+          </section>
+
+          <section class="column" id="rightColumn">
+            <div class="column-header">
+              <span class="column-label">Right</span>
+              <h2 id="rightMethodName">Method</h2>
+            </div>
+            <div class="selected-block">
+              <div class="block-title">Selected</div>
+              <div class="selected-media" id="rightSelected"></div>
+            </div>
+            <div class="candidate-group">
+              <h3>Video candidates</h3>
+              <div class="candidate-list" id="rightVideoCandidates"></div>
+            </div>
+            <div class="candidate-group">
+              <h3>Vibe candidates</h3>
+              <div class="candidate-list" id="rightVibeCandidates"></div>
+            </div>
+          </section>
+        </main>
+
+        <footer class="control-bar">
+          <div class="progress" id="progressText">Line 0 / 0</div>
+          <div class="control-buttons">
+            <button class="vote-button left" data-decision="left" type="button">
+              I like left
+            </button>
+            <button class="vote-button right" data-decision="right" type="button">
+              I like right
+            </button>
+            <button class="vote-button tie" data-decision="tie" type="button">Tie</button>
+            <button class="play-button" id="playToggle" type="button">Play all</button>
+            <button class="ghost-button" id="candidateAudioToggle" type="button">
+              Candidate audio: off
+            </button>
+            <button class="ghost-button" data-decision="next" type="button">Next</button>
+          </div>
+          <div class="status" id="statusText"></div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

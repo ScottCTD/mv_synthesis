@@ -110,7 +110,7 @@ async def embed_and_store_segment(
 
 
 async def main(
-    db_path: Path,
+    db_url: str,
     all_video_path: Path,
     dataset_root: Path,
     limit: Optional[int] = None,
@@ -120,8 +120,10 @@ async def main(
 ) -> None:
     if not all_video_path.exists():
         raise FileNotFoundError(f"videos dir not found: {all_video_path}")
-    db_path.mkdir(parents=True, exist_ok=True)
-    store = QdrantStore(db_path)
+    # Create directory if it's a local path (not a URL)
+    if not db_url.startswith("http://") and not db_url.startswith("https://"):
+        Path(db_url).mkdir(parents=True, exist_ok=True)
+    store = QdrantStore(db_url=db_url)
     store.ensure_collections([VIDEO_SEGMENTS_COLLECTION, VIDEO_VIBE_CARDS_COLLECTION])
 
     embed_model = Nova2OmniEmbeddings()
@@ -212,10 +214,10 @@ if __name__ == "__main__":
         help="Dataset root directory (db_path defaults to dataset_root/db, all_video_path defaults to dataset_root/videos)",
     )
     parser.add_argument(
-        "--db-path",
-        type=Path,
-        default=None,
-        help="Path to the Qdrant database directory (defaults to dataset_root/db)",
+        "--db-url",
+        type=str,
+        default="http://localhost:6333",
+        help="URL to remote Qdrant server (e.g., http://localhost:6333) or path to local Qdrant database directory (e.g., /path/to/db). Defaults to http://localhost:6333.",
     )
     parser.add_argument(
         "--all-video-path",
@@ -249,16 +251,16 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     dataset_root = args.dataset_root
-    db_path = args.db_path or (dataset_root / "db")
+    db_url = args.db_url
     all_video_path = args.all_video_path or (dataset_root / "videos")
     asyncio.run(
         main(
-            db_path,
-            all_video_path,
-            dataset_root,
-            args.limit,
-            args.max_concurrent,
-            args.max_duration_seconds,
-            args.max_size_mb,
+            db_url=db_url,
+            all_video_path=all_video_path,
+            dataset_root=dataset_root,
+            limit=args.limit,
+            max_concurrent=args.max_concurrent,
+            max_duration_seconds=args.max_duration_seconds,
+            max_size_mb=args.max_size_mb,
         )
     )

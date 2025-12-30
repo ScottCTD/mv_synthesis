@@ -1,0 +1,12 @@
+{
+  "dataset_root": "datasets/ds2",
+  "outputs_root": "outputs",
+  "results_root": "results",
+  "manifest_name": "retrieval_manifest.json",
+  "prefer_rendered": true,
+  "default_left_method": null,
+  "default_right_method": null,
+  "hide_method_select": false,
+  "anonymize_methods": false,
+  "port": 8000
+}
