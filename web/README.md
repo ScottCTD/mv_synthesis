@@ -6,6 +6,7 @@ Minimal two-column comparison UI for MV synthesis methods, served by a tiny Pyth
 - From repo root: `python3 web/server.py`
 - Open `http://localhost:8000`
 - Or use the helper script: `bash web/start.sh`
+- Setup Cloudflare: `cloudflared tunnel --url http://localhost:8000`
 
 ## Configure data roots
 Edit `web/config.json`:

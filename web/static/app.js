@@ -20,6 +20,9 @@ const state = {
     hide_method_select: false,
     anonymize_methods: false,
   },
+  candidateExpanded: {},
+  currentCandidates: {},
+  preloadContainer: null,
 };
 
 const elements = {
@@ -140,6 +143,17 @@ function wireControls() {
     if (event.key.toLowerCase() === "t") handleDecision("tie");
     if (event.key.toLowerCase() === "n") handleDecision("next");
   });
+}
+
+function ensurePreloadContainer() {
+  if (state.preloadContainer) return state.preloadContainer;
+  const container = document.createElement("div");
+  container.className = "preload-container";
+  container.setAttribute("aria-hidden", "true");
+  container.style.display = "none";
+  document.body.appendChild(container);
+  state.preloadContainer = container;
+  return container;
 }
 
 function populateSelectors(catalog) {
@@ -369,6 +383,8 @@ function renderCurrentLine() {
     return;
   }
 
+  resetCandidateExpansion();
+
   const lineIndex = state.lineOrder[state.currentPos];
   const leftEntry = state.leftEntries.get(lineIndex);
   const rightEntry = state.rightEntries.get(lineIndex);
@@ -385,37 +401,30 @@ function renderCurrentLine() {
     elements.lineAudioRow.hidden = true;
   }
 
-  renderSelected(elements.leftSelected, leftEntry, "left");
-  renderSelected(elements.rightSelected, rightEntry, "right");
-  renderCandidateList(
-    elements.leftVideoCandidates,
-    leftEntry?.video_candidates,
-    "video",
-    "left"
-  );
-  renderCandidateList(
-    elements.rightVideoCandidates,
-    rightEntry?.video_candidates,
-    "video",
+  const leftSelectedVideo = renderSelected(elements.leftSelected, leftEntry, "left");
+  const rightSelectedVideo = renderSelected(
+    elements.rightSelected,
+    rightEntry,
     "right"
   );
-  renderCandidateList(
-    elements.leftVibeCandidates,
-    leftEntry?.vibe_candidates,
-    "vibe",
-    "left"
-  );
-  renderCandidateList(
-    elements.rightVibeCandidates,
-    rightEntry?.vibe_candidates,
-    "vibe",
-    "right"
-  );
+
+  state.currentCandidates = {
+    leftVideo: leftEntry?.video_candidates || [],
+    rightVideo: rightEntry?.video_candidates || [],
+    leftVibe: leftEntry?.vibe_candidates || [],
+    rightVibe: rightEntry?.vibe_candidates || [],
+  };
+
+  renderCandidateGroup("leftVideo", elements.leftVideoCandidates, "video", "left");
+  renderCandidateGroup("rightVideo", elements.rightVideoCandidates, "video", "right");
+  renderCandidateGroup("leftVibe", elements.leftVibeCandidates, "vibe", "left");
+  renderCandidateGroup("rightVibe", elements.rightVibeCandidates, "vibe", "right");
 
   elements.progressText.textContent = `Line ${state.currentPos + 1} / ${
     state.lineOrder.length
   } (Index ${lineIndex})`;
 
+  setupPreloadNextSelected(leftSelectedVideo, rightSelectedVideo);
 }
 
 function updateControlState() {
@@ -455,7 +464,7 @@ function renderSelected(container, entry, side) {
   container.innerHTML = "";
   if (!entry?.selected_display_url) {
     container.innerHTML = '<div class="empty-state">No selected clip.</div>';
-    return;
+    return null;
   }
 
   const video = document.createElement("video");
@@ -475,14 +484,49 @@ function renderSelected(container, entry, side) {
     meta.appendChild(makeMetaItem("strategy", entry.selected.strategy));
   }
   container.appendChild(meta);
+  return video;
 }
 
-function renderCandidateList(container, candidates, source, side) {
+function resetCandidateExpansion() {
+  state.candidateExpanded = {
+    leftVideo: false,
+    rightVideo: false,
+    leftVibe: false,
+    rightVibe: false,
+  };
+}
+
+function renderCandidateGroup(groupKey, container, source, side) {
+  const candidates = state.currentCandidates[groupKey] || [];
   container.innerHTML = "";
-  if (!candidates || !candidates.length) {
+  if (!candidates.length) {
     container.innerHTML = '<div class="empty-state">No candidates.</div>';
     return;
   }
+
+  if (!state.candidateExpanded[groupKey]) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "candidate-toggle";
+    button.textContent = `Show ${source} candidates (${candidates.length})`;
+    button.addEventListener("click", () => {
+      state.candidateExpanded[groupKey] = true;
+      renderCandidateGroup(groupKey, container, source, side);
+    });
+    container.appendChild(button);
+    return;
+  }
+
+  const hideButton = document.createElement("button");
+  hideButton.type = "button";
+  hideButton.className = "candidate-toggle";
+  hideButton.textContent = `Hide ${source} candidates`;
+  hideButton.addEventListener("click", () => {
+    state.candidateExpanded[groupKey] = false;
+    container.innerHTML = "";
+    renderCandidateGroup(groupKey, container, source, side);
+  });
+  container.appendChild(hideButton);
 
   candidates.forEach((candidate) => {
     if (!candidate?.segment_path) return;
@@ -535,6 +579,57 @@ function renderCandidateList(container, candidates, source, side) {
     }
 
     container.appendChild(card);
+  });
+}
+
+function setupPreloadNextSelected(leftVideo, rightVideo) {
+  const targets = [leftVideo, rightVideo].filter(Boolean);
+  if (!targets.length) {
+    preloadNextSelected();
+    return;
+  }
+
+  let triggered = false;
+  const trigger = () => {
+    if (triggered) return;
+    triggered = true;
+    preloadNextSelected();
+  };
+
+  let remaining = targets.length;
+  const onLoaded = () => {
+    remaining -= 1;
+    if (remaining <= 0) {
+      trigger();
+    }
+  };
+
+  targets.forEach((video) => {
+    video.addEventListener("loadeddata", onLoaded, { once: true });
+  });
+
+  setTimeout(trigger, 2000);
+}
+
+function preloadNextSelected() {
+  const nextIndex = state.lineOrder[state.currentPos + 1];
+  const container = ensurePreloadContainer();
+  container.innerHTML = "";
+  if (!nextIndex) {
+    return;
+  }
+  const leftEntry = state.leftEntries.get(nextIndex);
+  const rightEntry = state.rightEntries.get(nextIndex);
+  const urls = [
+    leftEntry?.selected_display_url,
+    rightEntry?.selected_display_url,
+  ].filter(Boolean);
+  urls.forEach((url) => {
+    const video = document.createElement("video");
+    video.preload = "metadata";
+    video.muted = true;
+    video.src = url;
+    container.appendChild(video);
   });
 }
 
