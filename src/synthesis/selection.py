@@ -259,7 +259,7 @@ def select_fused_candidate(
         fused_scores[segment_id] = fused
         fused_details[segment_id] = details
 
-    recent_set = set(recent_ids) if config.anti_repeat_window > 0 else set()
+    recent_set = set(recent_ids) if config.anti_repeat_window != 0 else set()
     filtered = [
         cand for cand in candidates if cand.segment_id and cand.segment_id not in recent_set
     ]

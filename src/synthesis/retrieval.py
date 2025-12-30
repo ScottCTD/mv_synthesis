@@ -1,10 +1,15 @@
 from __future__ import annotations
 
+import random
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Optional
 
-from synthesis.config import VIDEO_SEGMENTS_COLLECTION, VIDEO_VIBE_CARDS_COLLECTION
+from synthesis.config import (
+    EMBEDDING_DIM,
+    VIDEO_SEGMENTS_COLLECTION,
+    VIDEO_VIBE_CARDS_COLLECTION,
+)
 from synthesis.db import QdrantStore
 from synthesis.models import Candidate
 
@@ -29,6 +34,10 @@ def _normalize_hits(hits: Iterable) -> list:
     if hasattr(hits, "points"):
         return list(hits.points)
     return list(hits)
+
+
+def _random_vector(dim: int) -> list[float]:
+    return [random.uniform(-1.0, 1.0) for _ in range(dim)]
 
 
 def _extract_hit(hit) -> tuple[Optional[str], dict, Optional[float]]:
@@ -125,6 +134,27 @@ def retrieve_candidates(
     query_vector: list[float],
     top_k: int,
 ) -> RetrievalResults:
+    video_candidates = query_video_candidates(store, query_vector, top_k)
+    vibe_candidates = query_vibe_candidates(store, query_vector, top_k)
+    merged = _merge_candidates(video_candidates, vibe_candidates)
+    return RetrievalResults(
+        video_candidates=video_candidates,
+        vibe_candidates=vibe_candidates,
+        merged_candidates=merged,
+    )
+
+
+def retrieve_random_candidates(
+    store: QdrantStore,
+    top_k: int,
+) -> RetrievalResults:
+    if top_k <= 0:
+        return RetrievalResults(
+            video_candidates=[],
+            vibe_candidates=[],
+            merged_candidates=[],
+        )
+    query_vector = _random_vector(EMBEDDING_DIM)
     video_candidates = query_video_candidates(store, query_vector, top_k)
     vibe_candidates = query_vibe_candidates(store, query_vector, top_k)
     merged = _merge_candidates(video_candidates, vibe_candidates)

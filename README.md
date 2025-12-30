@@ -91,16 +91,30 @@ Outputs:
 
 ```
 python src/synthesis/synthesize_pipeline.py ds2 countingStars \
-  --run-name fused \
+  --run-name random \
+  --query-source random \
+  --selection-strategy top_video_duration
+```
+
+```
+python src/synthesis/synthesize_pipeline.py ds2 countingStars \
+  --run-name text_video \
+  --query-source text \
+  --selection-strategy top_video_duration
+```
+
+```
+python src/synthesis/synthesize_pipeline.py ds2 countingStars \
+  --run-name av \
   --selection-strategy fused_rank \
   --fused-text-source combined \
-  --fused-weight-tv 0.5 \
-  --fused-weight-tvc 0.4 \
-  --fused-weight-av 0.0 \
+  --fused-weight-tv 0.0 \
+  --fused-weight-tvc 0.0 \
+  --fused-weight-av 1.0 \
   --fused-weight-avc 0.0 \
 
 python src/synthesis/synthesize_pipeline.py ds2 sunshine \
-  --run-name fused \
+  --run-name fused_rank \
   --selection-strategy fused_rank \
   --fused-text-source combined \
   --fused-weight-tv 0.5 \
@@ -110,22 +124,32 @@ python src/synthesis/synthesize_pipeline.py ds2 sunshine \
 
 
 python src/synthesis/synthesize_pipeline.py ds2 happy \
-  --run-name fused \
+  --run-name fused_rank \
   --selection-strategy fused_rank \
   --fused-text-source combined \
   --fused-weight-tv 0.5 \
   --fused-weight-tvc 0.5 \
   --fused-weight-av 0.0 \
   --fused-weight-avc 0.0 \
-  --fused-anti-repeat 50 \
+  --fused-anti-repeat 100 \
 
 python src/synthesis/synthesize_pipeline.py ds2 payphone \
-  --run-name fused \
+  --run-name fused_rank \
   --selection-strategy fused_rank \
   --fused-text-source combined \
   --fused-weight-tv 0.5 \
   --fused-weight-tvc 0.3 \
   --fused-weight-av 0.1 \
   --fused-weight-avc 0.1 \
+  --fused-anti-repeat 100 \
+
+python src/synthesis/synthesize_pipeline.py ds2 firework \
+  --run-name fused_rank \
+  --selection-strategy fused_rank \
+  --fused-text-source combined \
+  --fused-weight-tv 0.5 \
+  --fused-weight-tvc 0.5 \
+  --fused-weight-av 0.0 \
+  --fused-weight-avc 0.0 \
   --fused-anti-repeat 100 \
 ```

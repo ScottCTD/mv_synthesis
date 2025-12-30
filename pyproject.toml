@@ -12,6 +12,7 @@ dependencies = [
     "langchain-aws>=1.1.0",
     "langgraph>=1.0.5",
     "notebook>=7.5.1",
+    "matplotlib>=3.8.0",
     "numpy>=2.4.0",
     "qdrant-client>=1.16.2",
     "scenedetect[opencv]>=0.6.7.1",

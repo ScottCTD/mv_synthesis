@@ -21,7 +21,11 @@ from synthesis.lyrics_io import find_song_audio, load_song
 from synthesis.models import Candidate, LyricsLine
 from synthesis.postprocess import PostprocessPlan, build_postprocess_plan
 from synthesis.render import render_clips_parallel, stitch_video
-from synthesis.retrieval import retrieve_candidates, retrieve_fused_candidates
+from synthesis.retrieval import (
+    retrieve_candidates,
+    retrieve_fused_candidates,
+    retrieve_random_candidates,
+)
 from synthesis.selection import (
     FusedSelectionConfig,
     SelectionResult,
@@ -191,7 +195,11 @@ def run_pipeline(config: PipelineConfig) -> Path:
     clips_dir.mkdir(parents=True, exist_ok=True)
 
     store = QdrantStore(db_url=config.db_url)
-    query_collection = choose_query_collection(config.query_source)
+    query_collection = (
+        None
+        if config.query_source == "random"
+        else choose_query_collection(config.query_source)
+    )
     fused_query_collections = choose_fused_query_collections(config.fused_text_source)
     fused_config = FusedSelectionConfig(
         top_k=config.fused_top_k,
@@ -241,9 +249,13 @@ def run_pipeline(config: PipelineConfig) -> Path:
                     recent_ids,
                 )
             else:
-                embedding_id = get_query_embedding_id(line, config.query_source)
-                query_vector = store.retrieve_vector(query_collection, embedding_id)
-                retrieval = retrieve_candidates(store, query_vector, config.top_k)
+                if config.query_source == "random":
+                    embedding_id = None
+                    retrieval = retrieve_random_candidates(store, config.top_k)
+                else:
+                    embedding_id = get_query_embedding_id(line, config.query_source)
+                    query_vector = store.retrieve_vector(query_collection, embedding_id)
+                    retrieval = retrieve_candidates(store, query_vector, config.top_k)
                 selection = select_candidate(
                     retrieval,
                     config.selection_strategy,
@@ -265,11 +277,11 @@ def run_pipeline(config: PipelineConfig) -> Path:
                     selected_paths.append(output_clip)
                 if (
                     config.selection_strategy == "fused_rank"
-                    and config.fused_anti_repeat > 0
+                    and config.fused_anti_repeat != 0
                     and selection.candidate.segment_id
                 ):
                     recent_ids.append(selection.candidate.segment_id)
-                    if len(recent_ids) > config.fused_anti_repeat:
+                    if config.fused_anti_repeat > 0 and len(recent_ids) > config.fused_anti_repeat:
                         recent_ids = recent_ids[-config.fused_anti_repeat :]
 
             entry = {
@@ -404,9 +416,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--top-k", type=int, default=10, help="Top-k retrieval size.")
     parser.add_argument(
         "--query-source",
-        choices=["augmented", "text", "text_augmented", "audio"],
+        choices=["augmented", "text", "text_augmented", "audio", "random"],
         default="text_augmented",
-        help="Which lyric embedding to use for retrieval.",
+        help="Which lyric embedding to use for retrieval, or 'random' to sample from the db.",
     )
     parser.add_argument(
         "--selection-strategy",
@@ -442,8 +454,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--fused-anti-repeat",
         type=int,
-        default=5,
-        help="Anti-repetition window size for fused_rank (0 disables).",
+        default=-1,
+        help="Anti-repetition window size for fused_rank (0 disables, -1 disallows all repetitions).",
     )
     parser.add_argument(
         "--fused-tau",
