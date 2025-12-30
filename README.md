@@ -86,3 +86,46 @@ Outputs:
 - By default, retrieval uses `lyrics-text_video-combined` embeddings. Use `--query-source text` or `--query-source text_augmented` to switch.
 - Selection strategies include `top_vibe_duration` and `top_video_duration` (prefer top score when duration >= lyric duration, otherwise choose the longest shorter clip).
 *** End Patch
+
+## Experiments
+
+```
+python src/synthesis/synthesize_pipeline.py ds2 countingStars \
+  --run-name fused \
+  --selection-strategy fused_rank \
+  --fused-text-source combined \
+  --fused-weight-tv 0.5 \
+  --fused-weight-tvc 0.4 \
+  --fused-weight-av 0.0 \
+  --fused-weight-avc 0.0 \
+
+python src/synthesis/synthesize_pipeline.py ds2 sunshine \
+  --run-name fused \
+  --selection-strategy fused_rank \
+  --fused-text-source combined \
+  --fused-weight-tv 0.5 \
+  --fused-weight-tvc 0.4 \
+  --fused-weight-av 0.1 \
+  --fused-weight-avc 0.0 \
+
+
+python src/synthesis/synthesize_pipeline.py ds2 happy \
+  --run-name fused \
+  --selection-strategy fused_rank \
+  --fused-text-source combined \
+  --fused-weight-tv 0.5 \
+  --fused-weight-tvc 0.5 \
+  --fused-weight-av 0.0 \
+  --fused-weight-avc 0.0 \
+  --fused-anti-repeat 50 \
+
+python src/synthesis/synthesize_pipeline.py ds2 payphone \
+  --run-name fused \
+  --selection-strategy fused_rank \
+  --fused-text-source combined \
+  --fused-weight-tv 0.5 \
+  --fused-weight-tvc 0.3 \
+  --fused-weight-av 0.1 \
+  --fused-weight-avc 0.1 \
+  --fused-anti-repeat 100 \
+```

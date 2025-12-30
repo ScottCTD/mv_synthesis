@@ -61,6 +61,7 @@ def build_postprocess_plan(
 
 
 def render_postprocess_plan(plan: PostprocessPlan, video_encoder: str) -> None:
+    """Render a postprocess plan."""
     render_clip(
         input_path=plan.input_path,
         output_path=plan.output_path,

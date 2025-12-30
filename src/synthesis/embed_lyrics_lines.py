@@ -210,6 +210,9 @@ async def main(
     if not overwrite_json and lyrics_json_path.exists():
         try:
             existing_song = load_song(lyrics_json_path, name_fallback=song_name)
+            existing_count = len(existing_song.lyrics_lines)
+            current_count = len(song.lyrics_lines)
+            
             if len(existing_song.lyrics_lines) == len(song.lyrics_lines):
                 # Check if all lines have augmented queries
                 if all(
@@ -221,8 +224,27 @@ async def main(
                         line.augmented_query for line in existing_song.lyrics_lines
                     ]
                     print(f"Loaded existing augmented queries from {lyrics_json_path}")
+                else:
+                    lines_with_text = [line for line in existing_song.lyrics_lines if line.text.strip()]
+                    lines_with_augmented = [line for line in lines_with_text if line.augmented_query]
+                    print(
+                        f"\n⚠️  WARNING: Existing JSON has {len(lines_with_augmented)}/{len(lines_with_text)} "
+                        f"lines with augmented queries.\n"
+                        f"   Will REGENERATE all augmented queries.\n"
+                        f"   (Use --overwrite-json to explicitly overwrite, or fix the JSON file)\n"
+                    )
+            else:
+                print(
+                    f"\n⚠️  WARNING: Line count mismatch detected!\n"
+                    f"   JSON file has {existing_count} lines\n"
+                    f"   Clips directory has {current_count} lines\n"
+                    f"   Will REGENERATE all augmented queries.\n"
+                    f"   (Use --overwrite-json to explicitly overwrite)\n"
+                )
         except Exception as e:
             print(f"Warning: Could not load existing augmented queries: {e}")
+            import traceback
+            traceback.print_exc()
 
     if skip_rewrite:
         if existing_augmented_queries:
@@ -236,6 +258,22 @@ async def main(
             augmented_queries = existing_augmented_queries
             rewrite_cost = 0.0
         else:
+            if lyrics_json_path.exists() and not overwrite_json:
+                print(
+                    f"\n{'='*70}\n"
+                    f"⚠️  REGENERATING AUGMENTED QUERIES\n"
+                    f"{'='*70}\n"
+                    f"File exists: {lyrics_json_path}\n"
+                    f"Reason: Line count mismatch or missing augmented queries detected.\n"
+                    f"\n"
+                    f"This will call the LLM API and incur costs.\n"
+                    f"To prevent regeneration:\n"
+                    f"  - Fix the JSON file to match the clips directory\n"
+                    f"  - Use --skip-rewrite to use raw lyrics instead\n"
+                    f"  - Use --overwrite-json to explicitly overwrite\n"
+                    f"{'='*70}\n"
+                )
+            print("Generating augmented queries...")
             rewrite_model = Nova2LiteModel()
             augmented_queries = await rewrite_model.generate_augmented_queries(
                 [line.text for line in song.lyrics_lines]

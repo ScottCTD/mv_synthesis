@@ -5,7 +5,13 @@ from typing import Iterable, Optional
 
 def run_ffmpeg(cmd: list[str]) -> None:
     """Run an ffmpeg command list and raise if the subprocess fails."""
-    subprocess.run(cmd, check=True)
+    subprocess.run(
+        cmd,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
 
 
 def _get_encoder_params(video_encoder: str) -> list[str]:
@@ -118,11 +124,17 @@ def render_clip(
     speed_factor: float = 1.0,
     video_encoder: str = "libx264",
 ) -> None:
+    # Ensure output directory exists
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     cmd = ["ffmpeg", "-y"]
     if start_offset > 0:
         cmd += ["-ss", f"{start_offset:.3f}"]
     cmd += ["-i", str(input_path)]
     filters = []
+    # h264_videotoolbox has issues with non-standard aspect ratios (SAR),
+    # so normalize the aspect ratio by scaling to display resolution and setting SAR to 1:1
+    # if video_encoder == "h264_videotoolbox":
+    #     filters.append("scale=iw*sar:ih,setsar=1:1")
     if speed_factor > 0 and abs(speed_factor - 1.0) > 1e-3:
         filters.append(f"setpts=PTS/{speed_factor:.6f}")
     if pad_black:
