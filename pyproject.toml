@@ -15,6 +15,7 @@ dependencies = [
     "numpy>=2.4.0",
     "qdrant-client>=1.16.2",
     "scenedetect[opencv]>=0.6.7.1",
+    "tenacity>=9.1.2",
     "tqdm>=4.67.1",
 ]
 

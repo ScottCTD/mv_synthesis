@@ -5,16 +5,40 @@ from pathlib import Path
 from typing import Literal
 
 import boto3
+from botocore.exceptions import ClientError
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
 
-try:
-    from synthesis.ffmpeg_utils import get_video_duration
-except ImportError:
-    from ffmpeg_utils import get_video_duration
+from synthesis.ffmpeg_utils import get_video_duration
 
 
 def encode_b64(file_path) -> str:
     with open(file_path, "rb") as file:
         return base64.b64encode(file.read()).decode("utf-8")
+
+
+class NonRetryableBedrockError(Exception):
+    """Exception for non-retryable Bedrock errors - these should not be retried."""
+    pass
+
+
+def _is_retryable_error(exception: Exception) -> bool:
+    """Check if a Bedrock exception should trigger a retry."""
+    if isinstance(exception, ClientError):
+        error_code = exception.response.get("Error", {}).get("Code", "")
+        retryable_errors = [
+            "ThrottlingException",
+            "TooManyRequestsException",
+            "ServiceUnavailableException",
+            "RequestTimeoutException",
+            "InternalServerError",
+        ]
+        return error_code in retryable_errors
+    return False
 
 
 class Nova2OmniEmbeddings:
@@ -51,13 +75,32 @@ class Nova2OmniEmbeddings:
             ]
         }
         """
-        response = await asyncio.to_thread(
-            self.client.invoke_model,
-            body=json.dumps(request_body, indent=2),
-            modelId="amazon.nova-2-multimodal-embeddings-v1:0",
-            accept="application/json",
-            contentType="application/json",
+        @retry(
+            retry=retry_if_exception_type(ClientError),
+            wait=wait_exponential(multiplier=1, min=2, max=60),
+            stop=stop_after_attempt(5),
+            reraise=True,
         )
+        def _call_invoke_model():
+            try:
+                return self.client.invoke_model(
+                    body=json.dumps(request_body, indent=2),
+                    modelId="amazon.nova-2-multimodal-embeddings-v1:0",
+                    accept="application/json",
+                    contentType="application/json",
+                )
+            except ClientError as e:
+                # Convert non-retryable errors to a different exception type
+                # so tenacity won't retry them
+                if not _is_retryable_error(e):
+                    raise NonRetryableBedrockError(str(e)) from e
+                raise  # Re-raise retryable ClientErrors for tenacity to handle
+        
+        try:
+            response = await asyncio.to_thread(_call_invoke_model)
+        except NonRetryableBedrockError as e:
+            # Re-raise as the original ClientError
+            raise e.__cause__ if e.__cause__ else e
         request_id = response.get("ResponseMetadata").get("RequestId")
         response_body = json.loads(response.get("body").read())
 

@@ -1,0 +1,1279 @@
+{
+  "metadata": {
+    "song": "countingStars",
+    "methods": [
+      "audio_query_video",
+      "synthesis"
+    ],
+    "username": "test",
+    "created_at": "2025-12-30T03:27:32Z",
+    "dataset_root": "/Users/scottcui/projects/mv_synthesis/datasets/ds2",
+    "outputs_root": "/Users/scottcui/projects/mv_synthesis/outputs",
+    "updated_at": "2025-12-30T03:27:38Z"
+  },
+  "comparisons": [
+    {
+      "timestamp": "2025-12-30T03:27:32.379Z",
+      "session_id": "sess_jsnx0gb6",
+      "username": "test",
+      "song": "countingStars",
+      "line_index": 1,
+      "line_position": 1,
+      "decision": "left",
+      "winner": "synthesis",
+      "lyric_text": "Counting Stars - OneRepublic Lately I've been I've been losing sleep",
+      "line_audio_url": "/assets/dataset/songs/countingStars/clips_and_lyrics/0001_000.000-005.490.wav",
+      "song_audio_url": "http://localhost:8000/assets/dataset/songs/countingStars/countingStars.mp3",
+      "left": {
+        "method": "synthesis",
+        "manifest_path": "synthesis/countingStars/retrieval_manifest.json",
+        "entry": {
+          "index": 1,
+          "start": 0,
+          "end": 5.49,
+          "duration": 5.49,
+          "lyric_text": "Counting Stars - OneRepublic Lately I've been I've been losing sleep",
+          "augmented_query": "dimly lit bedroom at night soft blue moonlight through window restless figure tossing in bed wide shot of empty star-filled sky visible outside clock showing 3 AM close-up on tired bloodshot eyes sweating brow shadows flickering on walls melancholic pensive mood slow lingering shots quiet tension lonely atmosphere",
+          "text_path": "songs/countingStars/clips_and_lyrics/0001_000.000-005.490.txt",
+          "audio_path": "songs/countingStars/clips_and_lyrics/0001_000.000-005.490.wav",
+          "query_source": "text",
+          "query_collection": "lyrics-text",
+          "query_embedding_id": "70a102a7-a00c-55e7-83f2-bd2d496fda89",
+          "video_candidates": [
+            {
+              "segment_id": "fcecbf34-a51b-5b2a-906a-3f9a0408f83a",
+              "segment_path": "videos/E06-Tom_and_Jerry_in_the_Hollywood_Bowl/002-00;00;35.000-00;00;38.500.mp4",
+              "duration": 3.502792,
+              "vibe_card": "Scene Description: A semi-circular amphitheater is illuminated by warm yellow lighting against a deep blue nighttime sky, surrounded by silhouetted trees and distant hills; the empty stage glows softly with no visible performers or audience.  \nVibe: Serene, tranquil, majestic, quiet  \nKey Words: Amphitheater, Night sky, Stage lighting, Trees, Hills, Serenity  \nMusical Aspects (If Any): Quiet stillness, static shot evoking calm anticipation, no visible rhythmic motion or synchronized action",
+              "video_score": 0.19409966384578903,
+              "vibe_card_score": 0.1547833755892416
+            },
+            {
+              "segment_id": "426d3392-1c94-5e51-a7fa-cf4297983019",
+              "segment_path": "videos/E10-Jerry_And_The_Goldfish/001-00;00;28.000-00;00;33.000.mp4",
+              "duration": 5.004292,
+              "vibe_card": "### Scene Description:  \nA large, clear glass fishbowl sits on a surface, containing still water with a small rock at the bottom. Inside the bowl, a small yellow fish with dark fins lies motionless on the rock, appearing to rest or sleep. Gentle bubbles rise slowly from the fish to the surface of the water. The background shows a window with a dark blue night sky, dotted with clouds, suggesting a calm, indoor evening setting.  \n\n### Vibe:  \nTranquil, solitary, melancholic, and quiet. The stillness of the fish, the gentle rise of bubbles, and the somber night sky evoke a sense of peaceful isolation and quiet introspection.  \n\n### Key Words:  \nFish (yellow), fishbowl, rock, water, bubbles, night sky, solitude, tranquility, stillness, resting  \n\n### Musical Aspects (If Any):  \nThe slow, deliberate rise of bubbles implies a soft, gentle *bubbling* sound, creating a quiet, rhythmic cadence. The overall stillness suggests a hushed, near-silent atmosphere, evoking a slow, peaceful tempo with no abrupt movements or synchronized beats.",
+              "video_score": 0.16909359155954995,
+              "vibe_card_score": 0.18570875744257048
+            },
+            {
+              "segment_id": "7ace4e52-2279-5ac2-9265-67f1862d2d19",
+              "segment_path": "videos/E05-Safety_Second/099-00;06;02.000-00;06;03.500.mp4",
+              "duration": 1.500792,
+              "vibe_card": "Scene Description: A red and white rocket ascends rapidly against a deep blue background, leaving a curling trail of smoke behind it, culminating in a bright yellow starburst at its tip.  \nVibe: Intense, dynamic, climactic, powerful  \nKey Words: Rocket, Smoke Trail, Ascent, Starburst, Vertical Trajectory, Propulsion  \nMusical Aspects (If Any): Climactic build-up culminating in a sudden, sharp burst",
+              "video_score": 0.16590694725010355,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "0e788e10-737b-5805-b48b-1c0fccbdd4f9",
+              "segment_path": "videos/E06-Tom_and_Jerry_in_the_Hollywood_Bowl/001-00;00;33.000-00;00;34.500.mp4",
+              "duration": 1.500792,
+              "vibe_card": "### Output Format  \n\n**Scene Description:** A serene night scene featuring a starry indigo sky dotted with numerous small white stars. Silhouetted trees with dense foliage frame the left and right edges, while gently rolling dark hills form the background. A faint, growing yellow circular glow emerges at the bottom center of the frame, subtly illuminating the base of the scene.  \n\n**Vibe:** Tranquil, contemplative, and subtly mysterious; the stillness of the night contrasts with the enigmatic emergence of the soft yellow light.  \n\n**Key Words:** Night sky, stars, tree silhouettes, hills/mountains, yellow glow, emerging light, serene atmosphere, stillness  \n\n**Musical Aspects (If Any):** Slow, quiet visual build-up marked by the gradual appearance of the yellow glow; implies a hushed, ambient tone with no distinct rhythmic or percussive elements.",
+              "video_score": 0.16094634951764505,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "e76df13b-19c9-50f7-8445-af5e79674b13",
+              "segment_path": "videos/E06-Tom_and_Jerry_in_the_Hollywood_Bowl/003-00;00;39.000-00;00;44.000.mp4",
+              "duration": 5.004292,
+              "vibe_card": "Scene Description: A nighttime outdoor amphitheater features a brightly lit stage with an orchestra positioned under a large, curved roof structure. Tiered seating filled with an audience surrounds the stage, set against a backdrop of trees and hills under a dark blue sky.  \nVibe: Serene, grand, anticipatory, majestic  \nKey Words: Amphitheater, Orchestra, Stage, Audience, Nighttime concert, Curved roof, Trees, Hills, Anticipation  \nMusical Aspects (If Any): Implied quiet before a performance; static visual suggests a slow build-up of anticipation through dramatic lighting contrast",
+              "video_score": 0.15956554581752755,
+              "vibe_card_score": 0.17505006487537317
+            },
+            {
+              "segment_id": "fc7d0ca9-c346-532b-8909-e54c01f24f48",
+              "segment_path": "videos/E03-Texas_Tom/100-00;06;01.500-00;06;02.500.mp4",
+              "duration": 1.000292,
+              "vibe_card": "**Scene Description:**  \nThe clip opens with an abstract swirling pattern of pink and brown clouds filling the frame, creating a chaotic, turbulent visual. This transitions to an exterior view of a house featuring a white wall, red-tiled roof, and a stone chimney, under a clear blue sky. A small black bird is seen flying near the roofline.\n\n**Vibe:**  \nIntense and chaotic during the abstract cloud sequence, shifting to calm and serene in the house exterior scene. The bird adds a subtle sense of movement and life to the tranquil setting.\n\n**Key Words:**  \nSwirling clouds, abstract pattern, house exterior, red-tiled roof, stone chimney, bird in flight, clear blue sky\n\n**Musical Aspects (If Any):**  \nThe abrupt transition from the chaotic, swirling cloud pattern to the static house exterior implies a sudden shift in pace, suggesting a visual \"silence\" after an initial burst of energy. No explicit rhythmic or auditory cues are present in the visuals.",
+              "video_score": 0.1452892632463549,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "c5e2917b-2e18-5dcd-a032-655ba1ff0ea1",
+              "segment_path": "videos/E05-Safety_Second/051-00;03;34.000-00;03;36.500.mp4",
+              "duration": 2.5025,
+              "vibe_card": "### Scene Description:  \nA green pipe attached to a yellow building with horizontal paneling violently bends and stretches, emitting red cracks and yellow starburst effects. The pipe then shoots upward past a tree, continuing to twist and shake with energetic red streaks and yellow sparks trailing behind it before curving back down toward the building.  \n\n### Vibe:  \nExplosive, chaotic, and frenetic, with a sense of uncontrolled energy and destructive force.  \n\n### Key Words:  \nPipe, Building, Bending, Stretching, Explosion, Red Cracks, Yellow Stars, Tree, Motion, Energy  \n\n### Musical Aspects (If Any):  \nSudden, staccato impacts synchronized with the pipe\u2019s violent movements (Mickey Mousing), followed by a rapid, chaotic rhythm as the pipe flies upward and curls back down.",
+              "video_score": 0.1403127821703268,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "2c889c48-d473-5a9b-adf3-2c1f49e2e567",
+              "segment_path": "videos/E04-Jerry_And_The_Lion/059-00;04;08.000-00;04;11.500.mp4",
+              "duration": 3.502792,
+              "vibe_card": "Scene Description: A static blue curtain with vertical lines partially obscures abstract, blurred shapes resembling figures against a background featuring a brick wall on the right and a gray surface on the left. No movement or action occurs throughout the clip.  \nVibe: Mysterious, static, serene  \nKey Words: Blue curtain, abstract shapes, brick wall, static  \nMusical Aspects (If Any): None (silent, static imagery)",
+              "video_score": 0.13723462215215296,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "155389bf-dff3-5f3c-a7c0-d77d6dbe12d1",
+              "segment_path": "videos/E06-Tom_and_Jerry_in_the_Hollywood_Bowl/066-00;05;25.000-00;05;28.500.mp4",
+              "duration": 3.502792,
+              "vibe_card": "### Scene Description:  \nA nighttime exterior view of a grand, art deco-style theater with towering columns, a domed facade, and illuminated steps, shrouded in misty fog. The street in front is empty except for elongated, distorted shadows of a cat (with pointed ears and a tail) and a mouse (with white gloves and a red platform) lying motionless on the road. The scene transitions to the interior of the theater, where a small mouse in a tuxedo and bow tie stands on a music stand, holding a baton and appearing to conduct, with sheet music spread out before him. The theater seats are mostly empty, bathed in warm, focused stage lighting, creating a quiet, anticipatory atmosphere.  \n\n### Vibe:  \nMysterious and eerie due to the foggy nighttime setting and motionless shadows exteriorly; formally quiet and introspective interiorly, with a solitary conductor evoking quiet anticipation and understated elegance.  \n\n### Key Words:  \nArt deco theater, fog, nighttime, shadows (cat, mouse), conductor mouse, baton, sheet music, empty seats, stage lighting, grand architecture, mist, stillness.  \n\n### Musical Aspects (If Any):  \nVisual conducting by the mouse with a baton and sheet music, implying a silent or implied musical performance; no audible rhythm or sound cues visible, but the posture and setting strongly suggest orchestrated movement.",
+              "video_score": 0.13672302387379,
+              "vibe_card_score": 0.1826203492215986
+            },
+            {
+              "segment_id": "a7483860-c4d8-53ca-a34e-8690860b1b42",
+              "segment_path": "videos/E04-Jerry_And_The_Lion/045-00;03;05.500-00;03;06.500.mp4",
+              "duration": 1.001,
+              "vibe_card": "Scene Description: A static shot reveals a hallway with brown lockers featuring white frames and blue handles; a green floor is visible, and an exposed brick wall peeks from under one locker, bathed in soft side lighting casting subtle shadows.  \nVibe: Quiet, still, and subtly mysterious due to the hidden brick wall suggesting concealed space.  \nKey Words: Lockers, blue handles, green floor, exposed brick wall, hallway, static shot  \nMusical Aspects (If Any): Silent, static visual with no implied audio or rhythmic elements.",
+              "video_score": 0.13538941886799194,
+              "vibe_card_score": null
+            }
+          ],
+          "vibe_candidates": [
+            {
+              "segment_id": "426d3392-1c94-5e51-a7fa-cf4297983019",
+              "segment_path": "videos/E10-Jerry_And_The_Goldfish/001-00;00;28.000-00;00;33.000.mp4",
+              "duration": 5.004292,
+              "vibe_card": "### Scene Description:  \nA large, clear glass fishbowl sits on a surface, containing still water with a small rock at the bottom. Inside the bowl, a small yellow fish with dark fins lies motionless on the rock, appearing to rest or sleep. Gentle bubbles rise slowly from the fish to the surface of the water. The background shows a window with a dark blue night sky, dotted with clouds, suggesting a calm, indoor evening setting.  \n\n### Vibe:  \nTranquil, solitary, melancholic, and quiet. The stillness of the fish, the gentle rise of bubbles, and the somber night sky evoke a sense of peaceful isolation and quiet introspection.  \n\n### Key Words:  \nFish (yellow), fishbowl, rock, water, bubbles, night sky, solitude, tranquility, stillness, resting  \n\n### Musical Aspects (If Any):  \nThe slow, deliberate rise of bubbles implies a soft, gentle *bubbling* sound, creating a quiet, rhythmic cadence. The overall stillness suggests a hushed, near-silent atmosphere, evoking a slow, peaceful tempo with no abrupt movements or synchronized beats.",
+              "video_score": null,
+              "vibe_card_score": 0.18570875744257048
+            },
+            {
+              "segment_id": "155389bf-dff3-5f3c-a7c0-d77d6dbe12d1",
+              "segment_path": "videos/E06-Tom_and_Jerry_in_the_Hollywood_Bowl/066-00;05;25.000-00;05;28.500.mp4",
+              "duration": 3.502792,
+              "vibe_card": "### Scene Description:  \nA nighttime exterior view of a grand, art deco-style theater with towering columns, a domed facade, and illuminated steps, shrouded in misty fog. The street in front is empty except for elongated, distorted shadows of a cat (with pointed ears and a tail) and a mouse (with white gloves and a red platform) lying motionless on the road. The scene transitions to the interior of the theater, where a small mouse in a tuxedo and bow tie stands on a music stand, holding a baton and appearing to conduct, with sheet music spread out before him. The theater seats are mostly empty, bathed in warm, focused stage lighting, creating a quiet, anticipatory atmosphere.  \n\n### Vibe:  \nMysterious and eerie due to the foggy nighttime setting and motionless shadows exteriorly; formally quiet and introspective interiorly, with a solitary conductor evoking quiet anticipation and understated elegance.  \n\n### Key Words:  \nArt deco theater, fog, nighttime, shadows (cat, mouse), conductor mouse, baton, sheet music, empty seats, stage lighting, grand architecture, mist, stillness.  \n\n### Musical Aspects (If Any):  \nVisual conducting by the mouse with a baton and sheet music, implying a silent or implied musical performance; no audible rhythm or sound cues visible, but the posture and setting strongly suggest orchestrated movement.",
+              "video_score": null,
+              "vibe_card_score": 0.1826203492215986
+            },
+            {
+              "segment_id": "e76df13b-19c9-50f7-8445-af5e79674b13",
+              "segment_path": "videos/E06-Tom_and_Jerry_in_the_Hollywood_Bowl/003-00;00;39.000-00;00;44.000.mp4",
+              "duration": 5.004292,
+              "vibe_card": "Scene Description: A nighttime outdoor amphitheater features a brightly lit stage with an orchestra positioned under a large, curved roof structure. Tiered seating filled with an audience surrounds the stage, set against a backdrop of trees and hills under a dark blue sky.  \nVibe: Serene, grand, anticipatory, majestic  \nKey Words: Amphitheater, Orchestra, Stage, Audience, Nighttime concert, Curved roof, Trees, Hills, Anticipation  \nMusical Aspects (If Any): Implied quiet before a performance; static visual suggests a slow build-up of anticipation through dramatic lighting contrast",
+              "video_score": null,
+              "vibe_card_score": 0.17505006487537317
+            },
+            {
+              "segment_id": "36943384-3858-5e4a-a455-06e7f53454a2",
+              "segment_path": "videos/E02-Saturday_Evening_Puss/001-00;00;27.000-00;00;31.500.mp4",
+              "duration": 4.503792,
+              "vibe_card": "### Scene Description:  \nA tranquil nighttime suburban neighborhood under a full moon. Several houses with pitched roofs and lit windows stand along a quiet street. A church with a tall steeple is visible in the background, and trees line the streets. The scene is peaceful, with no visible characters or movement.  \n\n### Vibe:  \nSerene, quiet, and nostalgic; evoking a calm, still night in a sleepy town.  \n\n### Key Words:  \nNeighborhood, Houses, Night, Full Moon, Church Steeple, Residential Street, Trees, Lit Windows  \n\n### Musical Aspects (If Any):  \nNone visible; the static, silent imagery suggests a quiet, still ambiance with no implied rhythm or sound.",
+              "video_score": null,
+              "vibe_card_score": 0.16417828140878
+            },
+            {
+              "segment_id": "b050268b-c86d-597a-88ef-f1b62e9210c1",
+              "segment_path": "videos/E06-Tom_and_Jerry_in_the_Hollywood_Bowl/064-00;05;19.500-00;05;23.000.mp4",
+              "duration": 3.502792,
+              "vibe_card": "### Scene Description:  \nA sleek black-and-white cat wearing a formal black tuxedo, white shirt, and bow tie stands poised on a round, wheeled platform resembling a small hoverboard. The cat holds a thin conducting baton in its right paw, raised dramatically above its head. Initially set against a lush, moonlit forest with a shimmering green body of water below, the cat begins to conduct energetically. The scene transitions to a bustling nighttime cityscape with lampposts, buildings, a stone staircase, and a prominent statue, where the cat continues its animated conducting motions while gliding smoothly along the road. The setting then shifts to a grand classical building with columns and steps, with the cat still directing rhythmically from its floating platform as it passes by urban fixtures like lampposts and power lines.  \n\n### Vibe:  \nWhimsical, elegant, and magically theatrical. The cat\u2019s poised conducting and smooth gliding evoke a sense of enchanting authority and playful grandeur, blending sophistication with surreal, dreamlike motion under the starry night sky.  \n\n### Key Words:  \nCat, Formal Attire, Conducting Baton, Hoverboard/Wheeled Platform, Nighttime Forest, Cityscape, Classical Building, Statue, Lampposts, Urban Architecture, Conducting, Gliding Motion, Moonlight, Stars  \n\n### Musical Aspects (If Any):  \nThe cat\u2019s baton strikes and sweeping arm gestures synchronize with an implied rhythmic cadence, suggesting \"staccato baton strikes\" and \"graceful, sweeping conducting motions.\" The transitions between serene forest, lively city, and monumental architecture imply a dynamic visual rhythm\u2014calm to energetic to majestic\u2014mirroring a conductor\u2019s evolving tempo and emotional arc.",
+              "video_score": null,
+              "vibe_card_score": 0.15750623276062597
+            },
+            {
+              "segment_id": "b5d242eb-8aa9-55b5-80f6-0a8a46aed7f2",
+              "segment_path": "videos/E01-Little_Quacker/004-00;00;35.500-00;00;39.500.mp4",
+              "duration": 4.003292,
+              "vibe_card": "### Scene Description:  \nA serene rural landscape at either dawn or dusk, featuring a weathered wooden fence post leaning against tall, golden grass in the foreground. Beyond the fence, a vast field stretches toward distant trees and a calm body of water, with scattered hay bales visible near the horizon. The sky is painted in soft pinks and purples, suggesting peaceful stillness.  \n\n### Vibe:  \nTranquil, nostalgic, and quiet; evoking a sense of rural solitude and quiet reflection under a gentle, warm light.  \n\n### Key Words:  \nFence Post, Golden Grass, Hay Bales, Field, Trees, Body of Water, Dawn/Dusk, Rural Landscape, Stillness  \n\n### Musical Aspects (If Any):  \nImplied silence or soft, ambient melody; the static, unhurried visual rhythm suggests a calm, contemplative acoustic backdrop\u2014perhaps gentle acoustic guitar or wind chimes\u2014mirroring the peaceful, motionless scenery. No overt \"Mickey Mousing\" or rhythmic action present.",
+              "video_score": null,
+              "vibe_card_score": 0.15729993226618627
+            },
+            {
+              "segment_id": "e6b044ab-621c-5cd6-9f4e-b800adf0140f",
+              "segment_path": "videos/E01-Little_Quacker/061-00;04;28.500-00;04;29.500.mp4",
+              "duration": 1.001,
+              "vibe_card": "### Scene Description  \nA brown log with a yellow cut end lies horizontally on green grass under a clear blue sky dotted with a few white clouds. The scene abruptly transitions to complete darkness with no visible objects or characters remaining.  \n\n### Vibe  \nInitially serene and tranquil, shifting abruptly to ominous and uncertain as the scene plunges into darkness.  \n\n### Key Words  \nLog, Grass, Sky, Clouds, Darkness, Transition  \n\n### Musical Aspects (If Any)  \nAbrupt visual rhythm: static stillness followed by a sudden shift to darkness, implying a dramatic pause or silent tension without rhythmic repetition.",
+              "video_score": null,
+              "vibe_card_score": 0.1559896536574924
+            },
+            {
+              "segment_id": "fcecbf34-a51b-5b2a-906a-3f9a0408f83a",
+              "segment_path": "videos/E06-Tom_and_Jerry_in_the_Hollywood_Bowl/002-00;00;35.000-00;00;38.500.mp4",
+              "duration": 3.502792,
+              "vibe_card": "Scene Description: A semi-circular amphitheater is illuminated by warm yellow lighting against a deep blue nighttime sky, surrounded by silhouetted trees and distant hills; the empty stage glows softly with no visible performers or audience.  \nVibe: Serene, tranquil, majestic, quiet  \nKey Words: Amphitheater, Night sky, Stage lighting, Trees, Hills, Serenity  \nMusical Aspects (If Any): Quiet stillness, static shot evoking calm anticipation, no visible rhythmic motion or synchronized action",
+              "video_score": null,
+              "vibe_card_score": 0.1547833755892416
+            },
+            {
+              "segment_id": "7691a542-0cdd-57a4-9384-61ef33280c68",
+              "segment_path": "videos/E05-Safety_Second/002-00;00;30.500-00;00;32.500.mp4",
+              "duration": 2.001292,
+              "vibe_card": "**Scene Description:** An exterior view shows part of a building with a sloped roof and a small pink arched door at its base, set in a village or garden with a fence and distant structures under warm sunset lighting. The scene transitions to an interior bedroom where anthropomorphic mice Jerry and Nibbles lie asleep in a bed, with headboards labeled **\"JERRY\"** and **\"NIBBLES\"** beneath blue and pink blankets respectively. The dimly lit room features a bedside table with a green lamp, curtains, and a rug, suggesting nighttime.  \n\n**Vibe:** Calm, peaceful, and tranquil, evoking quiet rest and serenity.  \n\n**Key Words:** Jerry, Nibbles, sloped roof, arched door, pink door, village, fence, buildings, bedroom, bed, headboard, blankets, bedside table, green lamp, curtains, rug, nighttime, sleeping, rest  \n\n**Musical Aspects (If Any):** Abrupt transition from exterior to interior; implied silence and quiet in the bedroom with no visible rhythmic motion or audio cues.",
+              "video_score": null,
+              "vibe_card_score": 0.15076898476614708
+            },
+            {
+              "segment_id": "49682c8d-fee6-5323-93a5-137778c95441",
+              "segment_path": "videos/E08-Cue_Ball_Cat/036-00;03;28.000-00;03;32.000.mp4",
+              "duration": 4.003292,
+              "vibe_card": "### Scene Description:  \nA dark blue cartoon dog with white paws and red ears lies drowsy on a green surface against a plain purple wall. The dog\u2019s eyes are initially closed but gradually open to reveal circular lenses displaying the numbers \"8\" (black) and \"6\" (green), suggesting a shift from sleep to alertness.  \n\n### Vibe:  \nDrowsy yet inquisitive; transitions from lethargy to focused awareness with a subtle, playful undertone hinted by the numbered lenses.  \n\n### Key Words:  \nDog, Glasses (numbered \"8\" and \"6\"), Sleeping, Waking, Green Surface, Purple Wall, Alertness, Playful Mystery  \n\n### Musical Aspects (If Any):  \nImplied abrupt shift from silence to sudden focus\u2014visual rhythm suggests a \"staccato awakening\" with no audible cues depicted.",
+              "video_score": null,
+              "vibe_card_score": 0.14749423209270462
+            }
+          ],
+          "selected": {
+            "segment_id": "426d3392-1c94-5e51-a7fa-cf4297983019",
+            "segment_path": "videos/E10-Jerry_And_The_Goldfish/001-00;00;28.000-00;00;33.000.mp4",
+            "duration": 5.004292,
+            "vibe_card": "### Scene Description:  \nA large, clear glass fishbowl sits on a surface, containing still water with a small rock at the bottom. Inside the bowl, a small yellow fish with dark fins lies motionless on the rock, appearing to rest or sleep. Gentle bubbles rise slowly from the fish to the surface of the water. The background shows a window with a dark blue night sky, dotted with clouds, suggesting a calm, indoor evening setting.  \n\n### Vibe:  \nTranquil, solitary, melancholic, and quiet. The stillness of the fish, the gentle rise of bubbles, and the somber night sky evoke a sense of peaceful isolation and quiet introspection.  \n\n### Key Words:  \nFish (yellow), fishbowl, rock, water, bubbles, night sky, solitude, tranquility, stillness, resting  \n\n### Musical Aspects (If Any):  \nThe slow, deliberate rise of bubbles implies a soft, gentle *bubbling* sound, creating a quiet, rhythmic cadence. The overall stillness suggests a hushed, near-silent atmosphere, evoking a slow, peaceful tempo with no abrupt movements or synchronized beats.",
+            "video_score": 0.16909359155954995,
+            "vibe_card_score": 0.18570875744257048,
+            "strategy": "top_video_duration"
+          },
+          "postprocess": {
+            "input_path": "datasets/ds2/videos/E10-Jerry_And_The_Goldfish/001-00;00;28.000-00;00;33.000.mp4",
+            "output_path": "/Users/scottcui/projects/mv_synthesis/outputs/synthesis/countingStars/clips/0001.mp4",
+            "start_offset": 0,
+            "duration": 5.49,
+            "pad_black": false,
+            "clip_duration": 5.004292,
+            "speed_factor": 0.911528597449909,
+            "note": "slow_down",
+            "input_exists": true
+          },
+          "line_audio_url": "/assets/dataset/songs/countingStars/clips_and_lyrics/0001_000.000-005.490.wav",
+          "selected_display_url": "/assets/output/synthesis/countingStars/clips/0001.mp4",
+          "selected_display_source": "rendered"
+        }
+      },
+      "right": {
+        "method": "audio_query_video",
+        "manifest_path": "audio_query_video/countingStars/retrieval_manifest.json",
+        "entry": {
+          "index": 1,
+          "start": 0,
+          "end": 5.49,
+          "duration": 5.49,
+          "lyric_text": "Counting Stars - OneRepublic Lately I've been I've been losing sleep",
+          "augmented_query": "dimly lit bedroom at night soft blue moonlight through window restless figure tossing in bed wide shot of empty star-filled sky visible outside clock showing 3 AM close-up on tired bloodshot eyes sweating brow shadows flickering on walls melancholic pensive mood slow lingering shots quiet tension lonely atmosphere",
+          "text_path": "songs/countingStars/clips_and_lyrics/0001_000.000-005.490.txt",
+          "audio_path": "songs/countingStars/clips_and_lyrics/0001_000.000-005.490.wav",
+          "query_source": "audio",
+          "query_collection": "lyrics-audio",
+          "query_embedding_id": "70a102a7-a00c-55e7-83f2-bd2d496fda89",
+          "video_candidates": [
+            {
+              "segment_id": "21a5e9b3-fb0e-5cc5-be5f-041591c1310c",
+              "segment_path": "videos/E03-Texas_Tom/058-00;03;54.000-00;03;59.000.mp4",
+              "duration": 5.004292,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats are on a wooden porch. The cat on the right, dressed in a white cowboy hat, blue shirt, green bandana, yellow pants with stars, and red boots, strums a brown acoustic guitar with a red star on its body. The cat on the left, wearing a black cowboy hat, purple scarf, black vest, and yellow pants with brown boots, sits on a bench and watches attentively with a slight smile.  \n\n### Vibe:  \nPlayful, lighthearted, and cheerful, with a touch of rustic charm.  \n\n### Key Words:  \nCat, guitar, bench, cowboy hat, boots, acoustic guitar, star, wooden porch, musical performance, attentive, smiling  \n\n### Musical Aspects (If Any):  \nVisual rhythm evident in the strumming motion of the guitar; the standing cat\u2019s energetic posture and facial expression suggest a lively, syncopated performance, implying a joyful melody without audible cues.",
+              "video_score": 0.26284546,
+              "vibe_card_score": 0.25400588
+            },
+            {
+              "segment_id": "620beb8e-605d-5929-8213-5e45066d1fdc",
+              "segment_path": "videos/E03-Texas_Tom/042-00;02;44.000-00;02;48.000.mp4",
+              "duration": 4.003292,
+              "vibe_card": "### Scene Description:  \nA small animated mouse wearing a black hat and white vest interacts with an open blue record player, clutching its horn and adjusting a blue musical note symbol on the player's side. Later, two cats sit on a bench: a white cat in a black outfit looks surprised, while a blue cat in a yellow outfit plays a brown guitar.  \n\n### Vibe:  \nPlayful curiosity shifts to startled surprise for the mouse, contrasted with a calm, relaxed mood as the cats enjoy quiet companionship and music.  \n\n### Key Words:  \nMouse, Record Player, Turntable, Musical Note, White Cat, Blue Cat, Guitar, Surprise, Music  \n\n### Musical Aspects (If Any):  \nThe record player implies rhythmic, synchronized motion (\"Mickey Mousing\") as the mouse\u2019s actions align with the visual beat; the guitar-playing cat suggests quiet, melodic accompaniment in a serene atmosphere.",
+              "video_score": 0.2564736,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "758b02d5-6dc1-5ec5-a77e-1fce248bb8b7",
+              "segment_path": "videos/E03-Texas_Tom/044-00;02;53.500-00;02;58.500.mp4",
+              "duration": 5.005,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats sit on a wooden bench in a rustic outdoor setting. The cat on the right, dressed in a blue shirt, yellow vest with a red star, white hat, and yellow pants, strums an acoustic guitar with green-gloved hands while smiling broadly. The cat on the left, wearing a black hat, white shirt with black trim, yellow pants, and brown boots, sits attentively with a slight smile, listening to the performance. The background features a painted mural of a landscape with blue skies and purple hills.  \n\n### Vibe:  \nPlayful, lighthearted, and musical; the guitarist exudes enthusiasm, creating a casual, joyful mood, while the listener appears engaged and amused.  \n\n### Key Words:  \nAnthropomorphic cats, acoustic guitar (with red star), wooden bench, outdoor porch setting, musical performance, attentive listening, smiling expression, casual interaction, painted landscape backdrop.  \n\n### Musical Aspects (If Any):  \nThe guitarist\u2019s rhythmic strumming posture and open-mouthed expression suggest synchronized, upbeat movement (\"Mickey Mousing\") implying an energetic, melodic performance, though no audio is visible.",
+              "video_score": 0.24729522,
+              "vibe_card_score": 0.2170057
+            },
+            {
+              "segment_id": "a9c2165a-bd63-5e7d-9fcd-a937e6bde3c3",
+              "segment_path": "videos/E03-Texas_Tom/053-00;03;35.000-00;03;39.500.mp4",
+              "duration": 4.5045,
+              "vibe_card": "Scene Description: A small mouse-like character wearing a black hat with a red band and a yellow scarf stands on a teal platform connected to a white cable. The character reacts with surprise as a large brown violin swings down towards them from above, set against a backdrop of a wooden log and grassy ground.  \nVibe: Suspenseful, anxious, with a sense of impending impact; the character's wide-eyed expression and the sudden motion of the violin create tension.  \nKey Words: Mouse-like character, black hat, yellow scarf, teal platform, white cable, wooden log, brown violin, swinging, surprise, danger  \nMusical Aspects (If Any): The swinging violin suggests a sudden, impactful rhythm; the scene implies a staccato movement as the instrument descends rapidly towards the character.",
+              "video_score": 0.24498276,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "586bfe23-9429-5d1b-84c7-b63cb9b9264b",
+              "segment_path": "videos/E03-Texas_Tom/060-00;04;03.500-00;04;04.500.mp4",
+              "duration": 1.000292,
+              "vibe_card": "### Output Format  \n\n**Scene Description:**  \nA white cat with black hair, wearing a black hat, purple vest, and yellow pants, sits alertly on a wooden bench. Beside them, a yellow bird-like character with green hands and feet, dressed in a yellow outfit with red stars, has lost balance while playing a brown guitar and lies on the ground with the instrument scattered beside them.  \n\n**Vibe:**  \nStartled, chaotic, comedic mishap  \n\n**Key Words:**  \nCat, Bird, Guitar, Falling, Bench, Surprise, Musical instrument, Animated mishap  \n\n**Musical Aspects (If Any):**  \nMickey Mousing (implied synchronization of the fall and guitar drop to comedic timing)",
+              "video_score": 0.24041112,
+              "vibe_card_score": 0.2120154
+            },
+            {
+              "segment_id": "58621014-a99d-5bb5-8d22-c2fb1047bc9d",
+              "segment_path": "videos/E03-Texas_Tom/043-00;02;48.500-00;02;53.000.mp4",
+              "duration": 4.5045,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats sit on a wooden bench against a wooden-walled backdrop resembling a rustic porch. The cat on the right, dressed in a blue shirt with a red star on the sleeve, yellow pants, a white cowboy hat, and a green scarf, strums a brown acoustic guitar with visible enthusiasm. The cat on the left, wearing a black hat, a white shirt with purple trim, yellow pants, and brown boots, sits with legs crossed, leaning slightly forward and gazing attentively at the guitarist. The background shows a painted blue sky with distant hills, suggesting an outdoor setting.  \n\n### Vibe:  \nPlayful, musical, and lighthearted. The guitarist\u2019s broad smile and energetic strumming convey joy, while the listener\u2019s relaxed posture and focused gaze suggest quiet amusement and engagement, creating a warm, friendly atmosphere.  \n\n### Key Words:  \nCat (right), guitar, strumming, cowboy hat, blue shirt, red star, yellow pants, green scarf; Cat (left), black hat, white shirt, purple trim, brown boots, yellow pants; wooden bench, wooden wall, blue sky, hills, rustic porch, musical performance, attentive listening  \n\n### Musical Aspects (If Any):  \nThe guitarist\u2019s vigorous strumming of the acoustic guitar implies rhythmic, upbeat music typical of animated performances. The synchronized body language\u2014leaning into the guitar and smiling\u2014suggests \u201cMickey Mousing,\u201d where physical action aligns with implied musical energy. No visible audio cues (e.g., musical notes) are present, but the dynamic posture indicates a lively, cheerful tune.",
+              "video_score": 0.2326182,
+              "vibe_card_score": 0.23196413
+            },
+            {
+              "segment_id": "968e857a-0946-5614-8e6c-8b3b44b9a014",
+              "segment_path": "videos/E03-Texas_Tom/059-00;03;59.500-00;04;03.000.mp4",
+              "duration": 3.502792,
+              "vibe_card": "Scene Description: A cat wearing a white cowboy hat, blue shirt, and yellow pants with red stars energetically plays a brown acoustic guitar with red star decals while standing on a wooden porch. Another cat, dressed in a black cowboy hat, purple vest, and yellow pants, sits on a bench beside him, watching attentively. Blue sparks emit from the standing cat\u2019s feet, and a small cloud of dust erupts around them as the guitar is strummed.  \nVibe: Playful, energetic, and slightly chaotic, with a comical tone emphasized by the exaggerated visual effects of the performance.  \nKey Words: Cat (cowboy attire), acoustic guitar (red stars), bench, blue sparks, dust cloud, strumming, watching, musical performance, cartoon comedy  \nMusical Aspects (If Any): Visual rhythm synchronized to the guitar strumming (\"Mickey Mousing\"), with sudden bursts of sparks and dust creating a staccato visual effect mirroring the implied musical beats.",
+              "video_score": 0.22831614,
+              "vibe_card_score": 0.2619603
+            },
+            {
+              "segment_id": "bea988f8-d230-52f8-88e5-1ebf4dc6c079",
+              "segment_path": "videos/E03-Texas_Tom/054-00;03;40.000-00;03;43.500.mp4",
+              "duration": 3.5035,
+              "vibe_card": "### Scene Description:  \nA small brown mouse wearing a black hat and bandana is tangled in a white wire near a teal pool or tank, struggling on the ground. Later, two cats sit on a wooden bench outdoors: a white cat in a black hat, purple vest, and brown boots listens attentively, while a blue cat in a white hat, yellow pants, and green scarf plays a brown acoustic guitar with a red star on its body. The setting features a rustic wooden post, a teal pool, and a backdrop of a clear blue sky and distant mountains.  \n\n### Vibe:  \nLighthearted yet slightly tense; the blue cat\u2019s cheerful guitar playing contrasts with the mouse\u2019s frantic struggle, creating a mix of playful energy and subtle suspense.  \n\n### Key Words:  \nMouse (tangled in wire), White cat (listening), Blue cat (playing guitar), Guitar, Pool, Bench, Hat, Bandana, Rustic outdoor setting, Struggling, Musical performance  \n\n### Musical Aspects (If Any):  \nThe blue cat strums the guitar rhythmically, suggesting synchronized \"Mickey Mousing\" where the visual motion of strumming implies musical beats. No audible sound is depicted, but the action conveys a light, melodic tempo.",
+              "video_score": 0.22701998,
+              "vibe_card_score": 0.23020813
+            },
+            {
+              "segment_id": "2f1f4bca-f886-51d8-90ae-10effd8cb66a",
+              "segment_path": "videos/E03-Texas_Tom/040-00;02;39.500-00;02;41.000.mp4",
+              "duration": 1.500792,
+              "vibe_card": "Scene Description: A white cat with black ears and tail, wearing a purple scarf, yellow pants, and red boots, sits on a wooden bench observing a blue cat dressed as a cowboy in a white hat, yellow pants with red stars, and a green bandana, who strums an acoustic guitar. In a separate scene, a small brown mouse stands nervously near a record player and a coiled rope on the floor, with a star-shaped object attached to a boot nearby.  \n\nVibe: Lighthearted and musical in the first scene; tense and suspenseful in the second scene.  \n\nKey Words: White cat, blue cat, cowboy hat, acoustic guitar, wooden bench, purple scarf, yellow pants, red boots, record player, coiled rope, star-shaped object, brown mouse, musical performance, Western attire, trap.  \n\nMusical Aspects (If Any): The blue cat\u2019s guitar strumming suggests rhythmic, synchronized music (Mickey Mousing); the record player in the second scene implies background audio, though no explicit rhythm is visible.",
+              "video_score": 0.21562833,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "b25f290f-e0f9-528a-9e3f-d5453fc629d4",
+              "segment_path": "videos/E06-Tom_and_Jerry_in_the_Hollywood_Bowl/077-00;06;13.000-00;06;15.000.mp4",
+              "duration": 2.001292,
+              "vibe_card": "Scene Description: Multiple anthropomorphic characters dressed in formal black suits and white shirts are seated on wooden chairs with red cushions. They are playing string instruments, and a trail of smoke or dust emanates from beneath their chairs, snaking along the floor.  \n\nVibe: Surreal, formal yet chaotic, absurdly discordant  \n\nKey Words: Anthropomorphic characters, formal attire, string instruments, smoke trail, wooden chairs, red cushions, synchronized playing, surreal humor  \n\nMusical Aspects (If Any): Implied orchestral performance with rhythmic visual smoke emission (suggesting \"Mickey Mousing\" of musical actions)",
+              "video_score": 0.21172194,
+              "vibe_card_score": null
+            }
+          ],
+          "vibe_candidates": [
+            {
+              "segment_id": "968e857a-0946-5614-8e6c-8b3b44b9a014",
+              "segment_path": "videos/E03-Texas_Tom/059-00;03;59.500-00;04;03.000.mp4",
+              "duration": 3.502792,
+              "vibe_card": "Scene Description: A cat wearing a white cowboy hat, blue shirt, and yellow pants with red stars energetically plays a brown acoustic guitar with red star decals while standing on a wooden porch. Another cat, dressed in a black cowboy hat, purple vest, and yellow pants, sits on a bench beside him, watching attentively. Blue sparks emit from the standing cat\u2019s feet, and a small cloud of dust erupts around them as the guitar is strummed.  \nVibe: Playful, energetic, and slightly chaotic, with a comical tone emphasized by the exaggerated visual effects of the performance.  \nKey Words: Cat (cowboy attire), acoustic guitar (red stars), bench, blue sparks, dust cloud, strumming, watching, musical performance, cartoon comedy  \nMusical Aspects (If Any): Visual rhythm synchronized to the guitar strumming (\"Mickey Mousing\"), with sudden bursts of sparks and dust creating a staccato visual effect mirroring the implied musical beats.",
+              "video_score": null,
+              "vibe_card_score": 0.2619603
+            },
+            {
+              "segment_id": "21a5e9b3-fb0e-5cc5-be5f-041591c1310c",
+              "segment_path": "videos/E03-Texas_Tom/058-00;03;54.000-00;03;59.000.mp4",
+              "duration": 5.004292,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats are on a wooden porch. The cat on the right, dressed in a white cowboy hat, blue shirt, green bandana, yellow pants with stars, and red boots, strums a brown acoustic guitar with a red star on its body. The cat on the left, wearing a black cowboy hat, purple scarf, black vest, and yellow pants with brown boots, sits on a bench and watches attentively with a slight smile.  \n\n### Vibe:  \nPlayful, lighthearted, and cheerful, with a touch of rustic charm.  \n\n### Key Words:  \nCat, guitar, bench, cowboy hat, boots, acoustic guitar, star, wooden porch, musical performance, attentive, smiling  \n\n### Musical Aspects (If Any):  \nVisual rhythm evident in the strumming motion of the guitar; the standing cat\u2019s energetic posture and facial expression suggest a lively, syncopated performance, implying a joyful melody without audible cues.",
+              "video_score": null,
+              "vibe_card_score": 0.25400588
+            },
+            {
+              "segment_id": "58621014-a99d-5bb5-8d22-c2fb1047bc9d",
+              "segment_path": "videos/E03-Texas_Tom/043-00;02;48.500-00;02;53.000.mp4",
+              "duration": 4.5045,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats sit on a wooden bench against a wooden-walled backdrop resembling a rustic porch. The cat on the right, dressed in a blue shirt with a red star on the sleeve, yellow pants, a white cowboy hat, and a green scarf, strums a brown acoustic guitar with visible enthusiasm. The cat on the left, wearing a black hat, a white shirt with purple trim, yellow pants, and brown boots, sits with legs crossed, leaning slightly forward and gazing attentively at the guitarist. The background shows a painted blue sky with distant hills, suggesting an outdoor setting.  \n\n### Vibe:  \nPlayful, musical, and lighthearted. The guitarist\u2019s broad smile and energetic strumming convey joy, while the listener\u2019s relaxed posture and focused gaze suggest quiet amusement and engagement, creating a warm, friendly atmosphere.  \n\n### Key Words:  \nCat (right), guitar, strumming, cowboy hat, blue shirt, red star, yellow pants, green scarf; Cat (left), black hat, white shirt, purple trim, brown boots, yellow pants; wooden bench, wooden wall, blue sky, hills, rustic porch, musical performance, attentive listening  \n\n### Musical Aspects (If Any):  \nThe guitarist\u2019s vigorous strumming of the acoustic guitar implies rhythmic, upbeat music typical of animated performances. The synchronized body language\u2014leaning into the guitar and smiling\u2014suggests \u201cMickey Mousing,\u201d where physical action aligns with implied musical energy. No visible audio cues (e.g., musical notes) are present, but the dynamic posture indicates a lively, cheerful tune.",
+              "video_score": null,
+              "vibe_card_score": 0.23196413
+            },
+            {
+              "segment_id": "bea988f8-d230-52f8-88e5-1ebf4dc6c079",
+              "segment_path": "videos/E03-Texas_Tom/054-00;03;40.000-00;03;43.500.mp4",
+              "duration": 3.5035,
+              "vibe_card": "### Scene Description:  \nA small brown mouse wearing a black hat and bandana is tangled in a white wire near a teal pool or tank, struggling on the ground. Later, two cats sit on a wooden bench outdoors: a white cat in a black hat, purple vest, and brown boots listens attentively, while a blue cat in a white hat, yellow pants, and green scarf plays a brown acoustic guitar with a red star on its body. The setting features a rustic wooden post, a teal pool, and a backdrop of a clear blue sky and distant mountains.  \n\n### Vibe:  \nLighthearted yet slightly tense; the blue cat\u2019s cheerful guitar playing contrasts with the mouse\u2019s frantic struggle, creating a mix of playful energy and subtle suspense.  \n\n### Key Words:  \nMouse (tangled in wire), White cat (listening), Blue cat (playing guitar), Guitar, Pool, Bench, Hat, Bandana, Rustic outdoor setting, Struggling, Musical performance  \n\n### Musical Aspects (If Any):  \nThe blue cat strums the guitar rhythmically, suggesting synchronized \"Mickey Mousing\" where the visual motion of strumming implies musical beats. No audible sound is depicted, but the action conveys a light, melodic tempo.",
+              "video_score": null,
+              "vibe_card_score": 0.23020813
+            },
+            {
+              "segment_id": "f847aac9-34f7-5025-8736-fdead403996c",
+              "segment_path": "videos/E03-Texas_Tom/049-00;03;16.000-00;03;19.000.mp4",
+              "duration": 3.002292,
+              "vibe_card": "Scene Description: A small brown mouse wearing a black hat, white vest, and yellow tie interacts with a teal record player, adjusting the tonearm. The scene then shifts to two cats dressed in cowboy outfits, one holding a guitar, smiling at each other.  \nVibe: Playful, lighthearted, curious  \nKey Words: Mouse, Cat, Record Player, Guitar, Adjusting, Smiling, Cowboy Outfits  \nMusical Aspects (If Any): Implied audio preparation from the record player; visual focus on adjusting playback with no explicit rhythmic movement or synchronized action observed",
+              "video_score": null,
+              "vibe_card_score": 0.22682872
+            },
+            {
+              "segment_id": "b5d242eb-8aa9-55b5-80f6-0a8a46aed7f2",
+              "segment_path": "videos/E01-Little_Quacker/004-00;00;35.500-00;00;39.500.mp4",
+              "duration": 4.003292,
+              "vibe_card": "### Scene Description:  \nA serene rural landscape at either dawn or dusk, featuring a weathered wooden fence post leaning against tall, golden grass in the foreground. Beyond the fence, a vast field stretches toward distant trees and a calm body of water, with scattered hay bales visible near the horizon. The sky is painted in soft pinks and purples, suggesting peaceful stillness.  \n\n### Vibe:  \nTranquil, nostalgic, and quiet; evoking a sense of rural solitude and quiet reflection under a gentle, warm light.  \n\n### Key Words:  \nFence Post, Golden Grass, Hay Bales, Field, Trees, Body of Water, Dawn/Dusk, Rural Landscape, Stillness  \n\n### Musical Aspects (If Any):  \nImplied silence or soft, ambient melody; the static, unhurried visual rhythm suggests a calm, contemplative acoustic backdrop\u2014perhaps gentle acoustic guitar or wind chimes\u2014mirroring the peaceful, motionless scenery. No overt \"Mickey Mousing\" or rhythmic action present.",
+              "video_score": null,
+              "vibe_card_score": 0.21871042
+            },
+            {
+              "segment_id": "85387331-5ac4-57fb-81d1-8f19251f9874",
+              "segment_path": "videos/E06-Tom_and_Jerry_in_the_Hollywood_Bowl/026-00;02;22.500-00;02;24.000.mp4",
+              "duration": 1.5015,
+              "vibe_card": "### Scene Description:  \nA small animated character dressed in formal attire (black suit, white shirt, red tie) plays a double bass against a warm yellow background. The scene transitions to the same character precariously balanced on the pillar of an ornate golden harp, clutching a thin object (possibly a baton or stick) while appearing to lose balance and tumble downward.\n\n### Vibe:  \nPlayful, lighthearted, and slightly chaotic. The character\u2019s formal appearance contrasts with their clumsy, acrobatic movements, creating a whimsical and humorous tone.\n\n### Key Words:  \nCharacter: Animated cat (formal attire), Objects: Double bass, Harp (ornate golden), Violin, Sheet music stand, Actions: Playing instrument, Balancing, Tumbling, Concepts: Musical performance, Physical comedy  \n\n### Musical Aspects (If Any):  \nVisual rhythm suggests a shift from steady, controlled motion (playing the double bass) to abrupt, staccato movement (tumbling off the harp). The scene implies a sudden disruption in musical flow, evoking a comedic \"Mickey Mousing\" effect where action syncs with implied audio (e.g., a sharp *thud* upon impact).",
+              "video_score": null,
+              "vibe_card_score": 0.21752022
+            },
+            {
+              "segment_id": "758b02d5-6dc1-5ec5-a77e-1fce248bb8b7",
+              "segment_path": "videos/E03-Texas_Tom/044-00;02;53.500-00;02;58.500.mp4",
+              "duration": 5.005,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats sit on a wooden bench in a rustic outdoor setting. The cat on the right, dressed in a blue shirt, yellow vest with a red star, white hat, and yellow pants, strums an acoustic guitar with green-gloved hands while smiling broadly. The cat on the left, wearing a black hat, white shirt with black trim, yellow pants, and brown boots, sits attentively with a slight smile, listening to the performance. The background features a painted mural of a landscape with blue skies and purple hills.  \n\n### Vibe:  \nPlayful, lighthearted, and musical; the guitarist exudes enthusiasm, creating a casual, joyful mood, while the listener appears engaged and amused.  \n\n### Key Words:  \nAnthropomorphic cats, acoustic guitar (with red star), wooden bench, outdoor porch setting, musical performance, attentive listening, smiling expression, casual interaction, painted landscape backdrop.  \n\n### Musical Aspects (If Any):  \nThe guitarist\u2019s rhythmic strumming posture and open-mouthed expression suggest synchronized, upbeat movement (\"Mickey Mousing\") implying an energetic, melodic performance, though no audio is visible.",
+              "video_score": null,
+              "vibe_card_score": 0.2170057
+            },
+            {
+              "segment_id": "586bfe23-9429-5d1b-84c7-b63cb9b9264b",
+              "segment_path": "videos/E03-Texas_Tom/060-00;04;03.500-00;04;04.500.mp4",
+              "duration": 1.000292,
+              "vibe_card": "### Output Format  \n\n**Scene Description:**  \nA white cat with black hair, wearing a black hat, purple vest, and yellow pants, sits alertly on a wooden bench. Beside them, a yellow bird-like character with green hands and feet, dressed in a yellow outfit with red stars, has lost balance while playing a brown guitar and lies on the ground with the instrument scattered beside them.  \n\n**Vibe:**  \nStartled, chaotic, comedic mishap  \n\n**Key Words:**  \nCat, Bird, Guitar, Falling, Bench, Surprise, Musical instrument, Animated mishap  \n\n**Musical Aspects (If Any):**  \nMickey Mousing (implied synchronization of the fall and guitar drop to comedic timing)",
+              "video_score": null,
+              "vibe_card_score": 0.2120154
+            },
+            {
+              "segment_id": "57902691-6f17-50ce-84c9-62ee06094125",
+              "segment_path": "videos/E03-Texas_Tom/041-00;02;41.500-00;02;43.500.mp4",
+              "duration": 2.001292,
+              "vibe_card": "**Scene Description:**  \nA small mouse wearing a black hat and white diaper is being rapidly pulled by a white rope attached to a large cowboy boot adorned with blue spurs. The boot belongs to an unseen larger character whose leg is partially visible. The mouse struggles to keep pace as it is dragged past a blue record player with a disc resting on its turntable, set against a wooden interior background featuring coiled rope on the floor.  \n\n**Vibe:**  \nTense, chaotic, and suspenseful, driven by the mouse\u2019s frantic struggle and the abrupt, forceful motion of the drag. The scene conveys urgency and lighthearted peril typical of classic cartoon physical comedy.  \n\n**Key Words:**  \nMouse, black hat, white diaper, cowboy boot, spurs, rope, record player, turntable, coiled rope, struggle, drag, tension, wooden interior, chase, trap  \n\n**Musical Aspects (If Any):**  \nVisual rhythm of abrupt, jerky movements as the mouse is yanked by the rope; implied audio suggests potential synchronized music from the record player or tense sound effects, though no explicit audio cues are visible in the frames.",
+              "video_score": null,
+              "vibe_card_score": 0.2091904
+            }
+          ],
+          "selected": {
+            "segment_id": "21a5e9b3-fb0e-5cc5-be5f-041591c1310c",
+            "segment_path": "videos/E03-Texas_Tom/058-00;03;54.000-00;03;59.000.mp4",
+            "duration": 5.004292,
+            "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats are on a wooden porch. The cat on the right, dressed in a white cowboy hat, blue shirt, green bandana, yellow pants with stars, and red boots, strums a brown acoustic guitar with a red star on its body. The cat on the left, wearing a black cowboy hat, purple scarf, black vest, and yellow pants with brown boots, sits on a bench and watches attentively with a slight smile.  \n\n### Vibe:  \nPlayful, lighthearted, and cheerful, with a touch of rustic charm.  \n\n### Key Words:  \nCat, guitar, bench, cowboy hat, boots, acoustic guitar, star, wooden porch, musical performance, attentive, smiling  \n\n### Musical Aspects (If Any):  \nVisual rhythm evident in the strumming motion of the guitar; the standing cat\u2019s energetic posture and facial expression suggest a lively, syncopated performance, implying a joyful melody without audible cues.",
+            "video_score": 0.26284546,
+            "vibe_card_score": 0.25400588,
+            "strategy": "top_video"
+          },
+          "postprocess": {
+            "input_path": "datasets/ds2/videos/E03-Texas_Tom/058-00;03;54.000-00;03;59.000.mp4",
+            "output_path": "/Users/scottcui/projects/mv_synthesis/outputs/audio_query_video/countingStars/clips/0001.mp4",
+            "start_offset": 0,
+            "duration": 5.49,
+            "pad_black": false,
+            "clip_duration": 5.004292,
+            "speed_factor": 0.911528597449909,
+            "note": "slow_down",
+            "input_exists": true
+          },
+          "line_audio_url": "/assets/dataset/songs/countingStars/clips_and_lyrics/0001_000.000-005.490.wav",
+          "selected_display_url": "/assets/output/audio_query_video/countingStars/clips/0001.mp4",
+          "selected_display_source": "rendered"
+        }
+      }
+    },
+    {
+      "timestamp": "2025-12-30T03:27:35.825Z",
+      "session_id": "sess_jsnx0gb6",
+      "username": "test",
+      "song": "countingStars",
+      "line_index": 2,
+      "line_position": 2,
+      "decision": "left",
+      "winner": "synthesis",
+      "lyric_text": "Dreaming about the things that we could be",
+      "line_audio_url": "/assets/dataset/songs/countingStars/clips_and_lyrics/0002_005.490-009.390.wav",
+      "song_audio_url": "http://localhost:8000/assets/dataset/songs/countingStars/countingStars.mp3",
+      "left": {
+        "method": "synthesis",
+        "manifest_path": "synthesis/countingStars/retrieval_manifest.json",
+        "entry": {
+          "index": 2,
+          "start": 5.49,
+          "end": 9.39,
+          "duration": 3.9000000000000004,
+          "lyric_text": "Dreaming about the things that we could be",
+          "augmented_query": "Serene wide shot of a couple standing in an open field at golden hour, soft focus with bokeh lighting, gazing toward a vast horizon under a sky transitioning from warm orange to deep indigo, symbolic winding path leading into distant mist, subtle emerging starlight flickering above, contemplative and hopeful atmosphere with slow zoom emphasizing infinite possibilities, warm and cool tonal contrast blending dreams and reality",
+          "text_path": "songs/countingStars/clips_and_lyrics/0002_005.490-009.390.txt",
+          "audio_path": "songs/countingStars/clips_and_lyrics/0002_005.490-009.390.wav",
+          "query_source": "text",
+          "query_collection": "lyrics-text",
+          "query_embedding_id": "5cf139ad-ab22-5ab4-a3ee-11cd0c194f0e",
+          "video_candidates": [
+            {
+              "segment_id": "426d3392-1c94-5e51-a7fa-cf4297983019",
+              "segment_path": "videos/E10-Jerry_And_The_Goldfish/001-00;00;28.000-00;00;33.000.mp4",
+              "duration": 5.004292,
+              "vibe_card": "### Scene Description:  \nA large, clear glass fishbowl sits on a surface, containing still water with a small rock at the bottom. Inside the bowl, a small yellow fish with dark fins lies motionless on the rock, appearing to rest or sleep. Gentle bubbles rise slowly from the fish to the surface of the water. The background shows a window with a dark blue night sky, dotted with clouds, suggesting a calm, indoor evening setting.  \n\n### Vibe:  \nTranquil, solitary, melancholic, and quiet. The stillness of the fish, the gentle rise of bubbles, and the somber night sky evoke a sense of peaceful isolation and quiet introspection.  \n\n### Key Words:  \nFish (yellow), fishbowl, rock, water, bubbles, night sky, solitude, tranquility, stillness, resting  \n\n### Musical Aspects (If Any):  \nThe slow, deliberate rise of bubbles implies a soft, gentle *bubbling* sound, creating a quiet, rhythmic cadence. The overall stillness suggests a hushed, near-silent atmosphere, evoking a slow, peaceful tempo with no abrupt movements or synchronized beats.",
+              "video_score": 0.20323587351981956,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "7a8dfa6f-5b0f-5da8-ad77-b06bb777dcdf",
+              "segment_path": "videos/E10-Jerry_And_The_Goldfish/048-00;03;43.000-00;03;44.500.mp4",
+              "duration": 1.5015,
+              "vibe_card": "### Scene Description:  \nA clear glass fishbowl rests on a dark wooden surface, positioned centered in front of a large multi-paned window. The window reveals a bright blue sky with scattered white clouds, framed by gold-colored bars. A small, stylized red fish with white fin details swims near the bottom of the otherwise empty bowl. Green leaves from a plant are visible on the left side of the frame, partially obscuring the window\u2019s edge.  \n\n### Vibe:  \nSerene, tranquil, quiet, contemplative, still.  \n\n### Key Words:  \nFishbowl, fish, window, wooden surface, blue sky, clouds, plant leaves, gold-framed glass, stillness, indoor setting.  \n\n### Musical Aspects (If Any):  \nSilent; no implied audio or rhythmic movement visible in the static frame. The composition suggests quiet, ambient calm with no synchronized action or auditory cues.",
+              "video_score": 0.18807499847733497,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "117d3b1c-fe92-50df-8bb1-8a34013f3c3f",
+              "segment_path": "videos/E07-The_Framed_Cat/064-00;04;24.500-00;04;25.500.mp4",
+              "duration": 1.001,
+              "vibe_card": "### Scene Description:  \nA large gray elephant lies resting on a lush green lawn near a light blue picket fence. White, fluffy clouds or breath puffs emanate from near its mouth, suggesting it is exhaling or snoring. The background features a tree with green foliage, neatly trimmed bushes along the fence, and part of a yellow house with blue shutters visible on the left side.  \n\n### Vibe:  \nTranquil, peaceful, and serene. The resting elephant and soft, cloud-like puffs evoke a sense of quiet relaxation and calm.  \n\n### Key Words:  \nElephant, resting, lawn, green grass, white breath clouds, picket fence, tree, bushes, yellow house, blue shutters  \n\n### Musical Aspects (If Any):  \nImplied soft, rhythmic breathing or snoring sounds synchronized with the visual puffs of white clouds near the elephant\u2019s mouth; gentle, ambient quietude suggesting a peaceful atmosphere.",
+              "video_score": 0.17600454704573365,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "14e5eb07-4dc4-5c87-914f-c56193e80078",
+              "segment_path": "videos/E10-Jerry_And_The_Goldfish/053-00;03;58.500-00;03;59.500.mp4",
+              "duration": 1.000292,
+              "vibe_card": "### Scene Description:  \nA transparent fishbowl filled with water sits on a surface near a window with a gold-framed grid design, revealing a bright blue sky with scattered clouds and a leafy green plant outside. The scene transitions to a kitchen with yellow cabinets, a white countertop, and a stove burner actively flaming. A small yellow fish with orange fins suddenly flies through the air from the left side of the frame toward the kitchen area.  \n\n### Vibe:  \nPlayful, surreal, and dynamically unexpected. The juxtaposition of a calm fishbowl scene with the abrupt appearance of a flying fish in a domestic kitchen creates a whimsical, lighthearted, and slightly chaotic energy.  \n\n### Key Words:  \nFishbowl, Window, Plant, Kitchen, Yellow Cabinets, Stove, Flames, Flying Fish, Countertop, Pitcher, Distortion Effect, Transition  \n\n### Musical Aspects (If Any):  \nSudden, staccato movement implied by the fish\u2019s abrupt appearance; potential for a sharp \"whoosh\" or comedic impact sound accompanying the fish\u2019s flight into the kitchen. The flaming stove burner adds a subtle, steady hiss-like visual rhythm contrasting the fish\u2019s dynamic motion.",
+              "video_score": 0.17499060739820804,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "e77322c4-7db0-544a-96af-fc39b1986242",
+              "segment_path": "videos/E08-Cue_Ball_Cat/035-00;03;26.000-00;03;27.500.mp4",
+              "duration": 1.135667,
+              "vibe_card": "### Output Format  \nScene Description: A close-up reveals a green pool table surface with a purple backdrop. Two white ball-shaped objects roll into view from the right side and come to rest near the center of the table, with a red rail visible along the left edge.  \nVibe: Neutral, quiet, minimalist; smooth, silent motion with no dramatic energy.  \nKey Words: Pool table, Green felt, Purple backdrop, Red rail, White balls, Rolling, Animation  \nMusical Aspects (If Any): Smooth, continuous visual rhythm of the balls\u2019 silent roll; no auditory cues implied.",
+              "video_score": 0.16306127761636616,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "e83ef2c8-1d49-595a-b34f-9a2a9f341266",
+              "segment_path": "videos/E06-Tom_and_Jerry_in_the_Hollywood_Bowl/013-00;01;29.000-00;01;31.500.mp4",
+              "duration": 2.5025,
+              "vibe_card": "Scene Description: A curved, layered paper or cardboard structure emerges slowly from a dark tunnel, illuminated by a warm yellow light at its core, casting a soft glow on the surrounding surfaces.  \nVibe: Mysterious, eerie, anticipatory, haunting  \nKey Words: Tunnel, Arched layers, Paper structure, Warm light, Emerging, Shadow play, Mysterious atmosphere  \nMusical Aspects (If Any): Slow, deliberate movement suggesting quiet anticipation; suspended tension with no rhythmic audio implied",
+              "video_score": 0.15675858498447512,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "2550318a-4b0e-53c9-ab5c-7261f65489cd",
+              "segment_path": "videos/E09-Casanova_Cat/106-00;06;47.000-00;06;48.000.mp4",
+              "duration": 1.000292,
+              "vibe_card": "Scene Description: An animated city street features parked cars, buildings with awnings, and a curved path marked by white lines. Steam or smoke rises near a yellow awning. A light purple animated mouse with large ears, wearing a purple shirt, sits relaxed in the driver\u2019s seat of a blue car, eyes closed in a dozing posture.  \nVibe: Calm, lethargic, peaceful; the mouse appears exhausted or resting amidst a quiet urban setting.  \nKey Words: Animated mouse, blue car, city street, buildings, parked cars, yellow awning, steam/smoke, driver\u2019s seat, relaxed posture, dozing  \nMusical Aspects (If Any): Implied silence or ambient quiet; no rhythmic movement, synchronized audio cues, or sudden impacts visible. Suggests stillness and calmness.",
+              "video_score": 0.14800176400808446,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "49682c8d-fee6-5323-93a5-137778c95441",
+              "segment_path": "videos/E08-Cue_Ball_Cat/036-00;03;28.000-00;03;32.000.mp4",
+              "duration": 4.003292,
+              "vibe_card": "### Scene Description:  \nA dark blue cartoon dog with white paws and red ears lies drowsy on a green surface against a plain purple wall. The dog\u2019s eyes are initially closed but gradually open to reveal circular lenses displaying the numbers \"8\" (black) and \"6\" (green), suggesting a shift from sleep to alertness.  \n\n### Vibe:  \nDrowsy yet inquisitive; transitions from lethargy to focused awareness with a subtle, playful undertone hinted by the numbered lenses.  \n\n### Key Words:  \nDog, Glasses (numbered \"8\" and \"6\"), Sleeping, Waking, Green Surface, Purple Wall, Alertness, Playful Mystery  \n\n### Musical Aspects (If Any):  \nImplied abrupt shift from silence to sudden focus\u2014visual rhythm suggests a \"staccato awakening\" with no audible cues depicted.",
+              "video_score": 0.14344546021722065,
+              "vibe_card_score": 0.17019641087085488
+            },
+            {
+              "segment_id": "9de030fb-0b7e-5cb4-bdd2-50be669239d6",
+              "segment_path": "videos/E10-Jerry_And_The_Goldfish/110-00;07;05.500-00;07;07.500.mp4",
+              "duration": 2.002,
+              "vibe_card": "Scene Description: A blue swirling abstract pattern centers on a small multi-colored ball, transitioning to a close-up of a glass fishbowl containing a yellow fish exhaling bubbles; a red dog-like character wearing scuba goggles and a snorkel then enters from the right, moving toward the fishbowl.  \nVibe: Calm and abstract shifting to anxious and suspenseful, with a playful undertone from the diver\u2019s sudden appearance.  \nKey Words: multi-colored ball, fishbowl, yellow fish, bubbles, red dog-like character, scuba goggles, snorkel, transition, anxious fish, diver entrance  \nMusical Aspects (If Any): Quiet implied bubbling sounds with subtle Mickey Mousing of the fish\u2019s movement, punctuated by a sudden visual impact as the diver enters.",
+              "video_score": 0.1431377480270119,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "3f53b34d-1ca6-56fb-8044-fc5858504fe8",
+              "segment_path": "videos/E07-The_Framed_Cat/100-00;06;42.000-00;06;43.500.mp4",
+              "duration": 1.500792,
+              "vibe_card": "Scene Description: A gentle pan across a green field under a light blue sky with soft clouds reveals a tree on the left, a bush on the right, a small shed partially visible, and later a blue bucket with yellow interior and blue gardening tools leaning against a wooden post on the far left.  \nVibe: Peaceful, serene, and tranquil, evoking quiet rural solitude through soft watercolor textures and smooth camera movement.  \nKey Words: Field, Green, Sky, Clouds, Tree, Bush, Shed, Bucket, Tools, Panning, Rural, Calm  \nMusical Aspects (If Any): Slow, continuous visual rhythm mimicking quiet ambient pacing; no synchronized audio implied by the steady pan.",
+              "video_score": 0.13960496349074203,
+              "vibe_card_score": null
+            }
+          ],
+          "vibe_candidates": [
+            {
+              "segment_id": "886476ae-be45-5692-bdd6-9433de24de4b",
+              "segment_path": "videos/E02-Saturday_Evening_Puss/035-00;02;21.000-00;02;22.000.mp4",
+              "duration": 1.001,
+              "vibe_card": "Scene Description: A small brown mouse peeks from behind a wall in a dimly lit room featuring a striped armchair, a small table with a vase of autumn leaves, and a nightstand. A ghostly, projected image of a larger brown mouse appears on the wall, lying comfortably in bed under a blue blanket with pillows, suggesting a dreamlike or imagined scenario.  \nVibe: Quiet, introspective, and slightly surreal; a sense of gentle wonder mixed with calm curiosity as the small mouse observes the projection.  \nKey Words: Small mouse, projected mouse, striped armchair, autumn leaf vase, nightstand, bed, blue blanket, pillows, wall projection, dim lighting  \nMusical Aspects (If Any): Visual rhythm implies a slow, soft zoom toward the projected image, evoking a peaceful, dreamlike pace without audible cues; quiet before the storm in terms of visual buildup.",
+              "video_score": null,
+              "vibe_card_score": 0.20623834696453597
+            },
+            {
+              "segment_id": "d7678fb9-dd79-535e-84fb-f19f673a995e",
+              "segment_path": "videos/E08-Cue_Ball_Cat/080-00;06;26.000-00;06;27.500.mp4",
+              "duration": 1.5015,
+              "vibe_card": "### **Scene Description:**  \nA black cat with red ears and a green collar lies asleep on the edge of a green surface (possibly a bed or table) with a yellow and white trim. The cat\u2019s eyes are closed, and its head rests comfortably on the surface. Small, colorful, swirling patterns\u2014blue, yellow, and green\u2014float near its face, suggesting a dreamlike or trance state. The background is a plain, muted purple wall.  \n\n### **Vibe:**  \nDrowsy, tranquil, and whimsically surreal. The cat\u2019s relaxed posture and the floating orbital patterns evoke a sense of quiet introspection or gentle fantasy.  \n\n### **Key Words:**  \nTom (cat), green surface, purple wall, dreamlike swirls, resting, trance, orbital patterns  \n\n### **Musical Aspects (If Any):**  \nThe visual rhythm implies quiet stillness, with the slow, floating motion of the swirls suggesting a soft, soothing hum or silent, meditative pace\u2014no overt audio cues are visible.",
+              "video_score": null,
+              "vibe_card_score": 0.1749574297557399
+            },
+            {
+              "segment_id": "49682c8d-fee6-5323-93a5-137778c95441",
+              "segment_path": "videos/E08-Cue_Ball_Cat/036-00;03;28.000-00;03;32.000.mp4",
+              "duration": 4.003292,
+              "vibe_card": "### Scene Description:  \nA dark blue cartoon dog with white paws and red ears lies drowsy on a green surface against a plain purple wall. The dog\u2019s eyes are initially closed but gradually open to reveal circular lenses displaying the numbers \"8\" (black) and \"6\" (green), suggesting a shift from sleep to alertness.  \n\n### Vibe:  \nDrowsy yet inquisitive; transitions from lethargy to focused awareness with a subtle, playful undertone hinted by the numbered lenses.  \n\n### Key Words:  \nDog, Glasses (numbered \"8\" and \"6\"), Sleeping, Waking, Green Surface, Purple Wall, Alertness, Playful Mystery  \n\n### Musical Aspects (If Any):  \nImplied abrupt shift from silence to sudden focus\u2014visual rhythm suggests a \"staccato awakening\" with no audible cues depicted.",
+              "video_score": null,
+              "vibe_card_score": 0.17019641087085488
+            },
+            {
+              "segment_id": "b5d242eb-8aa9-55b5-80f6-0a8a46aed7f2",
+              "segment_path": "videos/E01-Little_Quacker/004-00;00;35.500-00;00;39.500.mp4",
+              "duration": 4.003292,
+              "vibe_card": "### Scene Description:  \nA serene rural landscape at either dawn or dusk, featuring a weathered wooden fence post leaning against tall, golden grass in the foreground. Beyond the fence, a vast field stretches toward distant trees and a calm body of water, with scattered hay bales visible near the horizon. The sky is painted in soft pinks and purples, suggesting peaceful stillness.  \n\n### Vibe:  \nTranquil, nostalgic, and quiet; evoking a sense of rural solitude and quiet reflection under a gentle, warm light.  \n\n### Key Words:  \nFence Post, Golden Grass, Hay Bales, Field, Trees, Body of Water, Dawn/Dusk, Rural Landscape, Stillness  \n\n### Musical Aspects (If Any):  \nImplied silence or soft, ambient melody; the static, unhurried visual rhythm suggests a calm, contemplative acoustic backdrop\u2014perhaps gentle acoustic guitar or wind chimes\u2014mirroring the peaceful, motionless scenery. No overt \"Mickey Mousing\" or rhythmic action present.",
+              "video_score": null,
+              "vibe_card_score": 0.16702117394553734
+            },
+            {
+              "segment_id": "51dc2c11-20bb-56bc-89b6-e25fb5f63285",
+              "segment_path": "videos/E08-Cue_Ball_Cat/010-00;01;12.500-00;01;16.500.mp4",
+              "duration": 4.003292,
+              "vibe_card": "### Scene Description:  \nA brown mouse-like character lies asleep in a green bed covered with a vibrant purple blanket. The character wears striped pajamas and rests peacefully on a white pillow. A small wooden nightstand with a classic green-base lamp sits beside the bed, casting a soft, warm glow that contrasts with the otherwise dim, shadowy room.  \n\n### Vibe:  \nTranquil, cozy, and serene; evoking quiet nighttime rest and undisturbed slumber.  \n\n### Key Words:  \nMouse, bed, purple blanket, pajamas, nightstand, lamp, sleeping, nighttime, rest, stillness  \n\n### Musical Aspects (If Any):  \nImplied silence and stillness; the scene suggests quiet, ambient nighttime atmosphere with no visible rhythmic action or synchronized audio cues.",
+              "video_score": null,
+              "vibe_card_score": 0.16447773302707153
+            },
+            {
+              "segment_id": "373d1656-fc9c-541d-bec3-900c89ac4fef",
+              "segment_path": "videos/E10-Jerry_And_The_Goldfish/002-00;00;33.500-00;00;37.000.mp4",
+              "duration": 3.5,
+              "vibe_card": "### Scene Description:  \nA fishbowl sits on a round purple table near a large window showing a night sky with dark blue clouds. Inside the bowl, a yellow fish rests lazily on a rock at the bottom, occasionally blowing bubbles. Outside the bowl, a small brown mouse (Tom) peers over the edge of the table, watching the fish with wide, curious eyes. The mouse\u2019s ears are pink, and it appears to be in a contemplative or amused stance, suggesting it is observing the fish\u2019s relaxed behavior. The overall atmosphere is calm and quiet, evoking a nighttime setting.  \n\n---\n\n### Vibe:  \n**Playful, curious, and slightly whimsical.** The scene combines the stillness of the sleeping fish with Tom\u2019s amused curiosity, creating a lighthearted, observational mood typical of classic cartoon humor.  \n\n---\n\n### Key Words:  \n- **Characters:** Tom (mouse), Yellow fish  \n- **Objects:** Fishbowl, Rock (in bowl), Table, Window (night sky)  \n- **Actions:** Fish resting/sleeping, Tom observing/peeking  \n- **Concepts:** Nighttime, Curiosity, Relaxation, Aquarium setting  \n\n---\n\n### Musical Aspects (If Any):  \n**None explicitly depicted.** The scene is static and silent, focusing on visual storytelling. However, the calm night setting might imply soft, ambient background music (e.g., gentle piano or orchestral tones) to enhance the tranquil yet humorous atmosphere. No synchronized action (e.g., \"Mickey Mousing\") is present.",
+              "video_score": null,
+              "vibe_card_score": 0.16402257502482795
+            },
+            {
+              "segment_id": "f0359ad5-ae25-58ea-96ec-6b86ce29064b",
+              "segment_path": "videos/E01-Little_Quacker/035-00;02;58.500-00;03;03.500.mp4",
+              "duration": 5.005,
+              "vibe_card": "### Scene Description:  \nA brown mouse-like character lies in bed under a purple blanket, looking startled and half-asleep, while a yellow duck-like character stands on the bed, gesturing emphatically with its wings and open beak in an animated, urgent manner. The setting is a cozy wooden room with a bedside table holding a silver lamp, a patterned rug, and a wall decorated with a painted cloud design.  \n\n### Vibe:  \nStartling, anxious, comedic \u2013 conveying a sudden, disruptive interruption of rest through exaggerated expressions and energetic body language.  \n\n### Key Words:  \nBrown mouse, yellow duck, bed, purple blanket, bedside lamp, gesturing, waking up, nighttime, wooden room, urgency  \n\n### Musical Aspects (If Any):  \nImplied sudden exclamation or impact, suggesting \"Mickey Mousing\" where the duck\u2019s frantic wing-flapping and open-beak posture synchronize with an abrupt, comically loud audio cue (e.g., a squawk or slap).",
+              "video_score": null,
+              "vibe_card_score": 0.15927868756636868
+            },
+            {
+              "segment_id": "f4b27dbf-2355-5a20-8610-a82267aaab82",
+              "segment_path": "videos/E04-Jerry_And_The_Lion/096-00;06;15.000-00;06;17.500.mp4",
+              "duration": 2.501792,
+              "vibe_card": "### Scene Description:  \nA large lion with brown fur and a sleepy expression peeks through a partially open door, resting its head on its paw. A small brown mouse stands on a carpeted floor, facing the lion with wide eyes and an anxious expression, reaching toward the lion\u2019s paw as if attempting to interact or provoke it.  \n\n### Vibe:  \nTense, predatory, and suspenseful, with undercurrents of weary indifference from the lion and nervous anticipation from the mouse.  \n\n### Key Words:  \nLion, Mouse, Door, Carpet, Stacked Boxes, Latch, Peeking, Resting, Anxious, Paw  \n\n### Musical Aspects (If Any):  \nImplied silence with sudden visual tension; the stillness of the lion contrasts with the mouse\u2019s slight movement, suggesting a quiet build-up before potential action (e.g., suspended moment, anticipatory rhythm).",
+              "video_score": null,
+              "vibe_card_score": 0.15731626812914726
+            },
+            {
+              "segment_id": "47a0f41e-9750-5e90-a27e-0989026102f3",
+              "segment_path": "videos/E04-Jerry_And_The_Lion/104-00;06;42.000-00;06;44.000.mp4",
+              "duration": 2.001292,
+              "vibe_card": "Scene Description: A steamship sails on a calm ocean at night under a full moon with clouds, smoke rising from its chimney and moonlight reflecting on the water.  \nVibe: Solitary, pensive, tranquil, mysterious  \nKey Words: Steamship, full moon, night ocean, clouds, smoke, moonlight reflections, solitude  \nMusical Aspects (If Any): Steady smoke emission implies a constant rhythm; gentle water reflections suggest quiet, ambient sounds.",
+              "video_score": null,
+              "vibe_card_score": 0.1554370620945174
+            },
+            {
+              "segment_id": "83089b72-43a3-5c9c-a5fe-a9b000420a2e",
+              "segment_path": "videos/E03-Texas_Tom/025-00;01;44.000-00;01;48.500.mp4",
+              "duration": 4.5045,
+              "vibe_card": "### Scene Description:  \nAn anthropomorphic cat dressed in a black cowboy hat, purple scarf, yellow pants, and brown boots sits calmly on wooden steps beside a red suitcase with gold trim. The cat gazes thoughtfully to the side against a backdrop of a bright blue sky with fluffy white clouds and distant hills.  \n\n### Vibe:  \nContemplative, patient, and slightly nostalgic; the cat exudes quiet confidence with a calm, observant demeanor.  \n\n### Key Words:  \nAnthropomorphic cat, cowboy hat, purple scarf, yellow pants, brown boots, red suitcase, wooden steps, blue sky, clouds, waiting, contemplation, travel  \n\n### Musical Aspects (If Any):  \nImplied stillness; static shot suggesting a quiet, unhurried pause with no visible rhythmic action or synchronized audio cues.",
+              "video_score": null,
+              "vibe_card_score": 0.15191335302512962
+            }
+          ],
+          "selected": {
+            "segment_id": "49682c8d-fee6-5323-93a5-137778c95441",
+            "segment_path": "videos/E08-Cue_Ball_Cat/036-00;03;28.000-00;03;32.000.mp4",
+            "duration": 4.003292,
+            "vibe_card": "### Scene Description:  \nA dark blue cartoon dog with white paws and red ears lies drowsy on a green surface against a plain purple wall. The dog\u2019s eyes are initially closed but gradually open to reveal circular lenses displaying the numbers \"8\" (black) and \"6\" (green), suggesting a shift from sleep to alertness.  \n\n### Vibe:  \nDrowsy yet inquisitive; transitions from lethargy to focused awareness with a subtle, playful undertone hinted by the numbered lenses.  \n\n### Key Words:  \nDog, Glasses (numbered \"8\" and \"6\"), Sleeping, Waking, Green Surface, Purple Wall, Alertness, Playful Mystery  \n\n### Musical Aspects (If Any):  \nImplied abrupt shift from silence to sudden focus\u2014visual rhythm suggests a \"staccato awakening\" with no audible cues depicted.",
+            "video_score": 0.14344546021722065,
+            "vibe_card_score": 0.17019641087085488,
+            "strategy": "top_video_duration"
+          },
+          "postprocess": {
+            "input_path": "datasets/ds2/videos/E08-Cue_Ball_Cat/036-00;03;28.000-00;03;32.000.mp4",
+            "output_path": "/Users/scottcui/projects/mv_synthesis/outputs/synthesis/countingStars/clips/0002.mp4",
+            "start_offset": 0,
+            "duration": 3.9000000000000004,
+            "pad_black": false,
+            "clip_duration": 4.003292,
+            "speed_factor": 1.0264851282051282,
+            "note": "speed_up",
+            "input_exists": true
+          },
+          "line_audio_url": "/assets/dataset/songs/countingStars/clips_and_lyrics/0002_005.490-009.390.wav",
+          "selected_display_url": "/assets/output/synthesis/countingStars/clips/0002.mp4",
+          "selected_display_source": "rendered"
+        }
+      },
+      "right": {
+        "method": "audio_query_video",
+        "manifest_path": "audio_query_video/countingStars/retrieval_manifest.json",
+        "entry": {
+          "index": 2,
+          "start": 5.49,
+          "end": 9.39,
+          "duration": 3.9000000000000004,
+          "lyric_text": "Dreaming about the things that we could be",
+          "augmented_query": "Serene wide shot of a couple standing in an open field at golden hour, soft focus with bokeh lighting, gazing toward a vast horizon under a sky transitioning from warm orange to deep indigo, symbolic winding path leading into distant mist, subtle emerging starlight flickering above, contemplative and hopeful atmosphere with slow zoom emphasizing infinite possibilities, warm and cool tonal contrast blending dreams and reality",
+          "text_path": "songs/countingStars/clips_and_lyrics/0002_005.490-009.390.txt",
+          "audio_path": "songs/countingStars/clips_and_lyrics/0002_005.490-009.390.wav",
+          "query_source": "audio",
+          "query_collection": "lyrics-audio",
+          "query_embedding_id": "5cf139ad-ab22-5ab4-a3ee-11cd0c194f0e",
+          "video_candidates": [
+            {
+              "segment_id": "620beb8e-605d-5929-8213-5e45066d1fdc",
+              "segment_path": "videos/E03-Texas_Tom/042-00;02;44.000-00;02;48.000.mp4",
+              "duration": 4.003292,
+              "vibe_card": "### Scene Description:  \nA small animated mouse wearing a black hat and white vest interacts with an open blue record player, clutching its horn and adjusting a blue musical note symbol on the player's side. Later, two cats sit on a bench: a white cat in a black outfit looks surprised, while a blue cat in a yellow outfit plays a brown guitar.  \n\n### Vibe:  \nPlayful curiosity shifts to startled surprise for the mouse, contrasted with a calm, relaxed mood as the cats enjoy quiet companionship and music.  \n\n### Key Words:  \nMouse, Record Player, Turntable, Musical Note, White Cat, Blue Cat, Guitar, Surprise, Music  \n\n### Musical Aspects (If Any):  \nThe record player implies rhythmic, synchronized motion (\"Mickey Mousing\") as the mouse\u2019s actions align with the visual beat; the guitar-playing cat suggests quiet, melodic accompaniment in a serene atmosphere.",
+              "video_score": 0.24256246,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "21a5e9b3-fb0e-5cc5-be5f-041591c1310c",
+              "segment_path": "videos/E03-Texas_Tom/058-00;03;54.000-00;03;59.000.mp4",
+              "duration": 5.004292,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats are on a wooden porch. The cat on the right, dressed in a white cowboy hat, blue shirt, green bandana, yellow pants with stars, and red boots, strums a brown acoustic guitar with a red star on its body. The cat on the left, wearing a black cowboy hat, purple scarf, black vest, and yellow pants with brown boots, sits on a bench and watches attentively with a slight smile.  \n\n### Vibe:  \nPlayful, lighthearted, and cheerful, with a touch of rustic charm.  \n\n### Key Words:  \nCat, guitar, bench, cowboy hat, boots, acoustic guitar, star, wooden porch, musical performance, attentive, smiling  \n\n### Musical Aspects (If Any):  \nVisual rhythm evident in the strumming motion of the guitar; the standing cat\u2019s energetic posture and facial expression suggest a lively, syncopated performance, implying a joyful melody without audible cues.",
+              "video_score": 0.23741327,
+              "vibe_card_score": 0.24076156
+            },
+            {
+              "segment_id": "758b02d5-6dc1-5ec5-a77e-1fce248bb8b7",
+              "segment_path": "videos/E03-Texas_Tom/044-00;02;53.500-00;02;58.500.mp4",
+              "duration": 5.005,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats sit on a wooden bench in a rustic outdoor setting. The cat on the right, dressed in a blue shirt, yellow vest with a red star, white hat, and yellow pants, strums an acoustic guitar with green-gloved hands while smiling broadly. The cat on the left, wearing a black hat, white shirt with black trim, yellow pants, and brown boots, sits attentively with a slight smile, listening to the performance. The background features a painted mural of a landscape with blue skies and purple hills.  \n\n### Vibe:  \nPlayful, lighthearted, and musical; the guitarist exudes enthusiasm, creating a casual, joyful mood, while the listener appears engaged and amused.  \n\n### Key Words:  \nAnthropomorphic cats, acoustic guitar (with red star), wooden bench, outdoor porch setting, musical performance, attentive listening, smiling expression, casual interaction, painted landscape backdrop.  \n\n### Musical Aspects (If Any):  \nThe guitarist\u2019s rhythmic strumming posture and open-mouthed expression suggest synchronized, upbeat movement (\"Mickey Mousing\") implying an energetic, melodic performance, though no audio is visible.",
+              "video_score": 0.21965379,
+              "vibe_card_score": 0.19852737
+            },
+            {
+              "segment_id": "a9c2165a-bd63-5e7d-9fcd-a937e6bde3c3",
+              "segment_path": "videos/E03-Texas_Tom/053-00;03;35.000-00;03;39.500.mp4",
+              "duration": 4.5045,
+              "vibe_card": "Scene Description: A small mouse-like character wearing a black hat with a red band and a yellow scarf stands on a teal platform connected to a white cable. The character reacts with surprise as a large brown violin swings down towards them from above, set against a backdrop of a wooden log and grassy ground.  \nVibe: Suspenseful, anxious, with a sense of impending impact; the character's wide-eyed expression and the sudden motion of the violin create tension.  \nKey Words: Mouse-like character, black hat, yellow scarf, teal platform, white cable, wooden log, brown violin, swinging, surprise, danger  \nMusical Aspects (If Any): The swinging violin suggests a sudden, impactful rhythm; the scene implies a staccato movement as the instrument descends rapidly towards the character.",
+              "video_score": 0.2196352,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "bea988f8-d230-52f8-88e5-1ebf4dc6c079",
+              "segment_path": "videos/E03-Texas_Tom/054-00;03;40.000-00;03;43.500.mp4",
+              "duration": 3.5035,
+              "vibe_card": "### Scene Description:  \nA small brown mouse wearing a black hat and bandana is tangled in a white wire near a teal pool or tank, struggling on the ground. Later, two cats sit on a wooden bench outdoors: a white cat in a black hat, purple vest, and brown boots listens attentively, while a blue cat in a white hat, yellow pants, and green scarf plays a brown acoustic guitar with a red star on its body. The setting features a rustic wooden post, a teal pool, and a backdrop of a clear blue sky and distant mountains.  \n\n### Vibe:  \nLighthearted yet slightly tense; the blue cat\u2019s cheerful guitar playing contrasts with the mouse\u2019s frantic struggle, creating a mix of playful energy and subtle suspense.  \n\n### Key Words:  \nMouse (tangled in wire), White cat (listening), Blue cat (playing guitar), Guitar, Pool, Bench, Hat, Bandana, Rustic outdoor setting, Struggling, Musical performance  \n\n### Musical Aspects (If Any):  \nThe blue cat strums the guitar rhythmically, suggesting synchronized \"Mickey Mousing\" where the visual motion of strumming implies musical beats. No audible sound is depicted, but the action conveys a light, melodic tempo.",
+              "video_score": 0.20898235,
+              "vibe_card_score": 0.2156523
+            },
+            {
+              "segment_id": "586bfe23-9429-5d1b-84c7-b63cb9b9264b",
+              "segment_path": "videos/E03-Texas_Tom/060-00;04;03.500-00;04;04.500.mp4",
+              "duration": 1.000292,
+              "vibe_card": "### Output Format  \n\n**Scene Description:**  \nA white cat with black hair, wearing a black hat, purple vest, and yellow pants, sits alertly on a wooden bench. Beside them, a yellow bird-like character with green hands and feet, dressed in a yellow outfit with red stars, has lost balance while playing a brown guitar and lies on the ground with the instrument scattered beside them.  \n\n**Vibe:**  \nStartled, chaotic, comedic mishap  \n\n**Key Words:**  \nCat, Bird, Guitar, Falling, Bench, Surprise, Musical instrument, Animated mishap  \n\n**Musical Aspects (If Any):**  \nMickey Mousing (implied synchronization of the fall and guitar drop to comedic timing)",
+              "video_score": 0.20845136,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "58621014-a99d-5bb5-8d22-c2fb1047bc9d",
+              "segment_path": "videos/E03-Texas_Tom/043-00;02;48.500-00;02;53.000.mp4",
+              "duration": 4.5045,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats sit on a wooden bench against a wooden-walled backdrop resembling a rustic porch. The cat on the right, dressed in a blue shirt with a red star on the sleeve, yellow pants, a white cowboy hat, and a green scarf, strums a brown acoustic guitar with visible enthusiasm. The cat on the left, wearing a black hat, a white shirt with purple trim, yellow pants, and brown boots, sits with legs crossed, leaning slightly forward and gazing attentively at the guitarist. The background shows a painted blue sky with distant hills, suggesting an outdoor setting.  \n\n### Vibe:  \nPlayful, musical, and lighthearted. The guitarist\u2019s broad smile and energetic strumming convey joy, while the listener\u2019s relaxed posture and focused gaze suggest quiet amusement and engagement, creating a warm, friendly atmosphere.  \n\n### Key Words:  \nCat (right), guitar, strumming, cowboy hat, blue shirt, red star, yellow pants, green scarf; Cat (left), black hat, white shirt, purple trim, brown boots, yellow pants; wooden bench, wooden wall, blue sky, hills, rustic porch, musical performance, attentive listening  \n\n### Musical Aspects (If Any):  \nThe guitarist\u2019s vigorous strumming of the acoustic guitar implies rhythmic, upbeat music typical of animated performances. The synchronized body language\u2014leaning into the guitar and smiling\u2014suggests \u201cMickey Mousing,\u201d where physical action aligns with implied musical energy. No visible audio cues (e.g., musical notes) are present, but the dynamic posture indicates a lively, cheerful tune.",
+              "video_score": 0.20832615,
+              "vibe_card_score": 0.2056517
+            },
+            {
+              "segment_id": "968e857a-0946-5614-8e6c-8b3b44b9a014",
+              "segment_path": "videos/E03-Texas_Tom/059-00;03;59.500-00;04;03.000.mp4",
+              "duration": 3.502792,
+              "vibe_card": "Scene Description: A cat wearing a white cowboy hat, blue shirt, and yellow pants with red stars energetically plays a brown acoustic guitar with red star decals while standing on a wooden porch. Another cat, dressed in a black cowboy hat, purple vest, and yellow pants, sits on a bench beside him, watching attentively. Blue sparks emit from the standing cat\u2019s feet, and a small cloud of dust erupts around them as the guitar is strummed.  \nVibe: Playful, energetic, and slightly chaotic, with a comical tone emphasized by the exaggerated visual effects of the performance.  \nKey Words: Cat (cowboy attire), acoustic guitar (red stars), bench, blue sparks, dust cloud, strumming, watching, musical performance, cartoon comedy  \nMusical Aspects (If Any): Visual rhythm synchronized to the guitar strumming (\"Mickey Mousing\"), with sudden bursts of sparks and dust creating a staccato visual effect mirroring the implied musical beats.",
+              "video_score": 0.19831659,
+              "vibe_card_score": 0.23706168
+            },
+            {
+              "segment_id": "2f1f4bca-f886-51d8-90ae-10effd8cb66a",
+              "segment_path": "videos/E03-Texas_Tom/040-00;02;39.500-00;02;41.000.mp4",
+              "duration": 1.500792,
+              "vibe_card": "Scene Description: A white cat with black ears and tail, wearing a purple scarf, yellow pants, and red boots, sits on a wooden bench observing a blue cat dressed as a cowboy in a white hat, yellow pants with red stars, and a green bandana, who strums an acoustic guitar. In a separate scene, a small brown mouse stands nervously near a record player and a coiled rope on the floor, with a star-shaped object attached to a boot nearby.  \n\nVibe: Lighthearted and musical in the first scene; tense and suspenseful in the second scene.  \n\nKey Words: White cat, blue cat, cowboy hat, acoustic guitar, wooden bench, purple scarf, yellow pants, red boots, record player, coiled rope, star-shaped object, brown mouse, musical performance, Western attire, trap.  \n\nMusical Aspects (If Any): The blue cat\u2019s guitar strumming suggests rhythmic, synchronized music (Mickey Mousing); the record player in the second scene implies background audio, though no explicit rhythm is visible.",
+              "video_score": 0.19679159,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "9939dca2-f9f9-53be-b7d5-7c3c557645d3",
+              "segment_path": "videos/E03-Texas_Tom/051-00;03;24.500-00;03;29.500.mp4",
+              "duration": 5.004292,
+              "vibe_card": "Scene Description: A small brown mouse wearing a diaper, yellow necktie, and black hat clings to the side of an open blue record player, manipulating the tonearm while the turntable spins. Later, two cats\u2014a white cat in formal attire with a purple scarf and a black cat in a cowboy hat and green gloves\u2014stand face-to-face, appearing to converse with surprised or concerned expressions.  \nVibe: Playful yet frantic energy in the mouse scene, shifting to tense anticipation in the cat interaction.  \nKey Words: Mouse, Record Player, Turntable, Diaper, Cowboy Hat, Formal Attire, Tonearm, Tension, Surprise  \nMusical Aspects (If Any): Visual rhythm suggests staccato, frantic movement as the mouse interacts with the spinning turntable; implied audio could be upbeat or chaotic music synchronized to the visual action (\"Mickey Mousing\"). The cat scene lacks explicit musical cues but hints at a quiet, suspenseful moment before potential conflict.",
+              "video_score": 0.17869596,
+              "vibe_card_score": null
+            }
+          ],
+          "vibe_candidates": [
+            {
+              "segment_id": "21a5e9b3-fb0e-5cc5-be5f-041591c1310c",
+              "segment_path": "videos/E03-Texas_Tom/058-00;03;54.000-00;03;59.000.mp4",
+              "duration": 5.004292,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats are on a wooden porch. The cat on the right, dressed in a white cowboy hat, blue shirt, green bandana, yellow pants with stars, and red boots, strums a brown acoustic guitar with a red star on its body. The cat on the left, wearing a black cowboy hat, purple scarf, black vest, and yellow pants with brown boots, sits on a bench and watches attentively with a slight smile.  \n\n### Vibe:  \nPlayful, lighthearted, and cheerful, with a touch of rustic charm.  \n\n### Key Words:  \nCat, guitar, bench, cowboy hat, boots, acoustic guitar, star, wooden porch, musical performance, attentive, smiling  \n\n### Musical Aspects (If Any):  \nVisual rhythm evident in the strumming motion of the guitar; the standing cat\u2019s energetic posture and facial expression suggest a lively, syncopated performance, implying a joyful melody without audible cues.",
+              "video_score": null,
+              "vibe_card_score": 0.24076156
+            },
+            {
+              "segment_id": "968e857a-0946-5614-8e6c-8b3b44b9a014",
+              "segment_path": "videos/E03-Texas_Tom/059-00;03;59.500-00;04;03.000.mp4",
+              "duration": 3.502792,
+              "vibe_card": "Scene Description: A cat wearing a white cowboy hat, blue shirt, and yellow pants with red stars energetically plays a brown acoustic guitar with red star decals while standing on a wooden porch. Another cat, dressed in a black cowboy hat, purple vest, and yellow pants, sits on a bench beside him, watching attentively. Blue sparks emit from the standing cat\u2019s feet, and a small cloud of dust erupts around them as the guitar is strummed.  \nVibe: Playful, energetic, and slightly chaotic, with a comical tone emphasized by the exaggerated visual effects of the performance.  \nKey Words: Cat (cowboy attire), acoustic guitar (red stars), bench, blue sparks, dust cloud, strumming, watching, musical performance, cartoon comedy  \nMusical Aspects (If Any): Visual rhythm synchronized to the guitar strumming (\"Mickey Mousing\"), with sudden bursts of sparks and dust creating a staccato visual effect mirroring the implied musical beats.",
+              "video_score": null,
+              "vibe_card_score": 0.23706168
+            },
+            {
+              "segment_id": "f847aac9-34f7-5025-8736-fdead403996c",
+              "segment_path": "videos/E03-Texas_Tom/049-00;03;16.000-00;03;19.000.mp4",
+              "duration": 3.002292,
+              "vibe_card": "Scene Description: A small brown mouse wearing a black hat, white vest, and yellow tie interacts with a teal record player, adjusting the tonearm. The scene then shifts to two cats dressed in cowboy outfits, one holding a guitar, smiling at each other.  \nVibe: Playful, lighthearted, curious  \nKey Words: Mouse, Cat, Record Player, Guitar, Adjusting, Smiling, Cowboy Outfits  \nMusical Aspects (If Any): Implied audio preparation from the record player; visual focus on adjusting playback with no explicit rhythmic movement or synchronized action observed",
+              "video_score": null,
+              "vibe_card_score": 0.2296796
+            },
+            {
+              "segment_id": "bea988f8-d230-52f8-88e5-1ebf4dc6c079",
+              "segment_path": "videos/E03-Texas_Tom/054-00;03;40.000-00;03;43.500.mp4",
+              "duration": 3.5035,
+              "vibe_card": "### Scene Description:  \nA small brown mouse wearing a black hat and bandana is tangled in a white wire near a teal pool or tank, struggling on the ground. Later, two cats sit on a wooden bench outdoors: a white cat in a black hat, purple vest, and brown boots listens attentively, while a blue cat in a white hat, yellow pants, and green scarf plays a brown acoustic guitar with a red star on its body. The setting features a rustic wooden post, a teal pool, and a backdrop of a clear blue sky and distant mountains.  \n\n### Vibe:  \nLighthearted yet slightly tense; the blue cat\u2019s cheerful guitar playing contrasts with the mouse\u2019s frantic struggle, creating a mix of playful energy and subtle suspense.  \n\n### Key Words:  \nMouse (tangled in wire), White cat (listening), Blue cat (playing guitar), Guitar, Pool, Bench, Hat, Bandana, Rustic outdoor setting, Struggling, Musical performance  \n\n### Musical Aspects (If Any):  \nThe blue cat strums the guitar rhythmically, suggesting synchronized \"Mickey Mousing\" where the visual motion of strumming implies musical beats. No audible sound is depicted, but the action conveys a light, melodic tempo.",
+              "video_score": null,
+              "vibe_card_score": 0.2156523
+            },
+            {
+              "segment_id": "426d3392-1c94-5e51-a7fa-cf4297983019",
+              "segment_path": "videos/E10-Jerry_And_The_Goldfish/001-00;00;28.000-00;00;33.000.mp4",
+              "duration": 5.004292,
+              "vibe_card": "### Scene Description:  \nA large, clear glass fishbowl sits on a surface, containing still water with a small rock at the bottom. Inside the bowl, a small yellow fish with dark fins lies motionless on the rock, appearing to rest or sleep. Gentle bubbles rise slowly from the fish to the surface of the water. The background shows a window with a dark blue night sky, dotted with clouds, suggesting a calm, indoor evening setting.  \n\n### Vibe:  \nTranquil, solitary, melancholic, and quiet. The stillness of the fish, the gentle rise of bubbles, and the somber night sky evoke a sense of peaceful isolation and quiet introspection.  \n\n### Key Words:  \nFish (yellow), fishbowl, rock, water, bubbles, night sky, solitude, tranquility, stillness, resting  \n\n### Musical Aspects (If Any):  \nThe slow, deliberate rise of bubbles implies a soft, gentle *bubbling* sound, creating a quiet, rhythmic cadence. The overall stillness suggests a hushed, near-silent atmosphere, evoking a slow, peaceful tempo with no abrupt movements or synchronized beats.",
+              "video_score": null,
+              "vibe_card_score": 0.21298274
+            },
+            {
+              "segment_id": "85387331-5ac4-57fb-81d1-8f19251f9874",
+              "segment_path": "videos/E06-Tom_and_Jerry_in_the_Hollywood_Bowl/026-00;02;22.500-00;02;24.000.mp4",
+              "duration": 1.5015,
+              "vibe_card": "### Scene Description:  \nA small animated character dressed in formal attire (black suit, white shirt, red tie) plays a double bass against a warm yellow background. The scene transitions to the same character precariously balanced on the pillar of an ornate golden harp, clutching a thin object (possibly a baton or stick) while appearing to lose balance and tumble downward.\n\n### Vibe:  \nPlayful, lighthearted, and slightly chaotic. The character\u2019s formal appearance contrasts with their clumsy, acrobatic movements, creating a whimsical and humorous tone.\n\n### Key Words:  \nCharacter: Animated cat (formal attire), Objects: Double bass, Harp (ornate golden), Violin, Sheet music stand, Actions: Playing instrument, Balancing, Tumbling, Concepts: Musical performance, Physical comedy  \n\n### Musical Aspects (If Any):  \nVisual rhythm suggests a shift from steady, controlled motion (playing the double bass) to abrupt, staccato movement (tumbling off the harp). The scene implies a sudden disruption in musical flow, evoking a comedic \"Mickey Mousing\" effect where action syncs with implied audio (e.g., a sharp *thud* upon impact).",
+              "video_score": null,
+              "vibe_card_score": 0.20671433
+            },
+            {
+              "segment_id": "58621014-a99d-5bb5-8d22-c2fb1047bc9d",
+              "segment_path": "videos/E03-Texas_Tom/043-00;02;48.500-00;02;53.000.mp4",
+              "duration": 4.5045,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats sit on a wooden bench against a wooden-walled backdrop resembling a rustic porch. The cat on the right, dressed in a blue shirt with a red star on the sleeve, yellow pants, a white cowboy hat, and a green scarf, strums a brown acoustic guitar with visible enthusiasm. The cat on the left, wearing a black hat, a white shirt with purple trim, yellow pants, and brown boots, sits with legs crossed, leaning slightly forward and gazing attentively at the guitarist. The background shows a painted blue sky with distant hills, suggesting an outdoor setting.  \n\n### Vibe:  \nPlayful, musical, and lighthearted. The guitarist\u2019s broad smile and energetic strumming convey joy, while the listener\u2019s relaxed posture and focused gaze suggest quiet amusement and engagement, creating a warm, friendly atmosphere.  \n\n### Key Words:  \nCat (right), guitar, strumming, cowboy hat, blue shirt, red star, yellow pants, green scarf; Cat (left), black hat, white shirt, purple trim, brown boots, yellow pants; wooden bench, wooden wall, blue sky, hills, rustic porch, musical performance, attentive listening  \n\n### Musical Aspects (If Any):  \nThe guitarist\u2019s vigorous strumming of the acoustic guitar implies rhythmic, upbeat music typical of animated performances. The synchronized body language\u2014leaning into the guitar and smiling\u2014suggests \u201cMickey Mousing,\u201d where physical action aligns with implied musical energy. No visible audio cues (e.g., musical notes) are present, but the dynamic posture indicates a lively, cheerful tune.",
+              "video_score": null,
+              "vibe_card_score": 0.2056517
+            },
+            {
+              "segment_id": "b5d242eb-8aa9-55b5-80f6-0a8a46aed7f2",
+              "segment_path": "videos/E01-Little_Quacker/004-00;00;35.500-00;00;39.500.mp4",
+              "duration": 4.003292,
+              "vibe_card": "### Scene Description:  \nA serene rural landscape at either dawn or dusk, featuring a weathered wooden fence post leaning against tall, golden grass in the foreground. Beyond the fence, a vast field stretches toward distant trees and a calm body of water, with scattered hay bales visible near the horizon. The sky is painted in soft pinks and purples, suggesting peaceful stillness.  \n\n### Vibe:  \nTranquil, nostalgic, and quiet; evoking a sense of rural solitude and quiet reflection under a gentle, warm light.  \n\n### Key Words:  \nFence Post, Golden Grass, Hay Bales, Field, Trees, Body of Water, Dawn/Dusk, Rural Landscape, Stillness  \n\n### Musical Aspects (If Any):  \nImplied silence or soft, ambient melody; the static, unhurried visual rhythm suggests a calm, contemplative acoustic backdrop\u2014perhaps gentle acoustic guitar or wind chimes\u2014mirroring the peaceful, motionless scenery. No overt \"Mickey Mousing\" or rhythmic action present.",
+              "video_score": null,
+              "vibe_card_score": 0.20564297
+            },
+            {
+              "segment_id": "5bd52521-b62b-5bf9-98bc-49f36d61450f",
+              "segment_path": "videos/E02-Saturday_Evening_Puss/053-00;03;44.500-00;03;45.500.mp4",
+              "duration": 1.001,
+              "vibe_card": "### Scene Description:  \nA wooden dresser with three drawers and grid-patterned cabinet doors stands against a solid purple wall, positioned on a dark carpeted floor. Nearby, a vinyl record player spins a blue and red record; a small blue figure rests atop the spinning disc. A hand reaches into the frame from the left, interacting with the scene but not fully visible.  \n\n### Vibe:  \nQuiet, nostalgic, and slightly mysterious; the stillness of the room contrasts with the subtle motion of the spinning record, evoking a sense of paused anticipation.  \n\n### Key Words:  \nWooden dresser, grid-patterned cabinet, purple wall, dark carpet, vinyl record player, spinning record, blue figure, hand (reaching), indoor setting, nostalgia  \n\n### Musical Aspects (If Any):  \nImplied rhythmic motion from the rotating vinyl record, suggesting playback audio; the spinning disc creates a visual rhythm of cyclical movement.",
+              "video_score": null,
+              "vibe_card_score": 0.20216492
+            },
+            {
+              "segment_id": "758b02d5-6dc1-5ec5-a77e-1fce248bb8b7",
+              "segment_path": "videos/E03-Texas_Tom/044-00;02;53.500-00;02;58.500.mp4",
+              "duration": 5.005,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats sit on a wooden bench in a rustic outdoor setting. The cat on the right, dressed in a blue shirt, yellow vest with a red star, white hat, and yellow pants, strums an acoustic guitar with green-gloved hands while smiling broadly. The cat on the left, wearing a black hat, white shirt with black trim, yellow pants, and brown boots, sits attentively with a slight smile, listening to the performance. The background features a painted mural of a landscape with blue skies and purple hills.  \n\n### Vibe:  \nPlayful, lighthearted, and musical; the guitarist exudes enthusiasm, creating a casual, joyful mood, while the listener appears engaged and amused.  \n\n### Key Words:  \nAnthropomorphic cats, acoustic guitar (with red star), wooden bench, outdoor porch setting, musical performance, attentive listening, smiling expression, casual interaction, painted landscape backdrop.  \n\n### Musical Aspects (If Any):  \nThe guitarist\u2019s rhythmic strumming posture and open-mouthed expression suggest synchronized, upbeat movement (\"Mickey Mousing\") implying an energetic, melodic performance, though no audio is visible.",
+              "video_score": null,
+              "vibe_card_score": 0.19852737
+            }
+          ],
+          "selected": {
+            "segment_id": "620beb8e-605d-5929-8213-5e45066d1fdc",
+            "segment_path": "videos/E03-Texas_Tom/042-00;02;44.000-00;02;48.000.mp4",
+            "duration": 4.003292,
+            "vibe_card": null,
+            "video_score": 0.24256246,
+            "vibe_card_score": null,
+            "strategy": "top_video"
+          },
+          "postprocess": {
+            "input_path": "datasets/ds2/videos/E03-Texas_Tom/042-00;02;44.000-00;02;48.000.mp4",
+            "output_path": "/Users/scottcui/projects/mv_synthesis/outputs/audio_query_video/countingStars/clips/0002.mp4",
+            "start_offset": 0,
+            "duration": 3.9000000000000004,
+            "pad_black": false,
+            "clip_duration": 4.003292,
+            "speed_factor": 1.0264851282051282,
+            "note": "speed_up",
+            "input_exists": true
+          },
+          "line_audio_url": "/assets/dataset/songs/countingStars/clips_and_lyrics/0002_005.490-009.390.wav",
+          "selected_display_url": "/assets/output/audio_query_video/countingStars/clips/0002.mp4",
+          "selected_display_source": "rendered"
+        }
+      }
+    },
+    {
+      "timestamp": "2025-12-30T03:27:38.025Z",
+      "session_id": "sess_jsnx0gb6",
+      "username": "test",
+      "song": "countingStars",
+      "line_index": 3,
+      "line_position": 3,
+      "decision": "left",
+      "winner": "synthesis",
+      "lyric_text": "But baby I've been I've been praying hard",
+      "line_audio_url": "/assets/dataset/songs/countingStars/clips_and_lyrics/0003_009.390-014.360.wav",
+      "song_audio_url": "http://localhost:8000/assets/dataset/songs/countingStars/countingStars.mp3",
+      "left": {
+        "method": "synthesis",
+        "manifest_path": "synthesis/countingStars/retrieval_manifest.json",
+        "entry": {
+          "index": 3,
+          "start": 9.39,
+          "end": 14.36,
+          "duration": 4.969999999999999,
+          "lyric_text": "But baby I've been I've been praying hard",
+          "augmented_query": "Intimate close-up of trembling clasped hands folded in prayer position, bathed in flickering warm amber candlelight casting elongated, dancing shadows across rough stone walls, deep night blues visible through a narrow window creating stark contrast, soft bokeh background emphasizing isolation, slow deliberate focus pull highlighting intense concentration and silent pleading, atmosphere of quiet desperation intertwined with fervent hope under dim, warm-toned lighting",
+          "text_path": "songs/countingStars/clips_and_lyrics/0003_009.390-014.360.txt",
+          "audio_path": "songs/countingStars/clips_and_lyrics/0003_009.390-014.360.wav",
+          "query_source": "text",
+          "query_collection": "lyrics-text",
+          "query_embedding_id": "9b425d0d-b9be-5156-a0c7-0be1834138c9",
+          "video_candidates": [
+            {
+              "segment_id": "8d174ba0-183c-5efc-b2c4-4e1f486ce268",
+              "segment_path": "videos/E01-Little_Quacker/008-00;00;53.500-00;00;58.500.mp4",
+              "duration": 5.005,
+              "vibe_card": "### Scene Description:  \nA gray duck with an orange beak, wearing a pink apron and orange shoes, stands anxiously beside a nest containing a single white egg. The duck flaps its wings, pecks nervously at the egg, and shifts its weight while glancing around, displaying visible agitation. The setting is a marshy area with tall green reeds and a body of water nearby, under a soft, pastel-colored sky suggesting dawn or dusk.  \n\n### Vibe:  \nAnxious, frantic, and protective. The duck\u2019s exaggerated body language\u2014wing-flapping, frantic pecking, and restless movements\u2014conveys urgent worry, likely stemming from perceived danger to its egg. The serene marsh backdrop contrasts sharply with the duck\u2019s visible distress, amplifying the tension.  \n\n### Key Words:  \nDuck, Nest, Egg, Reeds, Wing-flapping, Pecking, Maternal anxiety, Marshland, Dawn/dusk lighting, Protective behavior  \n\n### Musical Aspects (If Any):  \nThe visuals imply **synchronized sound (\"Mickey Mousing\")**: rapid, staccato wing-flapping sounds likely match the visual rhythm, while the duck\u2019s frantic pecking at the egg might be accompanied by high-pitched, anxious clucking or squawking. The scene suggests a **sudden shift from quiet to chaotic audio**, mirroring the duck\u2019s abrupt agitation. No ambient music is visible, but the action implies percussive, tension-driven sound effects.",
+              "video_score": 0.15875546293635048,
+              "vibe_card_score": 0.11427665636940519
+            },
+            {
+              "segment_id": "5152cfb6-e13c-5641-8519-0b27fcfd3458",
+              "segment_path": "videos/E01-Little_Quacker/009-00;00;59.000-00;01;04.000.mp4",
+              "duration": 5.005,
+              "vibe_card": "### Scene Description:  \nA mother duck with gray feathers, an orange beak, and orange feet stands anxiously beside a nest containing a single white egg. She is flapping her wings dramatically and peering intensely at the egg, appearing agitated and protective while clutching her pink apron with one wing. The setting is a marshy area with tall green reeds and a body of water nearby, under soft, pastel-colored lighting suggesting dawn or dusk.  \n\n### Vibe:  \nAnxious, frantic, and protective; the duck\u2019s exaggerated gestures and intense focus convey urgency and maternal worry, creating a tense yet endearing mood.  \n\n### Key Words:  \nDuck, Nest, Egg, Flapping Wings, Protective Behavior, Marsh, Reeds, Maternal Anxiety, Apron, Orange Beak  \n\n### Musical Aspects (If Any):  \nMickey Mousing: The duck\u2019s rapid wing-flapping and frantic body language imply synchronized audio beats, suggesting a staccato, rhythmic score matching her agitated movements.",
+              "video_score": 0.14650304136945452,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "75137edc-c036-54e3-b589-462a3c0c1759",
+              "segment_path": "videos/E03-Texas_Tom/098-00;05;57.000-00;05;59.500.mp4",
+              "duration": 2.501792,
+              "vibe_card": "Scene Description: A dark blue cat wearing a white cowboy hat and a green bandana stands under a wooden fence. The cat adjusts the hat with both paws, touches its face, and points forward with a confident stance. The background shows a rural landscape with green grass, a clear blue sky, and distant hills.\n\nVibe: Playful, theatrical, and slightly swaggering; the cat embodies a mock-heroic cowboy persona with exaggerated confidence.\n\nKey Words: Tom, cowboy hat, green bandana, wooden fence, adjusting hat, pointing, confident stance, rural setting\n\nMusical Aspects (If Any): Exaggerated, rhythmic gestures suggesting comedic timing and syncopated movement, typical of animated \"Mickey Mousing\" where actions align with implied upbeat music.",
+              "video_score": 0.1422504974498756,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "9c6295b6-cb93-5f10-8fc3-5d9f002b05d6",
+              "segment_path": "videos/E01-Little_Quacker/088-00;05;50.500-00;05;54.500.mp4",
+              "duration": 4.004,
+              "vibe_card": "### Scene Description:  \nA grey duck with an orange beak and orange feet, wearing a pink skirt, stands beside a tall red barn. The duck gestures expressively with its wings while shifting its weight and looking around, suggesting animated communication or performance. The setting includes a stack of hay, a wooden barrel, and a dimly lit barn window in the background, indicating a rural nighttime environment.  \n\n### Vibe:  \nThematic, animated, and slightly theatrical; the duck\u2019s vigorous gestures and focused demeanor convey urgency, confidence, or performative energy against the quiet, isolated barnyard backdrop.  \n\n### Key Words:  \nDuck, pink skirt, red barn, hay stack, barrel, gesturing, animated, nighttime, expressive, orange feet  \n\n### Musical Aspects (If Any):  \nVisually implied rhythmic wing flapping and head bobbing, suggesting synchronized, staccato movement that mimics musical timing\u2014consistent with \"Mickey Mousing\" where actions align with an unseen beat.",
+              "video_score": 0.1372761276826067,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "6943a005-bd10-5e50-8f43-7c0e15d99fba",
+              "segment_path": "videos/E02-Saturday_Evening_Puss/006-00;00;40.000-00;00;41.500.mp4",
+              "duration": 1.500792,
+              "vibe_card": "Scene Description: A character wearing a blue dress with green ruffled sleeves stands at a vanity table, holding small red objects in both hands and appearing to apply makeup or cosmetics. The table displays various items including a purple box with gold accents, a blue bottle with a pump dispenser, a red-and-white bottle, a golden bowl with a decorative pattern, a small red ring box, a yellow ring, and a mirror partially visible on the right.  \nVibe: Calm, focused, and meticulous, reflecting careful attention to personal grooming.  \nKey Words: Character, Blue dress, Green ruffles, Vanity table, Purple box, Gold accents, Blue bottle, Red-and-white bottle, Golden bowl, Ring box, Yellow ring, Mirror, Makeup application, Concentration  \nMusical Aspects (If Any): No visible audio cues; implied slow, deliberate pacing suggesting quiet focus.",
+              "video_score": 0.1365122334211297,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "f7de3459-508b-5489-ac9a-ab69fe6374ec",
+              "segment_path": "videos/E03-Texas_Tom/068-00;04;28.000-00;04;30.000.mp4",
+              "duration": 2.002,
+              "vibe_card": "### Scene Description:  \nA black cat dressed as a cowboy\u2014wearing a white cowboy hat, green bandana, and white gloves\u2014attempts to lasso something with a rope while standing on grassy terrain near a wooden fence. The cat is mid-action, leaning forward with focused intensity, but loses balance and collapses onto the ground, with the rope coiled beside it. In the background, a brown saddle hangs on the fence, a red blanket is draped over it, and a small pond with visible water sits to the left. The setting depicts a rustic ranch with a clear blue sky and distant hills.  \n\n### Vibe:  \nPlayful, comedic, and slightly chaotic. The cat\u2019s exaggerated cowboy attire and failed attempt convey lighthearted humor, blending determination with slapstick physical comedy.  \n\n### Key Words:  \nCat, cowboy hat, bandana, lasso, wooden fence, saddle, pond, ranch, falling, attempting, coiled rope  \n\n### Musical Aspects (If Any):  \nNone visible in the still frame. The dynamic posture and action suggest implied *staccato* movement or a comedic sound effect (e.g., a \u201cwhip\u201d or \u201coof\u201d), typical of animated slapstick, but no audio cues are depicted visually.",
+              "video_score": 0.13358014452938968,
+              "vibe_card_score": 0.11658029679966252
+            },
+            {
+              "segment_id": "170476ab-7ff5-5efc-a415-c2e798143c16",
+              "segment_path": "videos/E04-Jerry_And_The_Lion/106-00;06;48.000-00;06;51.500.mp4",
+              "duration": 3.502792,
+              "vibe_card": "### Scene Description:  \nA brown mouse with large pink ears stands on a wooden dock at night, holding a crumpled white cloth in its mouth. The mouse appears distressed, wiping its nose or eyes with the cloth while gazing out over a dark, calm body of water that stretches to the horizon under a night sky.  \n\n### Vibe:  \nMelancholic, lonely, and pensive; the mouse exhibits quiet sorrow with a somber, introspective mood amplified by the solitary nighttime setting.  \n\n### Key Words:  \nMouse, cloth, dock, nighttime sea, distress, solitude, contemplation, sadness  \n\n### Musical Aspects (If Any):  \nImplied quiet melancholy; the stillness of the scene suggests a hushed, possibly somber tone without overt rhythmic cues.",
+              "video_score": 0.13345336683401401,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "15cf7520-e0f9-5251-9e92-9f533450a1ec",
+              "segment_path": "videos/E03-Texas_Tom/097-00;05;51.500-00;05;56.500.mp4",
+              "duration": 5.005,
+              "vibe_card": "### Scene Description:  \nA black cat wearing a white cowboy hat, a green necktie, and white gloves stands on a patch of green grass beside a wooden fence. The cat is in a dynamic, exaggerated pose with one leg extended forward and arms outstretched, appearing to shout or gasp with its mouth wide open and eyes wide. The background shows a rustic rural setting with a wooden fence, rolling hills, and a clear blue sky.  \n\n### Vibe:  \nPlayful, exaggerated, and energetic, with a comically dramatic expression suggesting surprise or excitement.  \n\n### Key Words:  \nCat, Cowboy hat, Green necktie, White gloves, Wooden fence, Grass patch, Rural landscape, Exaggerated pose, Shouting gesture  \n\n### Musical Aspects (If Any):  \nImplied rhythmic energy suggesting \"Mickey Mousing\" \u2013 the cat\u2019s exaggerated movements align with an implied beat or musical cue, creating a staccato, expressive visual rhythm.",
+              "video_score": 0.13301426218449505,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "90a9f7b4-d784-5c02-9c93-418d1794010b",
+              "segment_path": "videos/E01-Little_Quacker/006-00;00;42.500-00;00;47.500.mp4",
+              "duration": 5.005,
+              "vibe_card": "Scene Description: A gray duck with an orange beak and a pink diaper sits energetically on a grassy nest amidst tall reeds near a body of water. The duck flaps its wings and opens its beak expressively, suggesting excitement or calling out, with a calm sunset sky visible in the background.\n\nVibe: Playful, energetic, and slightly comical; the duck exhibits animated, exaggerated movements conveying joyous or enthusiastic emotion against a serene natural backdrop.\n\nKey Words: Duck, Nest, Reeds, Water, Sunset, Flapping, Expressive, Pink Diaper, Marshland\n\nMusical Aspects (If Any): Visual rhythm suggests synchronized, cheerful music (\"Mickey Mousing\") with staccato wing-flaps and exaggerated beak movements matching upbeat tempo; implied lively, whimsical melody accompanying the duck's energetic display.",
+              "video_score": 0.1313807164499525,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "e5631685-eb39-5554-9bd3-8ef9c97c6cf1",
+              "segment_path": "videos/E01-Little_Quacker/071-00;05;00.500-00;05;01.500.mp4",
+              "duration": 1.001,
+              "vibe_card": "Scene Description: A small yellow duck with an orange beak and red feet stands on a dirt ground in front of large red wooden curtains. The duck appears to be looking around with a curious expression, and there is a small patch of green grass visible to the right of the curtains.  \nVibe: Curious, anticipatory, solitary, tense  \nKey Words: Yellow duck, Red curtains, Dirt ground, Grass patch, Orange beak, Red feet, Standing, Looking around, Solitary, Anticipatory  \nMusical Aspects (If Any): Silent, static scene with quiet anticipation",
+              "video_score": 0.1284776580176421,
+              "vibe_card_score": null
+            }
+          ],
+          "vibe_candidates": [
+            {
+              "segment_id": "180baf11-1df1-5711-bce4-a1a2161d9eb4",
+              "segment_path": "videos/E04-Jerry_And_The_Lion/033-00;02;21.500-00;02;24.500.mp4",
+              "duration": 3.003,
+              "vibe_card": "### Scene Description:  \nA brown lion with a thick, dark mane sits hunched on the floor of a dimly lit basement. The lion\u2019s posture is contemplative, with its head bowed, fists clenched near its chest, and eyes downcast, suggesting distress or deep thought. The setting includes exposed wooden beams on the ceiling, brick walls, a ladder leaning against the wall, and a small chest or box visible in the background.  \n\n### Vibe:  \nMelancholy, introspective, and tense; the lion\u2019s body language and the somber basement environment evoke a sense of quiet despair and inner conflict.  \n\n### Key Words:  \nLion, basement, clenched fists, distressed posture, exposed beams, brick wall, ladder, chest, contemplative expression  \n\n### Musical Aspects (If Any):  \nImplied slow, quiet tempo; the stillness and the lion\u2019s tense posture suggest an atmosphere of silent reflection or understated melancholic undertones, with no overt rhythmic or musical cues visible in the frame.",
+              "video_score": null,
+              "vibe_card_score": 0.14363425494589033
+            },
+            {
+              "segment_id": "4eb64831-becc-56e5-bbc0-be316520492b",
+              "segment_path": "videos/E10-Jerry_And_The_Goldfish/071-00;04;54.500-00;04;55.500.mp4",
+              "duration": 1.001,
+              "vibe_card": "### Scene Description:  \nA black cat (Tom) aims a blue revolver in a tense stance against a brown wall. Later, a small brown mouse (Jerry) frantically pushes a baby carriage containing a sleeping infant wrapped in a white blanket with red stripes across a living room, passing a purple couch, a table with a lamp, and framed pictures on the wall, moving toward a window with green curtains.  \n\n### Vibe:  \nSuspenseful, chaotic, and predatory, driven by Tom\u2019s aggressive stance and Jerry\u2019s desperate escape with the infant.  \n\n### Key Words:  \nTom, Jerry, revolver, baby carriage, infant, living room, purple couch, lamp, framed pictures, window, green curtains, chase, tension  \n\n### Musical Aspects (If Any):  \nImplied staccato movement and sudden tension; visual rhythm suggests synchronized action (e.g., Jerry\u2019s frantic pushing mirroring Tom\u2019s predatory lunge), evoking \"quiet before the storm\" energy with no audible cues visible.",
+              "video_score": null,
+              "vibe_card_score": 0.12855737033505588
+            },
+            {
+              "segment_id": "d846aa8a-c9c7-5fa3-a8fd-08095a6001cf",
+              "segment_path": "videos/E06-Tom_and_Jerry_in_the_Hollywood_Bowl/019-00;01;52.500-00;01;54.000.mp4",
+              "duration": 1.500792,
+              "vibe_card": "### Scene Description:  \nA black-and-white cat dressed in a formal tuxedo and bow tie stands on a curved balcony railing. The cat raises its right paw dramatically upward, with wide, intense yellow eyes fixed forward. The background depicts a dimly lit, moonlit garden or cemetery with neatly arranged rows of trees or graves, creating a somber, eerie atmosphere under cool blue-green lighting.  \n\n### Vibe:  \nDramatic, tense, and ominous; evoking suspense and intensity with a touch of theatricality.  \n\n### Key Words:  \nTom, tuxedo, balcony, graveyard, moonlight, dramatic pose, wide-eyed expression, formal attire, nighttime, eerie atmosphere  \n\n### Musical Aspects (If Any):  \nStatic, heightened dramatic pause suggesting impending action or announcement; visual emphasis on a single, intense moment without rhythmic movement.",
+              "video_score": null,
+              "vibe_card_score": 0.12160552220499965
+            },
+            {
+              "segment_id": "83089b72-43a3-5c9c-a5fe-a9b000420a2e",
+              "segment_path": "videos/E03-Texas_Tom/025-00;01;44.000-00;01;48.500.mp4",
+              "duration": 4.5045,
+              "vibe_card": "### Scene Description:  \nAn anthropomorphic cat dressed in a black cowboy hat, purple scarf, yellow pants, and brown boots sits calmly on wooden steps beside a red suitcase with gold trim. The cat gazes thoughtfully to the side against a backdrop of a bright blue sky with fluffy white clouds and distant hills.  \n\n### Vibe:  \nContemplative, patient, and slightly nostalgic; the cat exudes quiet confidence with a calm, observant demeanor.  \n\n### Key Words:  \nAnthropomorphic cat, cowboy hat, purple scarf, yellow pants, brown boots, red suitcase, wooden steps, blue sky, clouds, waiting, contemplation, travel  \n\n### Musical Aspects (If Any):  \nImplied stillness; static shot suggesting a quiet, unhurried pause with no visible rhythmic action or synchronized audio cues.",
+              "video_score": null,
+              "vibe_card_score": 0.11896384292792128
+            },
+            {
+              "segment_id": "84e14b5d-ae46-5719-a943-8cbf5782de67",
+              "segment_path": "videos/E02-Saturday_Evening_Puss/054-00;03;46.000-00;03;48.000.mp4",
+              "duration": 2.002,
+              "vibe_card": "### Scene Description:  \nA blue cat with yellow eyes and white paws leans over a record player, gripping a green lever in its right paw. The cat\u2019s expression is focused and slightly mischievous as it manipulates the lever above a spinning red record with a small blue droplet resting on it. The background is a solid purple wall with wooden paneling at the base.  \n\n### Vibe:  \nPlayful, sly, and slightly chaotic; the cat exhibits focused curiosity with a hint of trickery, suggesting anticipation of disruption.  \n\n### Key Words:  \nTom, record player, red record, blue droplet, green lever, manipulation, mischievous, spinning, purple wall  \n\n### Musical Aspects (If Any):  \nImplied rhythmic tension; the cat\u2019s deliberate action on the lever suggests an impending interruption of the record\u2019s spin, evoking a \"sudden impact\" or abrupt halt in any implied audio.",
+              "video_score": null,
+              "vibe_card_score": 0.1189549511487203
+            },
+            {
+              "segment_id": "cc1ed9e3-4baf-5b7e-bb04-3a95cb26a04c",
+              "segment_path": "videos/E02-Saturday_Evening_Puss/087-00;05;25.500-00;05;29.500.mp4",
+              "duration": 4.003292,
+              "vibe_card": "### Scene Description:  \nA character dressed in vibrant, beaded jewelry and a colorful headwrap sits in a blue folding chair, holding a fan and gazing toward another character. The second character, partially visible, sits at a small table handling cards, suggesting a game or ritual. A telephone rests on a nearby table, connected by a cord, with curtains and warm-colored walls forming the background.  \n\n### Vibe:  \nCalm, observant, and quietly engaged. The scene evokes a sense of focused interaction, with subtle curiosity and attentiveness.  \n\n### Key Words:  \nFan, Cards, Telephone, Folding Chair, Beaded Jewelry, Headwrap, Small Table, Curtains, Warm Colors, Observing, Handling  \n\n### Musical Aspects (If Any):  \nNone visible. The static frame shows no rhythmic motion, synchronized audio-visual cues, or auditory implications.",
+              "video_score": null,
+              "vibe_card_score": 0.11824581894012778
+            },
+            {
+              "segment_id": "caab6cce-f94d-5f65-932e-501ac46c36c9",
+              "segment_path": "videos/E04-Jerry_And_The_Lion/018-00;01;38.000-00;01;41.500.mp4",
+              "duration": 3.5035,
+              "vibe_card": "Scene Description: A blue cat with yellow eyes and pink ears sits contemplatively on a red armchair, leaning slightly forward with one paw raised near its chin. Next to the cat is a wooden cabinet with a vintage radio featuring a dial and knobs, and a lamp with a brown shade hangs above the cabinet.  \n\nVibe: Contemplative, calm, quiet, introspective  \n\nKey Words: cat, red armchair, wooden cabinet, vintage radio, lamp, contemplative pose, yellow eyes, pink ears  \n\nMusical Aspects (If Any): None",
+              "video_score": null,
+              "vibe_card_score": 0.11690664402315551
+            },
+            {
+              "segment_id": "35da3e96-e239-5c98-bc78-a260811b81b8",
+              "segment_path": "videos/E04-Jerry_And_The_Lion/087-00;05;42.000-00;05;47.000.mp4",
+              "duration": 5.005,
+              "vibe_card": "### Scene Description:  \nA dark blue cat wearing a wide-brimmed straw hat with a green band stands nervously in front of a closed wooden door. The cat grips a blue key in its paw, attempting to unlock the door while leaning forward with wide eyes and an anxious expression. The setting is a room with pink walls, a carpeted floor, and a visible staircase in the background.  \n\n### Vibe:  \nAnxious, frantic, and suspenseful; the cat\u2019s exaggerated body language and worried expression convey urgency and tension, suggesting it is attempting a stealthy escape or entry.  \n\n### Key Words:  \nCat, hat, door, key, unlocking, pink walls, carpet, staircase, anxious, frantic, stealth, tension, escape  \n\n### Musical Aspects (If Any):  \nStaccato movement and implied tense audio rhythm; the cat\u2019s jerky, hurried motions suggest synchronization to a suspenseful or suspenseful musical beat (potential \"Mickey Mousing\" of anxious actions to sound).",
+              "video_score": null,
+              "vibe_card_score": 0.11668451314089866
+            },
+            {
+              "segment_id": "f7de3459-508b-5489-ac9a-ab69fe6374ec",
+              "segment_path": "videos/E03-Texas_Tom/068-00;04;28.000-00;04;30.000.mp4",
+              "duration": 2.002,
+              "vibe_card": "### Scene Description:  \nA black cat dressed as a cowboy\u2014wearing a white cowboy hat, green bandana, and white gloves\u2014attempts to lasso something with a rope while standing on grassy terrain near a wooden fence. The cat is mid-action, leaning forward with focused intensity, but loses balance and collapses onto the ground, with the rope coiled beside it. In the background, a brown saddle hangs on the fence, a red blanket is draped over it, and a small pond with visible water sits to the left. The setting depicts a rustic ranch with a clear blue sky and distant hills.  \n\n### Vibe:  \nPlayful, comedic, and slightly chaotic. The cat\u2019s exaggerated cowboy attire and failed attempt convey lighthearted humor, blending determination with slapstick physical comedy.  \n\n### Key Words:  \nCat, cowboy hat, bandana, lasso, wooden fence, saddle, pond, ranch, falling, attempting, coiled rope  \n\n### Musical Aspects (If Any):  \nNone visible in the still frame. The dynamic posture and action suggest implied *staccato* movement or a comedic sound effect (e.g., a \u201cwhip\u201d or \u201coof\u201d), typical of animated slapstick, but no audio cues are depicted visually.",
+              "video_score": null,
+              "vibe_card_score": 0.11658029679966252
+            },
+            {
+              "segment_id": "8d174ba0-183c-5efc-b2c4-4e1f486ce268",
+              "segment_path": "videos/E01-Little_Quacker/008-00;00;53.500-00;00;58.500.mp4",
+              "duration": 5.005,
+              "vibe_card": "### Scene Description:  \nA gray duck with an orange beak, wearing a pink apron and orange shoes, stands anxiously beside a nest containing a single white egg. The duck flaps its wings, pecks nervously at the egg, and shifts its weight while glancing around, displaying visible agitation. The setting is a marshy area with tall green reeds and a body of water nearby, under a soft, pastel-colored sky suggesting dawn or dusk.  \n\n### Vibe:  \nAnxious, frantic, and protective. The duck\u2019s exaggerated body language\u2014wing-flapping, frantic pecking, and restless movements\u2014conveys urgent worry, likely stemming from perceived danger to its egg. The serene marsh backdrop contrasts sharply with the duck\u2019s visible distress, amplifying the tension.  \n\n### Key Words:  \nDuck, Nest, Egg, Reeds, Wing-flapping, Pecking, Maternal anxiety, Marshland, Dawn/dusk lighting, Protective behavior  \n\n### Musical Aspects (If Any):  \nThe visuals imply **synchronized sound (\"Mickey Mousing\")**: rapid, staccato wing-flapping sounds likely match the visual rhythm, while the duck\u2019s frantic pecking at the egg might be accompanied by high-pitched, anxious clucking or squawking. The scene suggests a **sudden shift from quiet to chaotic audio**, mirroring the duck\u2019s abrupt agitation. No ambient music is visible, but the action implies percussive, tension-driven sound effects.",
+              "video_score": null,
+              "vibe_card_score": 0.11427665636940519
+            }
+          ],
+          "selected": {
+            "segment_id": "8d174ba0-183c-5efc-b2c4-4e1f486ce268",
+            "segment_path": "videos/E01-Little_Quacker/008-00;00;53.500-00;00;58.500.mp4",
+            "duration": 5.005,
+            "vibe_card": "### Scene Description:  \nA gray duck with an orange beak, wearing a pink apron and orange shoes, stands anxiously beside a nest containing a single white egg. The duck flaps its wings, pecks nervously at the egg, and shifts its weight while glancing around, displaying visible agitation. The setting is a marshy area with tall green reeds and a body of water nearby, under a soft, pastel-colored sky suggesting dawn or dusk.  \n\n### Vibe:  \nAnxious, frantic, and protective. The duck\u2019s exaggerated body language\u2014wing-flapping, frantic pecking, and restless movements\u2014conveys urgent worry, likely stemming from perceived danger to its egg. The serene marsh backdrop contrasts sharply with the duck\u2019s visible distress, amplifying the tension.  \n\n### Key Words:  \nDuck, Nest, Egg, Reeds, Wing-flapping, Pecking, Maternal anxiety, Marshland, Dawn/dusk lighting, Protective behavior  \n\n### Musical Aspects (If Any):  \nThe visuals imply **synchronized sound (\"Mickey Mousing\")**: rapid, staccato wing-flapping sounds likely match the visual rhythm, while the duck\u2019s frantic pecking at the egg might be accompanied by high-pitched, anxious clucking or squawking. The scene suggests a **sudden shift from quiet to chaotic audio**, mirroring the duck\u2019s abrupt agitation. No ambient music is visible, but the action implies percussive, tension-driven sound effects.",
+            "video_score": 0.15875546293635048,
+            "vibe_card_score": 0.11427665636940519,
+            "strategy": "top_video_duration"
+          },
+          "postprocess": {
+            "input_path": "datasets/ds2/videos/E01-Little_Quacker/008-00;00;53.500-00;00;58.500.mp4",
+            "output_path": "/Users/scottcui/projects/mv_synthesis/outputs/synthesis/countingStars/clips/0003.mp4",
+            "start_offset": 0,
+            "duration": 4.969999999999999,
+            "pad_black": false,
+            "clip_duration": 5.005,
+            "speed_factor": 1.007042253521127,
+            "note": "speed_up",
+            "input_exists": true
+          },
+          "line_audio_url": "/assets/dataset/songs/countingStars/clips_and_lyrics/0003_009.390-014.360.wav",
+          "selected_display_url": "/assets/output/synthesis/countingStars/clips/0003.mp4",
+          "selected_display_source": "rendered"
+        }
+      },
+      "right": {
+        "method": "audio_query_video",
+        "manifest_path": "audio_query_video/countingStars/retrieval_manifest.json",
+        "entry": {
+          "index": 3,
+          "start": 9.39,
+          "end": 14.36,
+          "duration": 4.969999999999999,
+          "lyric_text": "But baby I've been I've been praying hard",
+          "augmented_query": "Intimate close-up of trembling clasped hands folded in prayer position, bathed in flickering warm amber candlelight casting elongated, dancing shadows across rough stone walls, deep night blues visible through a narrow window creating stark contrast, soft bokeh background emphasizing isolation, slow deliberate focus pull highlighting intense concentration and silent pleading, atmosphere of quiet desperation intertwined with fervent hope under dim, warm-toned lighting",
+          "text_path": "songs/countingStars/clips_and_lyrics/0003_009.390-014.360.txt",
+          "audio_path": "songs/countingStars/clips_and_lyrics/0003_009.390-014.360.wav",
+          "query_source": "audio",
+          "query_collection": "lyrics-audio",
+          "query_embedding_id": "9b425d0d-b9be-5156-a0c7-0be1834138c9",
+          "video_candidates": [
+            {
+              "segment_id": "21a5e9b3-fb0e-5cc5-be5f-041591c1310c",
+              "segment_path": "videos/E03-Texas_Tom/058-00;03;54.000-00;03;59.000.mp4",
+              "duration": 5.004292,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats are on a wooden porch. The cat on the right, dressed in a white cowboy hat, blue shirt, green bandana, yellow pants with stars, and red boots, strums a brown acoustic guitar with a red star on its body. The cat on the left, wearing a black cowboy hat, purple scarf, black vest, and yellow pants with brown boots, sits on a bench and watches attentively with a slight smile.  \n\n### Vibe:  \nPlayful, lighthearted, and cheerful, with a touch of rustic charm.  \n\n### Key Words:  \nCat, guitar, bench, cowboy hat, boots, acoustic guitar, star, wooden porch, musical performance, attentive, smiling  \n\n### Musical Aspects (If Any):  \nVisual rhythm evident in the strumming motion of the guitar; the standing cat\u2019s energetic posture and facial expression suggest a lively, syncopated performance, implying a joyful melody without audible cues.",
+              "video_score": 0.28274387,
+              "vibe_card_score": 0.26353103
+            },
+            {
+              "segment_id": "620beb8e-605d-5929-8213-5e45066d1fdc",
+              "segment_path": "videos/E03-Texas_Tom/042-00;02;44.000-00;02;48.000.mp4",
+              "duration": 4.003292,
+              "vibe_card": "### Scene Description:  \nA small animated mouse wearing a black hat and white vest interacts with an open blue record player, clutching its horn and adjusting a blue musical note symbol on the player's side. Later, two cats sit on a bench: a white cat in a black outfit looks surprised, while a blue cat in a yellow outfit plays a brown guitar.  \n\n### Vibe:  \nPlayful curiosity shifts to startled surprise for the mouse, contrasted with a calm, relaxed mood as the cats enjoy quiet companionship and music.  \n\n### Key Words:  \nMouse, Record Player, Turntable, Musical Note, White Cat, Blue Cat, Guitar, Surprise, Music  \n\n### Musical Aspects (If Any):  \nThe record player implies rhythmic, synchronized motion (\"Mickey Mousing\") as the mouse\u2019s actions align with the visual beat; the guitar-playing cat suggests quiet, melodic accompaniment in a serene atmosphere.",
+              "video_score": 0.27110243,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "758b02d5-6dc1-5ec5-a77e-1fce248bb8b7",
+              "segment_path": "videos/E03-Texas_Tom/044-00;02;53.500-00;02;58.500.mp4",
+              "duration": 5.005,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats sit on a wooden bench in a rustic outdoor setting. The cat on the right, dressed in a blue shirt, yellow vest with a red star, white hat, and yellow pants, strums an acoustic guitar with green-gloved hands while smiling broadly. The cat on the left, wearing a black hat, white shirt with black trim, yellow pants, and brown boots, sits attentively with a slight smile, listening to the performance. The background features a painted mural of a landscape with blue skies and purple hills.  \n\n### Vibe:  \nPlayful, lighthearted, and musical; the guitarist exudes enthusiasm, creating a casual, joyful mood, while the listener appears engaged and amused.  \n\n### Key Words:  \nAnthropomorphic cats, acoustic guitar (with red star), wooden bench, outdoor porch setting, musical performance, attentive listening, smiling expression, casual interaction, painted landscape backdrop.  \n\n### Musical Aspects (If Any):  \nThe guitarist\u2019s rhythmic strumming posture and open-mouthed expression suggest synchronized, upbeat movement (\"Mickey Mousing\") implying an energetic, melodic performance, though no audio is visible.",
+              "video_score": 0.25910962,
+              "vibe_card_score": 0.22495979
+            },
+            {
+              "segment_id": "a9c2165a-bd63-5e7d-9fcd-a937e6bde3c3",
+              "segment_path": "videos/E03-Texas_Tom/053-00;03;35.000-00;03;39.500.mp4",
+              "duration": 4.5045,
+              "vibe_card": "Scene Description: A small mouse-like character wearing a black hat with a red band and a yellow scarf stands on a teal platform connected to a white cable. The character reacts with surprise as a large brown violin swings down towards them from above, set against a backdrop of a wooden log and grassy ground.  \nVibe: Suspenseful, anxious, with a sense of impending impact; the character's wide-eyed expression and the sudden motion of the violin create tension.  \nKey Words: Mouse-like character, black hat, yellow scarf, teal platform, white cable, wooden log, brown violin, swinging, surprise, danger  \nMusical Aspects (If Any): The swinging violin suggests a sudden, impactful rhythm; the scene implies a staccato movement as the instrument descends rapidly towards the character.",
+              "video_score": 0.25454676,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "58621014-a99d-5bb5-8d22-c2fb1047bc9d",
+              "segment_path": "videos/E03-Texas_Tom/043-00;02;48.500-00;02;53.000.mp4",
+              "duration": 4.5045,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats sit on a wooden bench against a wooden-walled backdrop resembling a rustic porch. The cat on the right, dressed in a blue shirt with a red star on the sleeve, yellow pants, a white cowboy hat, and a green scarf, strums a brown acoustic guitar with visible enthusiasm. The cat on the left, wearing a black hat, a white shirt with purple trim, yellow pants, and brown boots, sits with legs crossed, leaning slightly forward and gazing attentively at the guitarist. The background shows a painted blue sky with distant hills, suggesting an outdoor setting.  \n\n### Vibe:  \nPlayful, musical, and lighthearted. The guitarist\u2019s broad smile and energetic strumming convey joy, while the listener\u2019s relaxed posture and focused gaze suggest quiet amusement and engagement, creating a warm, friendly atmosphere.  \n\n### Key Words:  \nCat (right), guitar, strumming, cowboy hat, blue shirt, red star, yellow pants, green scarf; Cat (left), black hat, white shirt, purple trim, brown boots, yellow pants; wooden bench, wooden wall, blue sky, hills, rustic porch, musical performance, attentive listening  \n\n### Musical Aspects (If Any):  \nThe guitarist\u2019s vigorous strumming of the acoustic guitar implies rhythmic, upbeat music typical of animated performances. The synchronized body language\u2014leaning into the guitar and smiling\u2014suggests \u201cMickey Mousing,\u201d where physical action aligns with implied musical energy. No visible audio cues (e.g., musical notes) are present, but the dynamic posture indicates a lively, cheerful tune.",
+              "video_score": 0.24917488,
+              "vibe_card_score": 0.23536228
+            },
+            {
+              "segment_id": "bea988f8-d230-52f8-88e5-1ebf4dc6c079",
+              "segment_path": "videos/E03-Texas_Tom/054-00;03;40.000-00;03;43.500.mp4",
+              "duration": 3.5035,
+              "vibe_card": "### Scene Description:  \nA small brown mouse wearing a black hat and bandana is tangled in a white wire near a teal pool or tank, struggling on the ground. Later, two cats sit on a wooden bench outdoors: a white cat in a black hat, purple vest, and brown boots listens attentively, while a blue cat in a white hat, yellow pants, and green scarf plays a brown acoustic guitar with a red star on its body. The setting features a rustic wooden post, a teal pool, and a backdrop of a clear blue sky and distant mountains.  \n\n### Vibe:  \nLighthearted yet slightly tense; the blue cat\u2019s cheerful guitar playing contrasts with the mouse\u2019s frantic struggle, creating a mix of playful energy and subtle suspense.  \n\n### Key Words:  \nMouse (tangled in wire), White cat (listening), Blue cat (playing guitar), Guitar, Pool, Bench, Hat, Bandana, Rustic outdoor setting, Struggling, Musical performance  \n\n### Musical Aspects (If Any):  \nThe blue cat strums the guitar rhythmically, suggesting synchronized \"Mickey Mousing\" where the visual motion of strumming implies musical beats. No audible sound is depicted, but the action conveys a light, melodic tempo.",
+              "video_score": 0.2471688,
+              "vibe_card_score": 0.23959777
+            },
+            {
+              "segment_id": "586bfe23-9429-5d1b-84c7-b63cb9b9264b",
+              "segment_path": "videos/E03-Texas_Tom/060-00;04;03.500-00;04;04.500.mp4",
+              "duration": 1.000292,
+              "vibe_card": "### Output Format  \n\n**Scene Description:**  \nA white cat with black hair, wearing a black hat, purple vest, and yellow pants, sits alertly on a wooden bench. Beside them, a yellow bird-like character with green hands and feet, dressed in a yellow outfit with red stars, has lost balance while playing a brown guitar and lies on the ground with the instrument scattered beside them.  \n\n**Vibe:**  \nStartled, chaotic, comedic mishap  \n\n**Key Words:**  \nCat, Bird, Guitar, Falling, Bench, Surprise, Musical instrument, Animated mishap  \n\n**Musical Aspects (If Any):**  \nMickey Mousing (implied synchronization of the fall and guitar drop to comedic timing)",
+              "video_score": 0.23893276,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "968e857a-0946-5614-8e6c-8b3b44b9a014",
+              "segment_path": "videos/E03-Texas_Tom/059-00;03;59.500-00;04;03.000.mp4",
+              "duration": 3.502792,
+              "vibe_card": "Scene Description: A cat wearing a white cowboy hat, blue shirt, and yellow pants with red stars energetically plays a brown acoustic guitar with red star decals while standing on a wooden porch. Another cat, dressed in a black cowboy hat, purple vest, and yellow pants, sits on a bench beside him, watching attentively. Blue sparks emit from the standing cat\u2019s feet, and a small cloud of dust erupts around them as the guitar is strummed.  \nVibe: Playful, energetic, and slightly chaotic, with a comical tone emphasized by the exaggerated visual effects of the performance.  \nKey Words: Cat (cowboy attire), acoustic guitar (red stars), bench, blue sparks, dust cloud, strumming, watching, musical performance, cartoon comedy  \nMusical Aspects (If Any): Visual rhythm synchronized to the guitar strumming (\"Mickey Mousing\"), with sudden bursts of sparks and dust creating a staccato visual effect mirroring the implied musical beats.",
+              "video_score": 0.23812778,
+              "vibe_card_score": 0.2699654
+            },
+            {
+              "segment_id": "2f1f4bca-f886-51d8-90ae-10effd8cb66a",
+              "segment_path": "videos/E03-Texas_Tom/040-00;02;39.500-00;02;41.000.mp4",
+              "duration": 1.500792,
+              "vibe_card": "Scene Description: A white cat with black ears and tail, wearing a purple scarf, yellow pants, and red boots, sits on a wooden bench observing a blue cat dressed as a cowboy in a white hat, yellow pants with red stars, and a green bandana, who strums an acoustic guitar. In a separate scene, a small brown mouse stands nervously near a record player and a coiled rope on the floor, with a star-shaped object attached to a boot nearby.  \n\nVibe: Lighthearted and musical in the first scene; tense and suspenseful in the second scene.  \n\nKey Words: White cat, blue cat, cowboy hat, acoustic guitar, wooden bench, purple scarf, yellow pants, red boots, record player, coiled rope, star-shaped object, brown mouse, musical performance, Western attire, trap.  \n\nMusical Aspects (If Any): The blue cat\u2019s guitar strumming suggests rhythmic, synchronized music (Mickey Mousing); the record player in the second scene implies background audio, though no explicit rhythm is visible.",
+              "video_score": 0.23219278,
+              "vibe_card_score": null
+            },
+            {
+              "segment_id": "4fbd49c5-91c3-5050-9be6-582b170bcab2",
+              "segment_path": "videos/E03-Texas_Tom/048-00;03;11.500-00;03;15.500.mp4",
+              "duration": 4.003292,
+              "vibe_card": "### Scene Description:  \nA group of cows, including black-and-white and brown individuals, stand together in a fenced field with scattered yellow objects on the ground. Below, two anthropomorphic cats interact: one dressed as a cowboy with a white hat, blue shirt, yellow pants, and holding a guitar, gestures animatedly while speaking; the other, wearing a black hat, purple shirt, and red boots, looks surprised or concerned.  \n\n### Vibe:  \nThe cows appear calm and neutral in a rural setting, while the cats exhibit a lively, possibly tense energy as they engage in a spirited conversation.  \n\n### Key Words:  \nCows, fenced field, yellow objects, cowboy cat, guitar, black-hatted cat, interaction, rural scene, animated conversation.  \n\n### Musical Aspects (If Any):  \nThe cowboy cat holds a guitar, suggesting an implied musical performance or interaction, though no active playing is depicted in the frame.",
+              "video_score": 0.21594913,
+              "vibe_card_score": null
+            }
+          ],
+          "vibe_candidates": [
+            {
+              "segment_id": "968e857a-0946-5614-8e6c-8b3b44b9a014",
+              "segment_path": "videos/E03-Texas_Tom/059-00;03;59.500-00;04;03.000.mp4",
+              "duration": 3.502792,
+              "vibe_card": "Scene Description: A cat wearing a white cowboy hat, blue shirt, and yellow pants with red stars energetically plays a brown acoustic guitar with red star decals while standing on a wooden porch. Another cat, dressed in a black cowboy hat, purple vest, and yellow pants, sits on a bench beside him, watching attentively. Blue sparks emit from the standing cat\u2019s feet, and a small cloud of dust erupts around them as the guitar is strummed.  \nVibe: Playful, energetic, and slightly chaotic, with a comical tone emphasized by the exaggerated visual effects of the performance.  \nKey Words: Cat (cowboy attire), acoustic guitar (red stars), bench, blue sparks, dust cloud, strumming, watching, musical performance, cartoon comedy  \nMusical Aspects (If Any): Visual rhythm synchronized to the guitar strumming (\"Mickey Mousing\"), with sudden bursts of sparks and dust creating a staccato visual effect mirroring the implied musical beats.",
+              "video_score": null,
+              "vibe_card_score": 0.2699654
+            },
+            {
+              "segment_id": "21a5e9b3-fb0e-5cc5-be5f-041591c1310c",
+              "segment_path": "videos/E03-Texas_Tom/058-00;03;54.000-00;03;59.000.mp4",
+              "duration": 5.004292,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats are on a wooden porch. The cat on the right, dressed in a white cowboy hat, blue shirt, green bandana, yellow pants with stars, and red boots, strums a brown acoustic guitar with a red star on its body. The cat on the left, wearing a black cowboy hat, purple scarf, black vest, and yellow pants with brown boots, sits on a bench and watches attentively with a slight smile.  \n\n### Vibe:  \nPlayful, lighthearted, and cheerful, with a touch of rustic charm.  \n\n### Key Words:  \nCat, guitar, bench, cowboy hat, boots, acoustic guitar, star, wooden porch, musical performance, attentive, smiling  \n\n### Musical Aspects (If Any):  \nVisual rhythm evident in the strumming motion of the guitar; the standing cat\u2019s energetic posture and facial expression suggest a lively, syncopated performance, implying a joyful melody without audible cues.",
+              "video_score": null,
+              "vibe_card_score": 0.26353103
+            },
+            {
+              "segment_id": "f847aac9-34f7-5025-8736-fdead403996c",
+              "segment_path": "videos/E03-Texas_Tom/049-00;03;16.000-00;03;19.000.mp4",
+              "duration": 3.002292,
+              "vibe_card": "Scene Description: A small brown mouse wearing a black hat, white vest, and yellow tie interacts with a teal record player, adjusting the tonearm. The scene then shifts to two cats dressed in cowboy outfits, one holding a guitar, smiling at each other.  \nVibe: Playful, lighthearted, curious  \nKey Words: Mouse, Cat, Record Player, Guitar, Adjusting, Smiling, Cowboy Outfits  \nMusical Aspects (If Any): Implied audio preparation from the record player; visual focus on adjusting playback with no explicit rhythmic movement or synchronized action observed",
+              "video_score": null,
+              "vibe_card_score": 0.24801081
+            },
+            {
+              "segment_id": "bea988f8-d230-52f8-88e5-1ebf4dc6c079",
+              "segment_path": "videos/E03-Texas_Tom/054-00;03;40.000-00;03;43.500.mp4",
+              "duration": 3.5035,
+              "vibe_card": "### Scene Description:  \nA small brown mouse wearing a black hat and bandana is tangled in a white wire near a teal pool or tank, struggling on the ground. Later, two cats sit on a wooden bench outdoors: a white cat in a black hat, purple vest, and brown boots listens attentively, while a blue cat in a white hat, yellow pants, and green scarf plays a brown acoustic guitar with a red star on its body. The setting features a rustic wooden post, a teal pool, and a backdrop of a clear blue sky and distant mountains.  \n\n### Vibe:  \nLighthearted yet slightly tense; the blue cat\u2019s cheerful guitar playing contrasts with the mouse\u2019s frantic struggle, creating a mix of playful energy and subtle suspense.  \n\n### Key Words:  \nMouse (tangled in wire), White cat (listening), Blue cat (playing guitar), Guitar, Pool, Bench, Hat, Bandana, Rustic outdoor setting, Struggling, Musical performance  \n\n### Musical Aspects (If Any):  \nThe blue cat strums the guitar rhythmically, suggesting synchronized \"Mickey Mousing\" where the visual motion of strumming implies musical beats. No audible sound is depicted, but the action conveys a light, melodic tempo.",
+              "video_score": null,
+              "vibe_card_score": 0.23959777
+            },
+            {
+              "segment_id": "58621014-a99d-5bb5-8d22-c2fb1047bc9d",
+              "segment_path": "videos/E03-Texas_Tom/043-00;02;48.500-00;02;53.000.mp4",
+              "duration": 4.5045,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats sit on a wooden bench against a wooden-walled backdrop resembling a rustic porch. The cat on the right, dressed in a blue shirt with a red star on the sleeve, yellow pants, a white cowboy hat, and a green scarf, strums a brown acoustic guitar with visible enthusiasm. The cat on the left, wearing a black hat, a white shirt with purple trim, yellow pants, and brown boots, sits with legs crossed, leaning slightly forward and gazing attentively at the guitarist. The background shows a painted blue sky with distant hills, suggesting an outdoor setting.  \n\n### Vibe:  \nPlayful, musical, and lighthearted. The guitarist\u2019s broad smile and energetic strumming convey joy, while the listener\u2019s relaxed posture and focused gaze suggest quiet amusement and engagement, creating a warm, friendly atmosphere.  \n\n### Key Words:  \nCat (right), guitar, strumming, cowboy hat, blue shirt, red star, yellow pants, green scarf; Cat (left), black hat, white shirt, purple trim, brown boots, yellow pants; wooden bench, wooden wall, blue sky, hills, rustic porch, musical performance, attentive listening  \n\n### Musical Aspects (If Any):  \nThe guitarist\u2019s vigorous strumming of the acoustic guitar implies rhythmic, upbeat music typical of animated performances. The synchronized body language\u2014leaning into the guitar and smiling\u2014suggests \u201cMickey Mousing,\u201d where physical action aligns with implied musical energy. No visible audio cues (e.g., musical notes) are present, but the dynamic posture indicates a lively, cheerful tune.",
+              "video_score": null,
+              "vibe_card_score": 0.23536228
+            },
+            {
+              "segment_id": "758b02d5-6dc1-5ec5-a77e-1fce248bb8b7",
+              "segment_path": "videos/E03-Texas_Tom/044-00;02;53.500-00;02;58.500.mp4",
+              "duration": 5.005,
+              "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats sit on a wooden bench in a rustic outdoor setting. The cat on the right, dressed in a blue shirt, yellow vest with a red star, white hat, and yellow pants, strums an acoustic guitar with green-gloved hands while smiling broadly. The cat on the left, wearing a black hat, white shirt with black trim, yellow pants, and brown boots, sits attentively with a slight smile, listening to the performance. The background features a painted mural of a landscape with blue skies and purple hills.  \n\n### Vibe:  \nPlayful, lighthearted, and musical; the guitarist exudes enthusiasm, creating a casual, joyful mood, while the listener appears engaged and amused.  \n\n### Key Words:  \nAnthropomorphic cats, acoustic guitar (with red star), wooden bench, outdoor porch setting, musical performance, attentive listening, smiling expression, casual interaction, painted landscape backdrop.  \n\n### Musical Aspects (If Any):  \nThe guitarist\u2019s rhythmic strumming posture and open-mouthed expression suggest synchronized, upbeat movement (\"Mickey Mousing\") implying an energetic, melodic performance, though no audio is visible.",
+              "video_score": null,
+              "vibe_card_score": 0.22495979
+            },
+            {
+              "segment_id": "b5d242eb-8aa9-55b5-80f6-0a8a46aed7f2",
+              "segment_path": "videos/E01-Little_Quacker/004-00;00;35.500-00;00;39.500.mp4",
+              "duration": 4.003292,
+              "vibe_card": "### Scene Description:  \nA serene rural landscape at either dawn or dusk, featuring a weathered wooden fence post leaning against tall, golden grass in the foreground. Beyond the fence, a vast field stretches toward distant trees and a calm body of water, with scattered hay bales visible near the horizon. The sky is painted in soft pinks and purples, suggesting peaceful stillness.  \n\n### Vibe:  \nTranquil, nostalgic, and quiet; evoking a sense of rural solitude and quiet reflection under a gentle, warm light.  \n\n### Key Words:  \nFence Post, Golden Grass, Hay Bales, Field, Trees, Body of Water, Dawn/Dusk, Rural Landscape, Stillness  \n\n### Musical Aspects (If Any):  \nImplied silence or soft, ambient melody; the static, unhurried visual rhythm suggests a calm, contemplative acoustic backdrop\u2014perhaps gentle acoustic guitar or wind chimes\u2014mirroring the peaceful, motionless scenery. No overt \"Mickey Mousing\" or rhythmic action present.",
+              "video_score": null,
+              "vibe_card_score": 0.21785915
+            },
+            {
+              "segment_id": "57902691-6f17-50ce-84c9-62ee06094125",
+              "segment_path": "videos/E03-Texas_Tom/041-00;02;41.500-00;02;43.500.mp4",
+              "duration": 2.001292,
+              "vibe_card": "**Scene Description:**  \nA small mouse wearing a black hat and white diaper is being rapidly pulled by a white rope attached to a large cowboy boot adorned with blue spurs. The boot belongs to an unseen larger character whose leg is partially visible. The mouse struggles to keep pace as it is dragged past a blue record player with a disc resting on its turntable, set against a wooden interior background featuring coiled rope on the floor.  \n\n**Vibe:**  \nTense, chaotic, and suspenseful, driven by the mouse\u2019s frantic struggle and the abrupt, forceful motion of the drag. The scene conveys urgency and lighthearted peril typical of classic cartoon physical comedy.  \n\n**Key Words:**  \nMouse, black hat, white diaper, cowboy boot, spurs, rope, record player, turntable, coiled rope, struggle, drag, tension, wooden interior, chase, trap  \n\n**Musical Aspects (If Any):**  \nVisual rhythm of abrupt, jerky movements as the mouse is yanked by the rope; implied audio suggests potential synchronized music from the record player or tense sound effects, though no explicit audio cues are visible in the frames.",
+              "video_score": null,
+              "vibe_card_score": 0.21754245
+            },
+            {
+              "segment_id": "85387331-5ac4-57fb-81d1-8f19251f9874",
+              "segment_path": "videos/E06-Tom_and_Jerry_in_the_Hollywood_Bowl/026-00;02;22.500-00;02;24.000.mp4",
+              "duration": 1.5015,
+              "vibe_card": "### Scene Description:  \nA small animated character dressed in formal attire (black suit, white shirt, red tie) plays a double bass against a warm yellow background. The scene transitions to the same character precariously balanced on the pillar of an ornate golden harp, clutching a thin object (possibly a baton or stick) while appearing to lose balance and tumble downward.\n\n### Vibe:  \nPlayful, lighthearted, and slightly chaotic. The character\u2019s formal appearance contrasts with their clumsy, acrobatic movements, creating a whimsical and humorous tone.\n\n### Key Words:  \nCharacter: Animated cat (formal attire), Objects: Double bass, Harp (ornate golden), Violin, Sheet music stand, Actions: Playing instrument, Balancing, Tumbling, Concepts: Musical performance, Physical comedy  \n\n### Musical Aspects (If Any):  \nVisual rhythm suggests a shift from steady, controlled motion (playing the double bass) to abrupt, staccato movement (tumbling off the harp). The scene implies a sudden disruption in musical flow, evoking a comedic \"Mickey Mousing\" effect where action syncs with implied audio (e.g., a sharp *thud* upon impact).",
+              "video_score": null,
+              "vibe_card_score": 0.21222961
+            },
+            {
+              "segment_id": "5bd52521-b62b-5bf9-98bc-49f36d61450f",
+              "segment_path": "videos/E02-Saturday_Evening_Puss/053-00;03;44.500-00;03;45.500.mp4",
+              "duration": 1.001,
+              "vibe_card": "### Scene Description:  \nA wooden dresser with three drawers and grid-patterned cabinet doors stands against a solid purple wall, positioned on a dark carpeted floor. Nearby, a vinyl record player spins a blue and red record; a small blue figure rests atop the spinning disc. A hand reaches into the frame from the left, interacting with the scene but not fully visible.  \n\n### Vibe:  \nQuiet, nostalgic, and slightly mysterious; the stillness of the room contrasts with the subtle motion of the spinning record, evoking a sense of paused anticipation.  \n\n### Key Words:  \nWooden dresser, grid-patterned cabinet, purple wall, dark carpet, vinyl record player, spinning record, blue figure, hand (reaching), indoor setting, nostalgia  \n\n### Musical Aspects (If Any):  \nImplied rhythmic motion from the rotating vinyl record, suggesting playback audio; the spinning disc creates a visual rhythm of cyclical movement.",
+              "video_score": null,
+              "vibe_card_score": 0.21018067
+            }
+          ],
+          "selected": {
+            "segment_id": "21a5e9b3-fb0e-5cc5-be5f-041591c1310c",
+            "segment_path": "videos/E03-Texas_Tom/058-00;03;54.000-00;03;59.000.mp4",
+            "duration": 5.004292,
+            "vibe_card": "### Scene Description:  \nTwo anthropomorphic cats are on a wooden porch. The cat on the right, dressed in a white cowboy hat, blue shirt, green bandana, yellow pants with stars, and red boots, strums a brown acoustic guitar with a red star on its body. The cat on the left, wearing a black cowboy hat, purple scarf, black vest, and yellow pants with brown boots, sits on a bench and watches attentively with a slight smile.  \n\n### Vibe:  \nPlayful, lighthearted, and cheerful, with a touch of rustic charm.  \n\n### Key Words:  \nCat, guitar, bench, cowboy hat, boots, acoustic guitar, star, wooden porch, musical performance, attentive, smiling  \n\n### Musical Aspects (If Any):  \nVisual rhythm evident in the strumming motion of the guitar; the standing cat\u2019s energetic posture and facial expression suggest a lively, syncopated performance, implying a joyful melody without audible cues.",
+            "video_score": 0.28274387,
+            "vibe_card_score": 0.26353103,
+            "strategy": "top_video"
+          },
+          "postprocess": {
+            "input_path": "datasets/ds2/videos/E03-Texas_Tom/058-00;03;54.000-00;03;59.000.mp4",
+            "output_path": "/Users/scottcui/projects/mv_synthesis/outputs/audio_query_video/countingStars/clips/0003.mp4",
+            "start_offset": 0,
+            "duration": 4.969999999999999,
+            "pad_black": false,
+            "clip_duration": 5.004292,
+            "speed_factor": 1.0068997987927568,
+            "note": "speed_up",
+            "input_exists": true
+          },
+          "line_audio_url": "/assets/dataset/songs/countingStars/clips_and_lyrics/0003_009.390-014.360.wav",
+          "selected_display_url": "/assets/output/audio_query_video/countingStars/clips/0003.mp4",
+          "selected_display_source": "rendered"
+        }
+      }
+    }
+  ]
+}

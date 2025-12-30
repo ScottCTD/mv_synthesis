@@ -26,15 +26,13 @@ datasets/
 Collections:
 - `video-segments`
 - `video-vibe_cards`
-- `lyrics-text`
-- `lyrics-augmented_query`
-- `lyrics-text_augmented_query`
-- `lyrics-audio` (optional)
+- `lyrics-{text_video,text_text}-{text,augment,combined}`
+- `lyrics-{audio_video,audio_text}-audio` (optional)
 
 ## Synthesis Pipeline (High-Level)
 
 1. **Embed video segments** into `video-segments` and `video-vibe_cards`.
-2. **Embed lyric lines** into `lyrics-text`, `lyrics-augmented_query`, and `lyrics-text_augmented_query` (and optionally `lyrics-audio`).
+2. **Embed lyric lines** into `lyrics-{text_video,text_text}-{text,augment,combined}` (and optionally `lyrics-{audio_video,audio_text}-audio`).
 3. **Synthesize MV** by retrieving candidates for each lyric line, selecting a clip, post-processing, and stitching.
 
 ## Usage
@@ -85,6 +83,6 @@ Outputs:
 
 - The pipeline reads lyric timing from `clips_and_lyrics/*.txt` so any intro/intermezzo lines live there.
 - `lyrics_lines.json` is the cached, processed representation of lyric lines for re-use.
-- By default, retrieval uses `lyrics-augmented_query` embeddings. Use `--query-source text` or `--query-source text_augmented` to switch.
+- By default, retrieval uses `lyrics-text_video-combined` embeddings. Use `--query-source text` or `--query-source text_augmented` to switch.
 - Selection strategies include `top_vibe_duration` and `top_video_duration` (prefer top score when duration >= lyric duration, otherwise choose the longest shorter clip).
 *** End Patch

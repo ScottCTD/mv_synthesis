@@ -29,11 +29,12 @@ def get_file_size_mb(file_path: Path) -> float:
 
 def collect_video_segments(all_video_path: Path) -> dict[str, Path]:
     video_id_to_path: dict[str, Path] = {}
-    videos = os.listdir(all_video_path)
+    videos = sorted(os.listdir(all_video_path))
     for video in videos:
         if "." in video:
             continue
-        for segment in os.listdir(all_video_path / video):
+        segments = sorted(os.listdir(all_video_path / video))
+        for segment in segments:
             if not segment.endswith(".mp4") and not segment.endswith(".mkv"):
                 continue
             segment_path = all_video_path / video / segment
@@ -76,7 +77,7 @@ async def embed_and_store_segment(
                 video_embedding is not None
             ), f"Video embedding not found for segment {segment_path}"
 
-            vibe_card = await vision_model.generate_vibe_card(str(segment_path))
+            vibe_card = await vision_model.generate_vibe_card_frames(str(segment_path), fps=3, max_frames=10, reasoning_effort="medium")
             vibe_card_embedding = await embed_model.embed_text(
                 vibe_card, embedding_purpose="GENERIC_INDEX", truncation_mode="END"
             )
@@ -115,8 +116,9 @@ async def main(
     dataset_root: Path,
     limit: Optional[int] = None,
     max_concurrent: int = 10,
+    enable_filter: bool = False,
     max_duration_seconds: float = 30.0,
-    max_size_mb: float = 100.0,
+    max_size_mb: float = 50.0,
 ) -> None:
     if not all_video_path.exists():
         raise FileNotFoundError(f"videos dir not found: {all_video_path}")
@@ -130,27 +132,30 @@ async def main(
     vision_model = Nova2LiteModel()
     video_id_to_path = collect_video_segments(all_video_path)
 
-    # Filter segments by size and duration
+    # Filter segments by size and duration (if enabled)
     segment_ids = list(video_id_to_path.keys())
     filtered_segment_ids = []
     skipped_count = 0
     
-    for segment_id in tqdm(segment_ids, desc="Filtering segments"):
-        segment_path = video_id_to_path[segment_id]
-        duration = get_video_duration(segment_path)
-        file_size_mb = get_file_size_mb(segment_path)
-        
-        if duration is not None and duration > max_duration_seconds:
-            print(f"Skipping {segment_path} because of size limit (duration: {duration:.2f}s > {max_duration_seconds}s)")
-            skipped_count += 1
-            continue
-        
-        if file_size_mb > max_size_mb:
-            print(f"Skipping {segment_path} because of size limit (size: {file_size_mb:.2f}MB > {max_size_mb}MB)")
-            skipped_count += 1
-            continue
-        
-        filtered_segment_ids.append(segment_id)
+    if enable_filter:
+        for segment_id in tqdm(segment_ids, desc="Filtering segments"):
+            segment_path = video_id_to_path[segment_id]
+            duration = get_video_duration(segment_path)
+            file_size_mb = get_file_size_mb(segment_path)
+            
+            if duration is not None and duration > max_duration_seconds:
+                print(f"Skipping {segment_path} because of size limit (duration: {duration:.2f}s > {max_duration_seconds}s)")
+                skipped_count += 1
+                continue
+            
+            if file_size_mb > max_size_mb:
+                print(f"Skipping {segment_path} because of size limit (size: {file_size_mb:.2f}MB > {max_size_mb}MB)")
+                skipped_count += 1
+                continue
+            
+            filtered_segment_ids.append(segment_id)
+    else:
+        filtered_segment_ids = segment_ids
     
     if skipped_count > 0:
         print(f"Skipped {skipped_count} segments due to size limits")
@@ -238,16 +243,21 @@ if __name__ == "__main__":
         help="Maximum number of concurrent embedding tasks (default: 10)",
     )
     parser.add_argument(
+        "--enable-filter",
+        action="store_true",
+        help="Enable filtering by duration and file size (default: disabled)",
+    )
+    parser.add_argument(
         "--max-duration-seconds",
         type=float,
         default=30.0,
-        help="Maximum segment duration in seconds (default: 30.0)",
+        help="Maximum segment duration in seconds (default: 30.0, only used with --enable-filter)",
     )
     parser.add_argument(
         "--max-size-mb",
         type=float,
         default=50.0,
-        help="Maximum segment file size in MB (default: 100.0)",
+        help="Maximum segment file size in MB (default: 50.0, only used with --enable-filter)",
     )
     args = parser.parse_args()
     dataset_root = args.dataset_root
@@ -260,6 +270,7 @@ if __name__ == "__main__":
             dataset_root=dataset_root,
             limit=args.limit,
             max_concurrent=args.max_concurrent,
+            enable_filter=args.enable_filter,
             max_duration_seconds=args.max_duration_seconds,
             max_size_mb=args.max_size_mb,
         )

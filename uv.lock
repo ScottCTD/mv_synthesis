@@ -1086,6 +1086,7 @@ dependencies = [
     { name = "numpy" },
     { name = "qdrant-client" },
     { name = "scenedetect", extra = ["opencv"] },
+    { name = "tenacity" },
     { name = "tqdm" },
 ]
 
@@ -1101,6 +1102,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=2.4.0" },
     { name = "qdrant-client", specifier = ">=1.16.2" },
     { name = "scenedetect", extras = ["opencv"], specifier = ">=0.6.7.1" },
+    { name = "tenacity", specifier = ">=9.1.2" },
     { name = "tqdm", specifier = ">=4.67.1" },
 ]
 

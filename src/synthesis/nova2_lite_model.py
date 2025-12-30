@@ -1,21 +1,21 @@
-import boto3
 import asyncio
-import re
-from typing import Any
 
-from botocore.exceptions import ClientError, ParamValidationError
-try:
-    from tqdm.asyncio import tqdm
-except ImportError:  # pragma: no cover - optional progress bar
-    tqdm = None
+import boto3
+from botocore.exceptions import ClientError
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
+from tqdm.asyncio import tqdm
 
-
-_LRC_TIMESTAMP_RE = re.compile(r"^\[\d{2}:\d{2}\.\d{3}\]\s*")
-
-
-def read_bytes(path: str) -> bytes:
-    with open(path, "rb") as f:
-        return f.read()
+from synthesis.nova2_lite_utils import (
+    _extract_converse_text,
+    _sample_video_frames,
+    normalize_lyric_lines,
+    read_bytes,
+)
 
 
 VIBE_CARD_SYSTEM_PROMPT = """
@@ -29,7 +29,7 @@ Provide a strictly structured output based ONLY on visible visual evidence. Do n
 You must provide the following four fields:
 
 1. Scene Description:
-   - Write 1-2 sentences describing the EXACT action and objects visible.
+   - Write 1-2 sentences describing the EXACT actions and objects visible.
    - Be specific (e.g., use "double-barreled shotgun" instead of "crowbar" if visible).
 
 2. Vibe:
@@ -58,62 +58,88 @@ Musical Aspects (If Any): [Text]
 
 
 SONG_AUGMENTED_QUERY_SYSTEM_PROMPT = """
-You are an expert Music Video Director and Visual Prompt Engineer. Your goal is to translate song lyrics into rich, visual search queries to retrieve video clips from a vector database.
+You are an expert Music Video Editor. Your job is to rewrite ONE target lyric line into a dense retrieval query that matches our clip “Vibe Cards”.
 
-### THE CONTEXT
-We have a database of video clips. Each clip is indexed by a "Vibe Card"—a structured description containing:
-1. Scene Description (Concrete visuals, action, lighting)
-2. Vibe (Abstract mood, energy, pacing)
-3. Key Words (Specific objects, colors, tags)
+Vibe Cards contain four parts:
+- Scene Description (what we see: characters, actions, setting, key props)
+- Vibe (mood/energy/pacing adjectives)
+- Key Words (tags: objects, actions, locations, emotions)
+- Musical Aspects (rhythm/beat-fit/action-sync/instrument-if-visible, comedic timing if applicable)
 
-### YOUR TASK
-You will be provided with the full song lyrics (as numbered lines) and a specific target line index.
-Your job is to generate exactly ONE augmented visual query for that target line.
+INPUT:
+1) Full song lyrics as numbered lines
+2) Target line index to rewrite
 
-### HOW TO CONSTRUCT THE AUGMENTED QUERY
-The Augmented Query must be a dense, descriptive string that attempts to match the content of a Vibe Card. Do not merely repeat the lyrics. You must translate the *meaning* of the lyrics into *visuals*.
+OUTPUT (IMPORTANT):
+- Output EXACTLY ONE line of text (not JSON, no bullet list).
+- Use this format INSIDE the single line:
+  "Scene: ... | Vibe: ... | Key Words: ... | Musical Aspects: ..."
+- Keep it compact but dense: ~40–80 words total.
+- Use comma-separated phrases inside each field.
 
-Apply the following logic:
-1.  **Translate Metaphors to Visuals:**
-    * *Lyric:* "My heart is on fire"
-    * *Visual:* "Intense flames, red lighting, burning object, passion, fast-paced movement, warm color palette."
-    * *Do NOT* just say "heart on fire" if a literal heart isn't the goal. Think about what the scene *looks* like.
-2.  **Capture the Vibe/Energy:**
-    * Infer the emotion (melancholy, hype, aggressive, serene) and include those adjectives.
-    * Describe the pacing (slow motion, chaotic cuts, static shot).
-3.  **Identify Physical Objects & Settings:**
-    * Extract concrete nouns. If the lyrics are abstract, hallucinate fitting scenarios (e.g., for a sad song: "rainy window," "empty street," "lonely figure").
-4.  **Cinematographic Terms:**
-    * Use terms like "close-up," "wide shot," "bokeh," "neon lighting," "black and white" if they fit the mood.
-5. Consider the full song. Make sure each augmented query is consistent with each other and maintain the flow and vibe of the whole song.
+GOAL:
+Maximize match to existing Vibe Cards for retrieval. Do not write poetry; write searchable visual descriptors.
+
+HOW TO WRITE A GOOD QUERY:
+1) Translate the lyric meaning into visual content:
+   - Extract the core intent (literal or metaphorical).
+   - Convert metaphors into concrete visuals and actions.
+
+2) Scene Description should be concrete and clip-like:
+   - Include (a) 1 setting, (b) 1–2 characters or subjects (use generic terms like “cat”, “mouse”, “character”, “pair”), (c) 1–2 actions, and (d) 2–4 salient props/objects.
+   - Shot words like “close-up” or “wide shot” are allowed if they help retrieval.
+
+3) Vibe should be 3–6 adjectives:
+   - e.g., playful, mischievous, frantic, tense, dreamy, triumphant, chaotic, sneaky, tender.
+
+4) Key Words should be 8–14 short tags:
+   - Include characters/subjects, setting, props, actions, emotions.
+
+5) Musical Aspects should be practical and short:
+   - Beat-synced actions (hits, jumps, door slam), staccato vs legato motion,
+   - “comedic timing” / “Mickey Mousing” if it fits,
+   - cut-point potential (good for a sharp cut / good for a smooth dissolve),
+   - instrument visibility only if plausible.
+
+ABOUT “ONE SHOT” VS “MULTIPLE SHOTS”:
+- Default: describe ONE strong, specific shot that clearly expresses the lyric (best for precision).
+- If the lyric is very abstract OR your first-shot idea depends on a rare object/setting, include a SECOND alternative shot after "OR:" inside the Scene field (only one alternative, not more).
+  Example: "Scene: ... OR: ..."
+
+SPECIAL CASES:
+- If the target line is a sound token like <Knock_Sound> or <Flute_Like_Sound>, describe the likely visible cause, the mood, and how the action can sync to the sound.
+- Ignore title/artist text; focus on the lyric meaning.
+
+DOMAIN ALIGNMENT:
+Assume clips are stylized cartoon scenes. Prefer generic subjects ("cat", "mouse", "character") and cartoon-friendly props/settings (door, couch, box, ball, window, lamp, desk, alley, river, bridge, sign, chain, candle, fire). Avoid modern-specific objects (smartphone, telescope, calculator) unless absolutely necessary.
+
+OR USAGE:
+Do not use "OR" by default. Use at most one OR only if the first scene relies on a rare prop/setting. If you use OR, the alternative must be equally concrete (actions + props), not a generic fallback.
+
+MUSICAL ASPECTS:
+Do not name specific instruments unless they are visible or explicitly implied by the sound token. Focus on edit-fit: beat-synced action, staccato hit, legato motion, comedic timing (Mickey Mousing), sharp cut vs smooth dissolve.
+
 """
 
 
-def normalize_lyric_lines(full_lyrics: str) -> list[str]:
-    """
-    Convert raw lyrics (often LRC format) into a list of non-empty lyric lines.
-    - Strips leading LRC timestamps like "[00:12.345]".
-    - Drops empty lines.
-    """
-    lines: list[str] = []
-    for raw in full_lyrics.splitlines():
-        s = raw.strip()
-        if not s:
-            continue
-        s = _LRC_TIMESTAMP_RE.sub("", s).strip()
-        if not s:
-            continue
-        lines.append(s)
-    return lines
+class NonRetryableBedrockError(Exception):
+    """Exception for non-retryable Bedrock errors - these should not be retried."""
+    pass
 
 
-def _extract_converse_text(response: dict) -> str:
-    text_response = ""
-    content_list = response.get("output", {}).get("message", {}).get("content", []) or []
-    for content in content_list:
-        if "text" in content:
-            text_response += content["text"]
-    return text_response
+def _is_retryable_error(exception: Exception) -> bool:
+    """Check if a Bedrock exception should trigger a retry."""
+    if isinstance(exception, ClientError):
+        error_code = exception.response.get("Error", {}).get("Code", "")
+        retryable_errors = [
+            "ThrottlingException",
+            "TooManyRequestsException",
+            "ServiceUnavailableException",
+            "RequestTimeoutException",
+            "InternalServerError",
+        ]
+        return error_code in retryable_errors
+    return False
 
 
 class Nova2LiteModel:
@@ -143,11 +169,34 @@ class Nova2LiteModel:
         self.costs["output_cost"] += (output_tokens / 1000) * 0.0025
         self.costs["total_cost"] = self.costs["input_cost"] + self.costs["output_cost"]
 
+    async def _converse_with_retry(self, *args, **kwargs):
+        """Wrapper for client.converse with retry logic."""
+        @retry(
+            retry=retry_if_exception_type(ClientError),
+            wait=wait_exponential(multiplier=1, min=2, max=60),
+            stop=stop_after_attempt(5),
+            reraise=True,
+        )
+        def _call_converse():
+            try:
+                return self.client.converse(*args, **kwargs)
+            except ClientError as e:
+                # Convert non-retryable errors to a different exception type
+                # so tenacity won't retry them
+                if not _is_retryable_error(e):
+                    raise NonRetryableBedrockError(str(e)) from e
+                raise  # Re-raise retryable ClientErrors for tenacity to handle
+        
+        try:
+            return await asyncio.to_thread(_call_converse)
+        except NonRetryableBedrockError as e:
+            # Re-raise as the original ClientError
+            raise e.__cause__ if e.__cause__ else e
+
     async def invoke_model(self, messages, system=None, max_tokens: int = 4096) -> str:
         system_prompts = [{"text": system}] if isinstance(system, str) else system
 
-        response = await asyncio.to_thread(
-            self.client.converse,
+        response = await self._converse_with_retry(
             modelId="us.amazon.nova-2-lite-v1:0",
             messages=messages,
             system=system_prompts,
@@ -183,8 +232,7 @@ class Nova2LiteModel:
         ]
         system_prompt = [{"text": VIBE_CARD_SYSTEM_PROMPT}]
 
-        response = await asyncio.to_thread(
-            self.client.converse,
+        response = await self._converse_with_retry(
             modelId="us.amazon.nova-2-lite-v1:0",
             messages=messages,
             system=system_prompt,
@@ -194,7 +242,7 @@ class Nova2LiteModel:
             additionalModelRequestFields={
                 "reasoningConfig": {
                     "type": "enabled",  # enabled, disabled (default)
-                    "maxReasoningEffort": "low",
+                    "maxReasoningEffort": "medium",
                 }
             },
         )
@@ -203,29 +251,132 @@ class Nova2LiteModel:
         self._track_costs_from_usage(response.get("usage", {}) or {})
         return _extract_converse_text(response)
 
-    async def generate_song_augmented_queries_async(
+    async def generate_vibe_card_frames(
         self,
-        full_lyrics: str,
-        use_prompt_cache_point: bool = True,
-    ) -> list[str]:
-        """
-        Generate exactly one augmented query per lyric line by making one model call per line.
-        Calls are run concurrently via asyncio, using a shared prompt prefix to enable prompt caching.
-        """
-        lyric_lines = normalize_lyric_lines(full_lyrics)
-        return await self.generate_augmented_queries_for_lines(
-            lyric_lines, use_prompt_cache_point=use_prompt_cache_point
+        video_path: str,
+        fps: float | None = None,
+        max_frames: int = 8,
+        reasoning_effort: str = "medium",
+    ) -> str:
+        frame_bytes, timestamps = _sample_video_frames(
+            video_path, max_frames=max_frames, fps=fps
+        )
+        frame_labels = [
+            f"frame_{idx + 1:04d}.jpg@{timestamp}"
+            for idx, timestamp in enumerate(timestamps)
+        ]
+        prompt_lines = ["These are sequential video frames in chronological order."]
+        if frame_labels:
+            prompt_lines.append("Times: " + ", ".join(frame_labels))
+        prompt = "\n".join(prompt_lines)
+
+        messages = [
+            {
+                "role": "user",
+                "content": [
+                    {"text": prompt},
+                    *[
+                        {
+                            "image": {
+                                "format": "jpeg",
+                                "source": {"bytes": frame_bytes_item},
+                            }
+                        }
+                        for frame_bytes_item in frame_bytes
+                    ],
+                ],
+            }
+        ]
+        system_prompt = [{"text": VIBE_CARD_SYSTEM_PROMPT}]
+        reasoning_config = {"type": "disabled"}
+        if reasoning_effort and reasoning_effort != "disabled":
+            reasoning_config = {
+                "type": "enabled",
+                "maxReasoningEffort": reasoning_effort,
+            }
+
+        response = await self._converse_with_retry(
+            modelId="us.amazon.nova-2-lite-v1:0",
+            messages=messages,
+            system=system_prompt,
+            inferenceConfig={
+                "maxTokens": 8192,
+            },
+            additionalModelRequestFields={
+                "reasoningConfig": reasoning_config,
+            },
         )
 
-    async def generate_augmented_queries_for_lines(
+        # Track costs
+        self._track_costs_from_usage(response.get("usage", {}) or {})
+        return _extract_converse_text(response)
+
+    async def analyze_video_frames(
         self,
-        lyric_lines: list[str],
-        use_prompt_cache_point: bool = True,
-    ) -> list[str]:
+        video_path: str,
+        user_prompt: str,
+        system_prompt: str,
+        reasoning_effort,
+        fps: float | None = None,
+    ) -> str:
+        frame_bytes, timestamps = _sample_video_frames(video_path, fps=fps)
+        frame_labels = [
+            f"frame_{idx + 1:04d}.jpg@{timestamp}"
+            for idx, timestamp in enumerate(timestamps)
+        ]
+        prompt_lines = ["These are sequential video frames in chronological order."]
+        if frame_labels:
+            prompt_lines.append("Times: " + ", ".join(frame_labels))
+        if user_prompt:
+            prompt_lines.append(f"Task: {user_prompt}")
+        prompt = "\n".join(prompt_lines)
+
+        messages = [
+            {
+                "role": "user",
+                "content": [
+                    {"text": prompt},
+                    *[
+                        {
+                            "image": {
+                                "format": "jpeg",
+                                "source": {"bytes": frame_bytes_item},
+                            }
+                        }
+                        for frame_bytes_item in frame_bytes
+                    ],
+                ],
+            }
+        ]
+
+        system_prompts = [{"text": system_prompt}] if system_prompt else None
+        reasoning_config = {"type": "disabled"}
+        if reasoning_effort and reasoning_effort != "disabled":
+            reasoning_config = {
+                "type": "enabled",
+                "maxReasoningEffort": reasoning_effort,
+            }
+
+        response = await self._converse_with_retry(
+            modelId="us.amazon.nova-2-lite-v1:0",
+            messages=messages,
+            system=system_prompts,
+            inferenceConfig={
+                "maxTokens": 4096,
+            },
+            additionalModelRequestFields={
+                "reasoningConfig": reasoning_config,
+            },
+        )
+
+        self._track_costs_from_usage(response.get("usage", {}) or {})
+        return _extract_converse_text(response)
+
+    async def generate_augmented_queries(self, lyrics: str | list[str]) -> list[str]:
         """
-        Generate exactly one augmented query per lyric line using the provided list
-        (preserves ordering without normalizing LRC timestamps).
+        Generate exactly one augmented query per lyric line from raw lyrics or a list of lines.
         """
+        lyric_lines = normalize_lyric_lines(lyrics) if isinstance(lyrics, str) else lyrics
         system_prompt = [{"text": SONG_AUGMENTED_QUERY_SYSTEM_PROMPT}]
         cleaned_lines = [line.strip() for line in lyric_lines]
         if not cleaned_lines:
@@ -237,69 +388,50 @@ class Nova2LiteModel:
         shared_prefix_text = (
             "Full song lyrics (numbered lines):\n"
             f"{numbered_lines}\n\n"
-            "You are generating an augmented visual retrieval query for a music video.\n"
-            "The augmented query must be a dense, retrieval-friendly visual description matching a Vibe Card.\n"
         )
 
-        def _build_messages(target_index: int, with_cache_point: bool) -> list[dict[str, Any]]:
-            prefix_block: dict[str, Any] = {"text": shared_prefix_text}
-            if with_cache_point:
-                prefix_block["cachePoint"] = {"type": "default"}
-            suffix_text = (
-                f"Target line index: {target_index + 1}\n"
-                f"Target lyric line: {cleaned_lines[target_index]}\n\n"
-                "Return ONLY the augmented query for this target line as plain text.\n"
-                "Do not include any labels, numbering, quotes, JSON, or additional commentary."
+        tasks = [
+            self._converse_with_retry(
+                modelId="us.amazon.nova-2-lite-v1:0",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "text": (
+                                    f"{shared_prefix_text}"
+                                    f"Target line index: {idx + 1}\n"
+                                    f"Target lyric line: {line}\n\n"
+                                    "Return ONLY the augmented query for this target line as plain text.\n"
+                                    "Do not include any labels, numbering, quotes, JSON, or additional commentary."
+                                )
+                            }
+                        ],
+                    },
+                ],
+                system=system_prompt,
+                additionalModelRequestFields={
+                    "reasoningConfig": {
+                        "type": "enabled",
+                        "maxReasoningEffort": "medium",
+                    }
+                },
             )
-            return [
-                {"role": "user", "content": [prefix_block]},
-                {"role": "user", "content": [{"text": suffix_text}]},
-            ]
-
-        async def _generate_one(idx: int) -> str:
-            messages = _build_messages(idx, with_cache_point=use_prompt_cache_point)
-            try:
-                response = await asyncio.to_thread(
-                    self.client.converse,
-                    modelId="us.amazon.nova-2-lite-v1:0",
-                    messages=messages,
-                    system=system_prompt,
-                    additionalModelRequestFields={
-                        "reasoningConfig": {
-                            "type": "enabled",
-                            "maxReasoningEffort": "medium",
-                        }
-                    },
-                )
-            except (ParamValidationError, ClientError):
-                if not use_prompt_cache_point:
-                    raise
-                messages = _build_messages(idx, with_cache_point=False)
-                response = await asyncio.to_thread(
-                    self.client.converse,
-                    modelId="us.amazon.nova-2-lite-v1:0",
-                    messages=messages,
-                    system=system_prompt,
-                    additionalModelRequestFields={
-                        "reasoningConfig": {
-                            "type": "enabled",
-                            "maxReasoningEffort": "medium",
-                        }
-                    },
-                )
-
-            self._track_costs_from_usage(response.get("usage", {}) or {})
-            return _extract_converse_text(response).strip()
-
-        tasks = [_generate_one(i) for i in range(len(cleaned_lines))]
+            for idx, line in enumerate(cleaned_lines)
+        ]
         if tqdm is None:
-            queries = await asyncio.gather(*tasks)
+            responses = await asyncio.gather(*tasks)
         else:
-            queries = await tqdm.gather(
+            responses = await tqdm.gather(
                 *tasks,
                 desc="Generating augmented queries",
                 total=len(cleaned_lines),
             )
+
+        queries = []
+        for response in responses:
+            self._track_costs_from_usage(response.get("usage", {}) or {})
+            queries.append(_extract_converse_text(response).strip())
 
         if len(queries) != len(cleaned_lines):
             print(
@@ -307,6 +439,8 @@ class Nova2LiteModel:
             )
 
         return list(queries)
+
+
 
 async def debug():
     model = Nova2LiteModel()
@@ -316,7 +450,7 @@ Lately I've been I've been losing sleep
 Dreaming about the things that we could be
     """
     
-    augmented_queries = await model.generate_song_augmented_queries_async(full_lyrics)
+    augmented_queries = await model.generate_augmented_queries(full_lyrics)
     import json
     print(json.dumps(augmented_queries, indent=2))
     

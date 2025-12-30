@@ -13,9 +13,7 @@ from typing import Optional
 
 from synthesis.config import (
     DEFAULT_DATASET_ROOT,
-    LYRICS_AUGMENTED_QUERY_COLLECTION,
-    LYRICS_TEXT_COLLECTION,
-    LYRICS_TEXT_AUGMENTED_QUERY_COLLECTION,
+    LYRICS_COLLECTIONS,
     PROJECT_ROOT,
 )
 from synthesis.db import QdrantStore
@@ -73,11 +71,13 @@ def resolve_output_dir(output_dir_arg: Optional[str], song_name: str) -> Path:
 
 def choose_query_collection(query_source: str) -> str:
     if query_source == "augmented":
-        return LYRICS_AUGMENTED_QUERY_COLLECTION
+        return LYRICS_COLLECTIONS["augment"]["text_video"]
     if query_source == "text":
-        return LYRICS_TEXT_COLLECTION
+        return LYRICS_COLLECTIONS["text"]["text_video"]
     if query_source == "text_augmented":
-        return LYRICS_TEXT_AUGMENTED_QUERY_COLLECTION
+        return LYRICS_COLLECTIONS["combined"]["text_video"]
+    if query_source == "audio":
+        return LYRICS_COLLECTIONS["audio"]["audio_video"]
     raise ValueError(f"Unknown query source: {query_source}")
 
 
@@ -251,7 +251,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--top-k", type=int, default=10, help="Top-k retrieval size.")
     parser.add_argument(
         "--query-source",
-        choices=["augmented", "text", "text_augmented"],
+        choices=["augmented", "text", "text_augmented", "audio"],
         default="text_augmented",
         help="Which lyric embedding to use for retrieval.",
     )

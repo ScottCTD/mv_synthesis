@@ -19,10 +19,30 @@ EMBEDDING_DIM = 3072
 
 VIDEO_SEGMENTS_COLLECTION = "video-segments"
 VIDEO_VIBE_CARDS_COLLECTION = "video-vibe_cards"
-LYRICS_TEXT_COLLECTION = "lyrics-text"
-LYRICS_AUGMENTED_QUERY_COLLECTION = "lyrics-augmented_query"
-LYRICS_TEXT_AUGMENTED_QUERY_COLLECTION = "lyrics-text_augmented_query"
-LYRICS_AUDIO_COLLECTION = "lyrics-audio"
+
+
+def lyrics_collection_name(embedding_purpose: str, query_source: str) -> str:
+    return f"lyrics-{embedding_purpose}-{query_source}"
+
+
+LYRICS_COLLECTIONS = {
+    "text": {
+        "text_video": lyrics_collection_name("text_video", "text"),
+        "text_text": lyrics_collection_name("text_text", "text"),
+    },
+    "augment": {
+        "text_video": lyrics_collection_name("text_video", "augment"),
+        "text_text": lyrics_collection_name("text_text", "augment"),
+    },
+    "combined": {
+        "text_video": lyrics_collection_name("text_video", "combined"),
+        "text_text": lyrics_collection_name("text_text", "combined"),
+    },
+    "audio": {
+        "audio_video": lyrics_collection_name("audio_video", "audio"),
+        "audio_text": lyrics_collection_name("audio_text", "audio"),
+    },
+}
 
 
 @dataclass(frozen=True)
