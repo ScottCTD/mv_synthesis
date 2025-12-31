@@ -12,6 +12,10 @@ from multiprocessing import Pool, cpu_count
 from collections import defaultdict
 import statistics
 
+import matplotlib.pyplot as plt
+import numpy as np
+from tqdm import tqdm
+
 
 def get_video_duration(video_path):
     """
@@ -95,7 +99,126 @@ def find_video_files(directory, max_depth=None):
     return video_files
 
 
-def count_video_duration(directory, show_breakdown=False, num_workers=None, remove_errors=False, max_depth=None):
+def plot_duration_distribution(durations, directory, output_path):
+    """
+    Plot the duration distribution of video segments.
+    
+    Args:
+        durations: List of segment durations in seconds.
+        directory: Directory path (for title).
+        output_path: Path to save the plot.
+    """
+    if not durations:
+        print("Warning: No durations found to plot", file=sys.stderr)
+        return
+    
+    durations_array = np.array(durations)
+    total_count = len(durations_array)
+    
+    # Remove outliers using IQR method
+    q1 = np.percentile(durations_array, 25)
+    q3 = np.percentile(durations_array, 75)
+    iqr = q3 - q1
+    lower_bound = q1 - 1.5 * iqr
+    upper_bound = q3 + 1.5 * iqr
+    
+    # Filter out outliers
+    mask = (durations_array >= lower_bound) & (durations_array <= upper_bound)
+    durations_filtered = durations_array[mask]
+    num_outliers = total_count - len(durations_filtered)
+    
+    # Use filtered data for plotting
+    durations_array = durations_filtered
+    
+    # Calculate statistics on filtered data
+    mean_duration = np.mean(durations_array)
+    median_duration = np.median(durations_array)
+    std_duration = np.std(durations_array)
+    min_duration = np.min(durations_array)
+    max_duration = np.max(durations_array)
+    
+    # Create figure with two subplots: histogram and box plot
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6))
+    
+    # Create nice bin edges at round numbers
+    # Use fewer bins (15-20 max) with edges at whole numbers or 0.5 increments
+    data_min = float(np.min(durations_array))
+    data_max = float(np.max(durations_array))
+    
+    # Determine appropriate bin width (0.5, 1, 2, or 5 seconds)
+    data_range = data_max - data_min
+    if data_range <= 5:
+        bin_width = 0.5
+    elif data_range <= 15:
+        bin_width = 1.0
+    elif data_range <= 30:
+        bin_width = 2.0
+    else:
+        bin_width = 5.0
+    
+    # Create bin edges starting from a round number below min, ending at round number above max
+    bin_start = np.floor(data_min / bin_width) * bin_width
+    bin_end = np.ceil(data_max / bin_width) * bin_width
+    bin_edges = np.arange(bin_start, bin_end + bin_width, bin_width)
+    
+    # Histogram with custom bin edges
+    counts, bins, patches = ax1.hist(
+        durations_array,
+        bins=bin_edges,
+        edgecolor="black",
+        alpha=0.7,
+        color="#3498db",
+    )
+    
+    # Add vertical lines for mean and median
+    ax1.axvline(mean_duration, color="#e74c3c", linestyle="--", linewidth=2, label=f"Mean: {mean_duration:.2f}s")
+    ax1.axvline(median_duration, color="#2ecc71", linestyle="--", linewidth=2, label=f"Median: {median_duration:.2f}s")
+    
+    ax1.set_xlabel("Duration (seconds)", fontsize=12)
+    ax1.set_ylabel("Frequency", fontsize=12)
+    
+    ax1.set_title(
+        "Video Segment Duration Distribution",
+        fontsize=14,
+        fontweight="bold",
+    )
+    ax1.legend(loc="upper right", framealpha=0.9)
+    ax1.grid(axis="y", alpha=0.3, linestyle="--")
+    
+    # Box plot
+    bp = ax2.boxplot(
+        [durations_array],
+        vert=True,
+        patch_artist=True,
+    )
+    bp["boxes"][0].set_facecolor("#3498db")
+    bp["boxes"][0].set_alpha(0.7)
+    
+    ax2.set_ylabel("Duration (seconds)", fontsize=12)
+    ax2.set_xlabel("")  # Remove x-axis label
+    ax2.set_xticklabels([])  # Remove x-axis tick labels
+    ax2.grid(axis="y", alpha=0.3, linestyle="--")
+    
+    # Add statistics as legend entries for consistency with top plot
+    from matplotlib.lines import Line2D
+    legend_elements = [
+        Line2D([0], [0], color='none', label=f"Mean: {mean_duration:.2f}s"),
+        Line2D([0], [0], color='none', label=f"Median: {median_duration:.2f}s"),
+        Line2D([0], [0], color='none', label=f"Std Dev: {std_duration:.2f}s"),
+        Line2D([0], [0], color='none', label=f"Min: {min_duration:.2f}s"),
+        Line2D([0], [0], color='none', label=f"Max: {max_duration:.2f}s"),
+    ]
+    ax2.legend(handles=legend_elements, loc="upper right", framealpha=0.9)
+    
+    plt.tight_layout()
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close()
+    
+    print(f"\nSaved plot to: {output_path}")
+
+
+def count_video_duration(directory, show_breakdown=False, num_workers=None, remove_errors=False, max_depth=None, plot=False):
     """
     Count total duration of all video files in a directory.
     
@@ -105,6 +228,7 @@ def count_video_duration(directory, show_breakdown=False, num_workers=None, remo
         num_workers: Number of worker processes (default: cpu_count())
         remove_errors: If True, delete errored video files and print their paths
         max_depth: Maximum recursion depth (None for unlimited)
+        plot: If True, generate and save a plot of duration distribution
     """
     directory = Path(directory)
     if not directory.exists():
@@ -131,9 +255,14 @@ def count_video_duration(directory, show_breakdown=False, num_workers=None, remo
     duration_by_dir = defaultdict(float)
     durations = []  # Store all durations for statistics
     
-    # Process video files in parallel
+    # Process video files in parallel with progress bar
     with Pool(processes=num_workers) as pool:
-        results = pool.map(get_video_duration, video_files)
+        results = list(tqdm(
+            pool.imap(get_video_duration, video_files),
+            total=len(video_files),
+            desc="Processing videos",
+            unit="file"
+        ))
     
     # Process results and accumulate durations
     for video_path, duration in results:
@@ -275,6 +404,21 @@ def count_video_duration(directory, show_breakdown=False, num_workers=None, remo
             relative_path = dir_path.relative_to(directory)
             print(f"  {relative_path}: {format_duration(duration)} ({duration:.3f}s)")
         print("-" * 60)
+    
+    # Generate plot if requested
+    if plot and durations:
+        # Determine output path
+        project_root = Path(__file__).resolve().parent.parent
+        output_dir = project_root / "results" / "plots"
+        
+        # Create a clean filename from directory name
+        dir_path = Path(directory)
+        dir_name = dir_path.name if dir_path.name else dir_path.stem
+        if not dir_name or dir_name == ".":
+            dir_name = "video_segments"
+        
+        output_path = output_dir / f"segment_duration_distribution_{dir_name}.png"
+        plot_duration_distribution(durations, directory, output_path)
 
 
 if __name__ == '__main__':
@@ -312,11 +456,16 @@ if __name__ == '__main__':
         metavar='N',
         help='Maximum recursion depth (default: unlimited). 0 = current directory only, 1 = one level deep, etc. Use -1 for unlimited depth.'
     )
+    parser.add_argument(
+        '--plot',
+        action='store_true',
+        help='Generate and save a plot of duration distribution to results/plots/'
+    )
     
     args = parser.parse_args()
     
     # Convert -1 to None (unlimited depth)
     max_depth = None if args.max_depth == -1 else args.max_depth
     
-    count_video_duration(args.directory, args.breakdown, args.workers, args.remove_errors, max_depth)
+    count_video_duration(args.directory, args.breakdown, args.workers, args.remove_errors, max_depth, args.plot)
 

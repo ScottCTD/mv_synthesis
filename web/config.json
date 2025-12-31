@@ -4,9 +4,9 @@
   "results_root": "results",
   "manifest_name": "retrieval_manifest.json",
   "prefer_rendered": true,
-  "default_left_method": null,
-  "default_right_method": null,
-  "hide_method_select": false,
-  "anonymize_methods": false,
+  "default_left_method": "text_video",
+  "default_right_method": "fused_rank",
+  "hide_method_select": true,
+  "anonymize_methods": true,
   "port": 8000
 }

@@ -18,6 +18,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+# Mapping from internal method names to display names
+METHOD_DISPLAY_NAMES = {
+    "fused_rank": "Multi-Stream Synergy Retrieval",
+    "random": "Random",
+    "text_video": "Naive",
+}
+
+
+def get_method_display_name(method: str) -> str:
+    """Get the display name for a method, or return the method name if not found."""
+    return METHOD_DISPLAY_NAMES.get(method, method)
+
+
 def load_results(results_dir: Path) -> list[dict[str, Any]]:
     """Load all JSON result files from the results directory."""
     results = []
@@ -43,6 +56,8 @@ def analyze_results(results: list[dict[str, Any]]) -> dict[str, Any]:
         "line_positions": defaultdict(lambda: defaultdict(int)),
         # Track wins/losses/ties per method per song for segmented bar charts
         "method_outcomes_by_song": defaultdict(lambda: defaultdict(lambda: defaultdict(int))),
+        # Track fused_rank outcomes by method pair per song for horizontal segmented bar chart
+        "fused_rank_pair_outcomes": defaultdict(lambda: defaultdict(lambda: defaultdict(int))),
     }
 
     for result in results:
@@ -64,6 +79,29 @@ def analyze_results(results: list[dict[str, Any]]) -> dict[str, Any]:
 
             # Check if this is a tie
             is_tie = winner is None or decision == "tie"
+
+            # Track fused_rank comparisons with random or text_video
+            if left_method and right_method:
+                fused_method = "fused_rank"
+                other_methods = ["random", "text_video"]
+                
+                # Check if fused_rank is being compared with random or text_video
+                if left_method == fused_method and right_method in other_methods:
+                    pair_key = f"{fused_method}_vs_{right_method}"
+                    if is_tie:
+                        stats["fused_rank_pair_outcomes"][song][pair_key]["tie"] += 1
+                    elif winner == fused_method:
+                        stats["fused_rank_pair_outcomes"][song][pair_key]["win"] += 1
+                    else:
+                        stats["fused_rank_pair_outcomes"][song][pair_key]["loss"] += 1
+                elif right_method == fused_method and left_method in other_methods:
+                    pair_key = f"{fused_method}_vs_{left_method}"
+                    if is_tie:
+                        stats["fused_rank_pair_outcomes"][song][pair_key]["tie"] += 1
+                    elif winner == fused_method:
+                        stats["fused_rank_pair_outcomes"][song][pair_key]["win"] += 1
+                    else:
+                        stats["fused_rank_pair_outcomes"][song][pair_key]["loss"] += 1
 
             if is_tie:
                 stats["ties"] += 1
@@ -112,29 +150,37 @@ def analyze_results(results: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def plot_overall_winning_rates(stats: dict[str, Any], output_dir: Path):
-    """Plot overall winning rates for all methods including ties."""
+    """Plot overall winning rates for all methods (excluding ties)."""
     overall = stats["overall"]
     if not overall:
         print("No valid comparisons found for overall plot")
         return
 
-    # Sort methods, putting "tie" last
-    methods = sorted([m for m in overall.keys() if m != "tie"]) + (["tie"] if "tie" in overall else [])
+    # Filter to only show actual methods (exclude "tie" which is an outcome, not a method)
+    # Expected methods: fused_rank, random, text_video
+    expected_methods = ["fused_rank", "random", "text_video"]
+    methods = [m for m in expected_methods if m in overall]
+    
+    if not methods:
+        print("No valid methods found in overall stats")
+        return
+    
+    # Sort methods in expected order
+    methods = sorted(methods, key=lambda x: expected_methods.index(x) if x in expected_methods else len(expected_methods))
     wins = [overall[m] for m in methods]
-    total = sum(wins)
+    # Total includes all comparisons (wins + ties) for proper percentage calculation
+    total = sum(overall.values())
     win_rates = [w / total * 100 for w in wins]
 
-    # Color scheme: methods get colors, tie gets gray
-    colors = ["#2ecc71", "#e74c3c", "#3498db", "#f39c12", "#95a5a6"]
-    bar_colors = []
-    for i, method in enumerate(methods):
-        if method == "tie":
-            bar_colors.append("#95a5a6")  # Gray for ties
-        else:
-            bar_colors.append(colors[i % (len(colors) - 1)])
+    # Get display names for methods
+    method_display_names = [get_method_display_name(m) for m in methods]
 
-    fig, ax = plt.subplots(figsize=(10, 6))
-    bars = ax.bar(methods, win_rates, color=bar_colors)
+    # Color scheme: one color per method
+    colors = ["#2ecc71", "#e74c3c", "#3498db"]
+    bar_colors = [colors[i % len(colors)] for i in range(len(methods))]
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    bars = ax.bar(method_display_names, win_rates, color=bar_colors)
 
     # Add value labels on bars
     for bar, rate, win in zip(bars, win_rates, wins):
@@ -149,16 +195,16 @@ def plot_overall_winning_rates(stats: dict[str, Any], output_dir: Path):
             fontweight="bold",
         )
 
-    ax.set_ylabel("Rate (%)", fontsize=12)
-    ax.set_xlabel("Method / Outcome", fontsize=12)
-    ax.set_title(f"Overall Results Distribution\n(Total comparisons: {total})", fontsize=14, fontweight="bold")
+    ax.set_ylabel("Rate (%)", fontsize=14)
+    ax.set_xlabel("Method", fontsize=14)
+    ax.set_title(f"Win Rate Distribution\n(Total preference entries: {total})", fontsize=12, fontweight="bold")
     ax.set_ylim(0, max(win_rates) * 1.2 if win_rates else 100)
     ax.grid(axis="y", alpha=0.3, linestyle="--")
 
     plt.tight_layout()
-    plt.savefig(output_dir / "overall_winning_rates.png", dpi=300, bbox_inches="tight")
+    plt.savefig(output_dir / "overall_win_rates.png", dpi=300, bbox_inches="tight")
     plt.close()
-    print(f"Saved: {output_dir / 'overall_winning_rates.png'}")
+    print(f"Saved: {output_dir / 'overall_win_rates.png'}")
 
 
 def plot_by_user(stats: dict[str, Any], output_dir: Path):
@@ -184,7 +230,7 @@ def plot_by_user(stats: dict[str, Any], output_dir: Path):
     width = 0.35
     colors = ["#2ecc71", "#e74c3c", "#3498db", "#f39c12", "#95a5a6"]
 
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(8, 6))
 
     for i, method in enumerate(methods):
         win_rates = []
@@ -199,7 +245,8 @@ def plot_by_user(stats: dict[str, Any], output_dir: Path):
 
         offset = (i - len(methods) / 2 + 0.5) * width / len(methods)
         method_color = "#95a5a6" if method == "tie" else colors[i % (len(colors) - 1)]
-        bars = ax.bar(x + offset, win_rates, width / len(methods), label=method, color=method_color)
+        method_label = method if method == "tie" else get_method_display_name(method)
+        bars = ax.bar(x + offset, win_rates, width / len(methods), label=method_label, color=method_color)
 
         # Add value labels
         for bar, rate, win, tot in zip(bars, win_rates, win_counts, totals):
@@ -214,9 +261,9 @@ def plot_by_user(stats: dict[str, Any], output_dir: Path):
                     fontsize=9,
                 )
 
-    ax.set_ylabel("Rate (%)", fontsize=12)
-    ax.set_xlabel("User", fontsize=12)
-    ax.set_title("Results Distribution by User", fontsize=14, fontweight="bold")
+    ax.set_ylabel("Rate (%)", fontsize=14)
+    ax.set_xlabel("User", fontsize=14)
+    ax.set_title("Results Distribution by User", fontsize=12, fontweight="bold")
     ax.set_xticks(x)
     ax.set_xticklabels(users)
     ax.legend()
@@ -252,7 +299,7 @@ def plot_by_song(stats: dict[str, Any], output_dir: Path):
     width = 0.35
     colors = ["#2ecc71", "#e74c3c", "#3498db", "#f39c12", "#95a5a6"]
 
-    fig, ax = plt.subplots(figsize=(max(12, len(songs) * 2), 6))
+    fig, ax = plt.subplots(figsize=(8, 6))
 
     for i, method in enumerate(methods):
         win_rates = []
@@ -267,7 +314,8 @@ def plot_by_song(stats: dict[str, Any], output_dir: Path):
 
         offset = (i - len(methods) / 2 + 0.5) * width / len(methods)
         method_color = "#95a5a6" if method == "tie" else colors[i % (len(colors) - 1)]
-        bars = ax.bar(x + offset, win_rates, width / len(methods), label=method, color=method_color)
+        method_label = method if method == "tie" else get_method_display_name(method)
+        bars = ax.bar(x + offset, win_rates, width / len(methods), label=method_label, color=method_color)
 
         # Add value labels
         for bar, rate, win, tot in zip(bars, win_rates, win_counts, totals):
@@ -282,9 +330,9 @@ def plot_by_song(stats: dict[str, Any], output_dir: Path):
                     fontsize=9,
                 )
 
-    ax.set_ylabel("Rate (%)", fontsize=12)
-    ax.set_xlabel("Song", fontsize=12)
-    ax.set_title("Results Distribution by Song", fontsize=14, fontweight="bold")
+    ax.set_ylabel("Rate (%)", fontsize=14)
+    ax.set_xlabel("Song", fontsize=14)
+    ax.set_title("Results Distribution by Song", fontsize=12, fontweight="bold")
     ax.set_xticks(x)
     ax.set_xticklabels(songs, rotation=45, ha="right")
     ax.legend()
@@ -337,25 +385,26 @@ def plot_cumulative_winning_rates(stats: dict[str, Any], output_dir: Path):
             cumulative_rates[method].append(rate)
 
     # Plot
-    fig, ax = plt.subplots(figsize=(14, 6))
+    fig, ax = plt.subplots(figsize=(8, 6))
     colors = ["#2ecc71", "#e74c3c", "#3498db", "#f39c12", "#95a5a6"]
 
     for i, method in enumerate(methods):
         method_color = "#95a5a6" if method == "tie" else colors[i % (len(colors) - 1)]
         linestyle = "--" if method == "tie" else "-"
+        method_label = method if method == "tie" else get_method_display_name(method)
         ax.plot(
             positions,
             cumulative_rates[method],
             marker="o",
-            label=method,
+            label=method_label,
             linewidth=2,
             color=method_color,
             linestyle=linestyle,
         )
 
-    ax.set_xlabel("Line Position", fontsize=12)
-    ax.set_ylabel("Cumulative Rate (%)", fontsize=12)
-    ax.set_title("Cumulative Results Distribution Over Line Positions", fontsize=14, fontweight="bold")
+    ax.set_xlabel("Line Position", fontsize=14)
+    ax.set_ylabel("Cumulative Rate (%)", fontsize=14)
+    ax.set_title("Cumulative Results Distribution Over Line Positions", fontsize=12, fontweight="bold")
     ax.legend()
     ax.grid(True, alpha=0.3, linestyle="--")
     ax.set_ylim(0, 100)
@@ -367,122 +416,132 @@ def plot_cumulative_winning_rates(stats: dict[str, Any], output_dir: Path):
 
 
 def plot_segmented_by_song(stats: dict[str, Any], output_dir: Path):
-    """Plot segmented bar charts showing wins/losses/ties for each method per song."""
-    method_outcomes = stats["method_outcomes_by_song"]
-    if not method_outcomes:
-        print("No method outcome data found for segmented plots")
+    """Plot horizontal segmented bar chart showing fused_rank vs random and fused_rank vs text_video for all songs."""
+    fused_rank_outcomes = stats["fused_rank_pair_outcomes"]
+    if not fused_rank_outcomes:
+        print("No fused_rank comparison data found for segmented plots")
         return
 
-    songs = sorted(method_outcomes.keys())
+    songs = sorted(fused_rank_outcomes.keys())
+    if not songs:
+        print("No songs found with fused_rank comparisons")
+        return
     
+    # Define the two comparison pairs we want to plot
+    pair_labels = ["fused_rank_vs_random", "fused_rank_vs_text_video"]
+    pair_display_names = [
+        f"{get_method_display_name('fused_rank')} vs {get_method_display_name('random')}",
+        f"{get_method_display_name('fused_rank')} vs {get_method_display_name('text_video')}"
+    ]
+    
+    # Prepare data for horizontal stacked bar chart
+    # Structure: [song][pair][outcome] = count
+    song_data = {}
     for song in songs:
-        song_outcomes = method_outcomes[song]
-        methods = sorted(song_outcomes.keys())
+        song_data[song] = {}
+        for pair_label in pair_labels:
+            outcomes = fused_rank_outcomes[song].get(pair_label, {})
+            song_data[song][pair_label] = {
+                "win": outcomes.get("win", 0),
+                "loss": outcomes.get("loss", 0),
+                "tie": outcomes.get("tie", 0),
+            }
+    
+    # Create horizontal bar chart
+    fig, ax = plt.subplots(figsize=(8, 6))
+    
+    # Use double spacing for each song (one for each bar)
+    y_pos = np.arange(len(songs)) * 2
+    bar_height = 0.6
+    spacing = 0.2  # Space between the two bars for each song
+    
+    # Single color scheme for all bars (distinguished by position: top/bottom)
+    colors = {"win": "#2ecc71", "loss": "#e74c3c", "tie": "#95a5a6"}
+    
+    # Track legend labels
+    legend_added = {"win": False, "loss": False, "tie": False}
+    
+    # Plot bars for each song
+    for i, song in enumerate(songs):
+        y_base = y_pos[i]
         
-        if not methods:
-            continue
-        
-        # Prepare data for stacked bar chart
-        wins = []
-        losses = []
-        ties = []
-        
-        for method in methods:
-            outcomes = song_outcomes[method]
-            wins.append(outcomes.get("win", 0))
-            losses.append(outcomes.get("loss", 0))
-            ties.append(outcomes.get("tie", 0))
-        
-        # Create stacked bar chart
-        fig, ax = plt.subplots(figsize=(max(10, len(methods) * 2), 6))
-        
-        x = np.arange(len(methods))
-        width = 0.6
-        
-        # Colors: green for wins, red for losses, gray for ties
-        colors = {"win": "#2ecc71", "loss": "#e74c3c", "tie": "#95a5a6"}
-        
-        # Create stacked bars
-        bars1 = ax.bar(x, wins, width, label="Win", color=colors["win"])
-        bars2 = ax.bar(x, losses, width, bottom=wins, label="Loss", color=colors["loss"])
-        bars3 = ax.bar(x, ties, width, bottom=np.array(wins) + np.array(losses), label="Tie", color=colors["tie"])
-        
-        # Add value labels on each segment
-        for i, method in enumerate(methods):
-            total = wins[i] + losses[i] + ties[i]
+        # Plot two bars for each song (fused vs random, fused vs text_video)
+        # j=0: top bar (fused vs random), j=1: bottom bar (fused vs text_video)
+        for j, (pair_label, pair_display) in enumerate(zip(pair_labels, pair_display_names)):
+            outcomes = song_data[song][pair_label]
+            wins = outcomes["win"]
+            losses = outcomes["loss"]
+            ties = outcomes["tie"]
+            total = wins + losses + ties
+            
             if total == 0:
                 continue
             
-            # Win segment
-            if wins[i] > 0:
-                win_y = wins[i] / 2
-                ax.text(
-                    x[i],
-                    win_y,
-                    f"{wins[i]}",
-                    ha="center",
-                    va="center",
-                    fontsize=9,
-                    fontweight="bold",
-                    color="white",
-                )
+            # Calculate percentages
+            win_pct = (wins / total * 100) if total > 0 else 0
+            loss_pct = (losses / total * 100) if total > 0 else 0
+            tie_pct = (ties / total * 100) if total > 0 else 0
             
-            # Loss segment
-            if losses[i] > 0:
-                loss_y = wins[i] + losses[i] / 2
-                ax.text(
-                    x[i],
-                    loss_y,
-                    f"{losses[i]}",
-                    ha="center",
-                    va="center",
-                    fontsize=9,
-                    fontweight="bold",
-                    color="white",
-                )
+            # Calculate bar position (offset for second bar)
+            # j=0: top bar (positive offset), j=1: bottom bar (negative offset)
+            y_offset = (j - 0.5) * (bar_height + spacing)
+            y_center = y_base + y_offset
             
-            # Tie segment
-            if ties[i] > 0:
-                tie_y = wins[i] + losses[i] + ties[i] / 2
-                ax.text(
-                    x[i],
-                    tie_y,
-                    f"{ties[i]}",
-                    ha="center",
-                    va="center",
-                    fontsize=9,
-                    fontweight="bold",
-                    color="white",
-                )
+            # Create horizontal stacked bars normalized to 100%
+            # Order: win (left), loss (middle), tie (right)
+            left_edge = 0
+            if win_pct > 0:
+                label = "Win" if not legend_added["win"] else ""
+                ax.barh(y_center, win_pct, bar_height, left=left_edge, color=colors["win"], label=label)
+                legend_added["win"] = True
+                # Add label with percentage
+                if win_pct >= 2:  # Only show label if segment is large enough (2%)
+                    ax.text(left_edge + win_pct / 2, y_center, f"{win_pct:.1f}%", ha="center", va="center", 
+                           fontsize=8, fontweight="bold", color="white")
+                left_edge += win_pct
             
-            # Total on top
-            ax.text(
-                x[i],
-                total,
-                f"Total: {total}",
-                ha="center",
-                va="bottom",
-                fontsize=10,
-                fontweight="bold",
-            )
-        
-        ax.set_ylabel("Number of Comparisons", fontsize=12)
-        ax.set_xlabel("Method", fontsize=12)
-        ax.set_title(f"Results Distribution by Method - {song}\n(Win / Loss / Tie)", fontsize=14, fontweight="bold")
-        ax.set_xticks(x)
-        ax.set_xticklabels(methods)
-        ax.legend(loc="upper right")
-        ax.grid(axis="y", alpha=0.3, linestyle="--", which="major")
-        
-        # Set y-axis to show a bit above the max total
-        max_total = max([w + l + t for w, l, t in zip(wins, losses, ties)], default=1)
-        ax.set_ylim(0, max_total * 1.15)
-        
-        plt.tight_layout()
-        filename = f"segmented_bar_{song}.png"
-        plt.savefig(output_dir / filename, dpi=300, bbox_inches="tight")
-        plt.close()
-        print(f"Saved: {output_dir / filename}")
+            if loss_pct > 0:
+                label = "Loss" if not legend_added["loss"] else ""
+                ax.barh(y_center, loss_pct, bar_height, left=left_edge, color=colors["loss"], label=label)
+                legend_added["loss"] = True
+                # Add label with percentage
+                if loss_pct >= 2:  # Only show label if segment is large enough (2%)
+                    ax.text(left_edge + loss_pct / 2, y_center, f"{loss_pct:.1f}%", ha="center", va="center",
+                           fontsize=8, fontweight="bold", color="white")
+                left_edge += loss_pct
+            
+            if tie_pct > 0:
+                label = "Tie" if not legend_added["tie"] else ""
+                ax.barh(y_center, tie_pct, bar_height, left=left_edge, color=colors["tie"], label=label)
+                legend_added["tie"] = True
+                # Add label with percentage
+                if tie_pct >= 2:  # Only show label if segment is large enough (2%)
+                    ax.text(left_edge + tie_pct / 2, y_center, f"{tie_pct:.1f}%", ha="center", va="center",
+                           fontsize=8, fontweight="bold", color="white")
+                left_edge += tie_pct
+    
+    # Set labels and title
+    ax.set_xlabel("Percentage (%)", fontsize=14)
+    ax.set_ylabel("Song", fontsize=14)
+    ax.set_title(f"Multi-Stream Synergy Retrieval Performance: Win / Loss / Tie (Normalized)\n(Top bar: vs. {get_method_display_name('random')} | Bottom bar: vs. {get_method_display_name('text_video')})", 
+                 fontsize=12, fontweight="bold")
+    
+    # Set y-axis ticks and labels (one per song, positioned between the two bars)
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(songs)
+    
+    # Add legend
+    ax.legend(loc="lower right")
+    ax.grid(axis="x", alpha=0.3, linestyle="--")
+    
+    # Set x-axis limits (bars start at 0, with padding for labels)
+    ax.set_xlim(0, 120)
+    
+    plt.tight_layout()
+    filename = "win_loss_by_song.png"
+    plt.savefig(output_dir / filename, dpi=300, bbox_inches="tight")
+    plt.close()
+    print(f"Saved: {output_dir / filename}")
 
 
 def print_summary(stats: dict[str, Any]):
@@ -502,7 +561,8 @@ def print_summary(stats: dict[str, Any]):
     for method in methods_sorted:
         wins = overall[method]
         rate = wins / total * 100 if total > 0 else 0
-        print(f"  {method}: {wins}/{total} ({rate:.2f}%)")
+        method_display = method if method == "tie" else get_method_display_name(method)
+        print(f"  {method_display}: {wins}/{total} ({rate:.2f}%)")
 
     print("\n--- By User ---")
     for user in sorted(stats["by_user"].keys()):
@@ -515,7 +575,8 @@ def print_summary(stats: dict[str, Any]):
         for method in user_methods_sorted:
             wins = user_stats[method]
             rate = wins / user_total * 100 if user_total > 0 else 0
-            print(f"    {method}: {wins}/{user_total} ({rate:.2f}%)")
+            method_display = method if method == "tie" else get_method_display_name(method)
+            print(f"    {method_display}: {wins}/{user_total} ({rate:.2f}%)")
 
     print("\n--- By Song ---")
     for song in sorted(stats["by_song"].keys()):
@@ -528,7 +589,8 @@ def print_summary(stats: dict[str, Any]):
         for method in song_methods_sorted:
             wins = song_stats[method]
             rate = wins / song_total * 100 if song_total > 0 else 0
-            print(f"    {method}: {wins}/{song_total} ({rate:.2f}%)")
+            method_display = method if method == "tie" else get_method_display_name(method)
+            print(f"    {method_display}: {wins}/{song_total} ({rate:.2f}%)")
 
     print("\n" + "=" * 60 + "\n")
 

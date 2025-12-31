@@ -79,6 +79,7 @@ async function init() {
     }
     updateCandidateAudioButton();
     applyConfigVisibility();
+    updateControlState();
     showStartScreen();
   } catch (error) {
     setStatus(`Failed to load catalog: ${error.message}`);
@@ -176,30 +177,44 @@ function populateSelectors(catalog) {
 
 function applyInitialSelection() {
   const params = new URLSearchParams(window.location.search);
-  if (params.get("song")) elements.songSelect.value = params.get("song");
-  if (params.get("left")) elements.leftMethodSelect.value = params.get("left");
-  if (params.get("right")) elements.rightMethodSelect.value = params.get("right");
-
   const methods = Object.keys(state.catalog.methods);
   const defaultLeft = state.config.default_left_method;
   const defaultRight = state.config.default_right_method;
-  if (!elements.leftMethodSelect.value) {
-    if (defaultLeft && methods.includes(defaultLeft)) {
-      elements.leftMethodSelect.value = defaultLeft;
-    } else {
-      elements.leftMethodSelect.value = methods[0] || "";
-    }
-  }
-  if (!elements.rightMethodSelect.value) {
-    if (defaultRight && methods.includes(defaultRight)) {
-      elements.rightMethodSelect.value = defaultRight;
-    } else {
-      elements.rightMethodSelect.value = methods[1] || methods[0] || "";
-    }
-  }
+  const leftChoice = pickInitialMethod(
+    [params.get("left"), defaultLeft],
+    methods,
+    null
+  );
+  const rightChoice = pickInitialMethod(
+    [params.get("right"), defaultRight],
+    methods,
+    leftChoice
+  );
+
+  elements.leftMethodSelect.value = leftChoice;
+  elements.rightMethodSelect.value = rightChoice;
 
   updateSongOptions();
+  const songParam = params.get("song");
+  if (songParam) {
+    const matching = Array.from(elements.songSelect.options).some(
+      (option) => option.value === songParam
+    );
+    if (matching) elements.songSelect.value = songParam;
+  }
   updateControlState();
+}
+
+function pickInitialMethod(candidates, methods, exclude) {
+  for (const candidate of candidates) {
+    if (candidate && methods.includes(candidate) && candidate !== exclude) {
+      return candidate;
+    }
+  }
+  for (const method of methods) {
+    if (method !== exclude) return method;
+  }
+  return methods[0] || "";
 }
 
 function updateSongOptions() {
